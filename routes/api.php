@@ -19,7 +19,11 @@ use App\Http\Controllers\UserController;
 //    return $request->user();
 //});
 
-Route::post('login', [AuthController::class, 'login']);
+Route::group(['prefix' => 'user'], function() {
+    Route::post('register', [UserController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+});
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'index']);
 });
