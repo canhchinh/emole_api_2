@@ -23,6 +23,14 @@ Route::group(['prefix' => 'user'], function() {
     Route::post('login', [UserController::class, 'login']);
 });
 
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', [UserController::class, 'index']);
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->middleware('guest')->name('password.request');
+
+Route::post('/forgot-password', [UserController::class, 'forgotPassword']);
+Route::get('/reset-password', [UserController::class, 'resetPassword']);
+
+Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
+    Route::post('/reset-password', [UserController::class, 'newPassword']);
 });
+

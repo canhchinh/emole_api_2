@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\CreateUser;
+use App\Http\Requests\ForgotPassword;
+use App\Http\Requests\ResetPassword;
+use App\Http\Requests\NewPassword;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use App\Jobs\SendMailResetPassword;
 class UserController extends Controller
 {
     public function login(Request $request)
@@ -34,13 +39,13 @@ class UserController extends Controller
             $tokenResult = $user->createToken('authToken')->plainTextToken;
 
             return response()->json([
-                'status_code' => 200,
+                'status' => true,
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status_code' => 500,
+                'status' => false,
                 'message' => 'Error in Login',
                 'error' => $e->getMessage(),
             ]);
@@ -68,17 +73,71 @@ class UserController extends Controller
         $tokenResult = $user->createToken('authToken')->plainTextToken;
 
         return response()->json([
-            'status_code' => 200,
+            'status' => true,
             'access_token' => $tokenResult,
             'token_type' => 'Bearer',
         ]);
 
     }
 
-    public function index(Request $request)
+    public function forgotPassword(ForgotPassword $request)
     {
+        $req = $request->all();
+        $user = User::where('email', $req['email'])->first();
+        if(empty($user)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Email not found',
+            ]);
+        }
+        $token = Str::random(60);
+        User::where('id', $user->id)->update([
+            'email_verified_at' => date('Y-m-d H:i:s'),
+            'remember_token' => $token
+        ]);
+
+        SendMailResetPassword::dispatch($req['email'], $token)->onQueue('default');
         return response()->json([
-            'data' => User::all()
+            'status' => true
+        ]);
+    }
+
+    public function resetPassword(ResetPassword $request)
+    {
+        $req = $request->all();
+        $user = User::where('remember_token', $req['token'])->first();
+        if(empty($user)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Token invalid',
+            ]);
+        }
+        $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+        return redirect(config('common.frontend_url'))->with('access_token', $tokenResult);
+    }
+
+    public function newPassword(NewPassword $request)
+    {
+        $req = $request->all();
+        $user = $request->user();
+        if(empty($user)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User invalid',
+            ]);
+        }
+        if(!Hash::check($req['exist_password'], $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Password invalid',
+            ]);
+        }
+        $user->update([
+            'password' => Hash::make($req['new_password'])
+        ]);
+        return response()->json([
+            'status' => true
         ]);
     }
 }
