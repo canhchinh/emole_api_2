@@ -22,8 +22,9 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->string('profession')->nullable();
             $table->string('gender')->nullable();
-            $table->dateTime('Birthday')->nullable();
-            $table->text('self-introduction')->nullable();
+            $table->date('birthday')->nullable();
+            $table->text('self_introduction')->nullable();
+            $table->string('avatar')->nullable();
             $table->timestamps();
         });
     }

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Jobs\SendMailResetPassword;
+use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
     public function login(Request $request)
@@ -64,12 +65,30 @@ class UserController extends Controller
                 'message' => 'User exist'
             ]);
         }
+        $link = null;
         $user = User::create([
-            'name' => $req['email'],
+            'name' => $req['name'],
             'email' => $req['email'],
-            'password' => Hash::make($req['password'])
+            'password' => Hash::make($req['password']),
+            'profession' => $req['profession'],
+            'gender' => $req['gender'],
+            'birthday' => $req['birthday'],
+            'self_introduction' => @$req['self_introduction'],
         ]);
 
+
+        // process base64 image
+        if(!empty($req['avatar'])) {
+            $base64_str = substr($req['avatar'], strpos($req['avatar'], ",")+1);
+            //decode base64 string
+            $image = base64_decode($base64_str);
+            $path = 'public/'.$user->id.'/avatar.png';
+            Storage::disk('local')->put($path, $image);
+            $link = '/storage/'.$user->id.'/avatar.png';
+        }
+        if(!empty($link)) {
+            User::where('id', $user->id)->update(['avatar' => $link]);
+        }
 
         $tokenResult = $user->createToken('authToken')->plainTextToken;
 
@@ -118,7 +137,6 @@ class UserController extends Controller
         }
         $user = User::where('email', $passwordReset->email)->first();
         $tokenResult = $user->createToken('authToken')->plainTextToken;
-        dd($tokenResult);
 
         return redirect(config('common.frontend_url'))->with('access_token', $tokenResult);
     }
