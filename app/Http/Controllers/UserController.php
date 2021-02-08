@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\PasswordReset;
 use App\Http\Requests\CreateUser;
 use App\Http\Requests\ForgotPassword;
 use App\Http\Requests\ResetPassword;
@@ -91,9 +92,10 @@ class UserController extends Controller
             ]);
         }
         $token = Str::random(60);
-        User::where('id', $user->id)->update([
-            'email_verified_at' => date('Y-m-d H:i:s'),
-            'remember_token' => $token
+        PasswordReset::insert([
+            'email' => $req['email'],
+            'token' => $token,
+            'created_at' => date('Y-m-d H:i:s')
         ]);
 
         SendMailResetPassword::dispatch($req['email'], $token)->onQueue('default');
@@ -105,14 +107,18 @@ class UserController extends Controller
     public function resetPassword(ResetPassword $request)
     {
         $req = $request->all();
-        $user = User::where('remember_token', $req['token'])->first();
-        if(empty($user)) {
+        $passwordReset = PasswordReset::where('token', $req['token'])
+            ->orderBy('created_at', 'desc')
+            ->first();
+        if(empty($passwordReset)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Token invalid',
             ]);
         }
+        $user = User::where('email', $passwordReset->email)->first();
         $tokenResult = $user->createToken('authToken')->plainTextToken;
+        dd($tokenResult);
 
         return redirect(config('common.frontend_url'))->with('access_token', $tokenResult);
     }
