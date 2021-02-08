@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCareerDetailsTable extends Migration
+class CreateCareerChildrenTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCareerDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('career_details', function (Blueprint $table) {
+        Schema::create('career_children', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
             $table->string('career_id');
@@ -28,6 +28,6 @@ class CreateCareerDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('career_details');
+        Schema::dropIfExists('career_children');
     }
 }

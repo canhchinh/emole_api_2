@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserImagesTable extends Migration
+class CreateUserCareerTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateUserImagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_images', function (Blueprint $table) {
+        Schema::create('user_career', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
-            $table->string('url', 2000)->nullable();
+            $table->integer('career_id')->nullable();
+            $table->integer('career_child_id')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateUserImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_images');
+        Schema::dropIfExists('user_career');
     }
 }
