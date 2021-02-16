@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserImageController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,6 +19,7 @@ use App\Http\Controllers\UserController;
 //    return $request->user();
 //});
 
+/**************** user ****************/
 Route::group(['prefix' => 'user'], function() {
     Route::post('register', [UserController::class, 'register']);
     Route::post('login', [UserController::class, 'login']);
@@ -32,5 +34,10 @@ Route::get('/reset-password', [UserController::class, 'resetPassword']);
 
 Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::post('/reset-password', [UserController::class, 'newPassword']);
+});
+
+/**************** user image upload ****************/
+Route::group(['prefix' => 'user_image', 'middleware' => 'auth:sanctum'], function() {
+    Route::post('', [UserImageController::class, 'newImageUpload']);
 });
 
