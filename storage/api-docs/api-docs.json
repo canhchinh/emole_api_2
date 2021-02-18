@@ -14,18 +14,38 @@
     },
     "servers": [
         {
-            "url": "http://emole.dev",
+            "url": "http://emole_api.test/api",
             "description": "Emole API Server"
         }
     ],
     "paths": {
-        "/": {
-            "get": {
+        "/user/login": {
+            "post": {
                 "tags": [
-                    "Public"
+                    "Auth"
                 ],
-                "summary": "public index page",
-                "operationId": "public_index_page",
+                "summary": "login user",
+                "description": "login user by email and password",
+                "operationId": "login_user_by_uuid",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "a@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -75,12 +95,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "token": []
-                    }
-                ]
+                }
             }
         }
     },

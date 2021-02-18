@@ -13,45 +13,71 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Jobs\SendMailResetPassword;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
+    private $userRepo;
+
+    public function __construct(
+        UserRepository $userRepo
+    )
+    {
+        $this->userRepo = $userRepo;
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/user/login",
+     *   summary="login user",
+     *   description="login user by email and password",
+     *   operationId="login_user_by_uuid",
+     *   tags={"Auth"},
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="email", type="string", example="a@example.com"),
+     *                 @OA\Property(property="password", type="string", example="123456"),
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
     public function login(Request $request)
     {
-        try {
-            $request->validate([
-                'email' => 'email|required',
-                'password' => 'required'
-            ]);
+        $request->validate([
+            'email' => 'email|required',
+            'password' => 'required'
+        ]);
 
-            $credentials = request(['email', 'password']);
+        $user = $this->userRepo->where('email', $request->email)->first();
 
-            if (!Auth::attempt($credentials)) {
-                return response()->json([
-                    'status_code' => 500,
-                    'message' => 'Unauthorized'
-                ]);
-            }
-            $user = User::where('email', $request->email)->first();
-
-            if (!Hash::check($request->password, $user->password, [])) {
-                throw new \Exception('Error in Login');
-            }
-
-            $tokenResult = $user->createToken('authToken')->plainTextToken;
-
-            return response()->json([
-                'status' => true,
-                'access_token' => $tokenResult,
-                'token_type' => 'Bearer',
-            ]);
-        } catch (\Exception $e) {
+        if(empty($user->email) || empty($user->id)) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error in Login',
-                'error' => $e->getMessage(),
-            ]);
+                'message' => "email doesn't exist."
+            ], 403);
+        } elseif (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => "password doesn't match."
+            ], 403);
         }
+
+        $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'status' => true,
+            'access_token' => $tokenResult,
+            'token_type' => 'Bearer',
+            ]);
     }
 
 
