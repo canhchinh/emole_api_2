@@ -31,7 +31,6 @@ class CreatePortfolioTable extends Migration
             $table->integer('cpa_count')->nullable();
             $table->string('youtube_link')->nullable();
             $table->string('work_link')->nullable();
-            $table->text('work_description')->nullable();
             $table->text('work_tag')->nullable();
             $table->timestamps();
         });
