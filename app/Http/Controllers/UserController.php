@@ -80,7 +80,6 @@ class UserController extends Controller
             ]);
     }
 
-
     public function register(CreateUser $request)
     {
         $req = $request->all();
@@ -101,7 +100,6 @@ class UserController extends Controller
             'birthday' => $req['birthday'],
             'self_introduction' => @$req['self_introduction'],
         ]);
-
 
         // process base64 image
         if(!empty($req['avatar'])) {
