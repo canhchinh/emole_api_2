@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Jobs\SendMailResetPassword;
 use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
@@ -173,7 +174,14 @@ class UserController extends Controller
      *      @OA\MediaType(
      *         mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 @OA\Property(property="user_name", type="string", example="gotech"),
+     *                @OA\Property(property="avatar",type="string", format="binary"),
+     *                 @OA\Property(property="given_name", type="string", example="gotech"),
+     *                 @OA\Property(property="title", type="string", example="gotech"),
+     *                 @OA\Property(property="email", type="string", example="a@example.com"),
+     *                 @OA\Property(property="gender", type="integer", example="MALE || FEMALE || OTHER"),
+     *                 @OA\Property(property="birthday", type="string", example="2020-01-31"),
+     *                 @OA\Property(property="profession", type="string", example="gotech"),
+
      *             )
      *         )
      *     ),
@@ -187,40 +195,37 @@ class UserController extends Controller
      */
     public function registerStep3(CreateUser $request)
     {
-        $req = $request->all();
-
-        $link = null;
-        $user = User::create([
-            'name' => $req['name'],
-            'email' => $req['email'],
-            'password' => Hash::make($req['password']),
-            'profession' => $req['profession'],
-            'gender' => $req['gender'],
-            'birthday' => $req['birthday'],
-            'self_introduction' => @$req['self_introduction'],
+        $data = $request->all([
+            'email', 'title', 'given_name', 'birthday', 'gender', 'profession'
         ]);
 
-        // process base64 image
-        if(!empty($req['avatar'])) {
-            $base64_str = substr($req['avatar'], strpos($req['avatar'], ",")+1);
-            //decode base64 string
-            $image = base64_decode($base64_str);
-            $path = 'public/'.$user->id.'/avatar.png';
-            Storage::disk('local')->put($path, $image);
-            $link = '/storage/'.$user->id.'/avatar.png';
-        }
-        if(!empty($link)) {
-            User::where('id', $user->id)->update(['avatar' => $link]);
+        $user = auth()->user();
+
+        $file = $request->file('avatar');
+        if(!empty($file)){
+            $extension = $file->getClientOriginalExtension();
+            if(in_array($extension, ['jpg', 'png', 'jpeg'])) {
+                $path = 'user/' . $user->id . '_'. time() . '.' . $extension;
+                Storage::disk('public')->put($path,  File::get($file));
+                $url = '/storage/'.$path;
+
+                $user->avatar = $url;
+            }
         }
 
-        $tokenResult = $user->createToken('authToken')->plainTextToken;
+        $user->given_name = $data['given_name'];
+        $user->email = $user->email ?? $data['email'];
+        $user->title = $data['title'];
+        $user->birthday = $data['birthday'];
+        $user->gender = $data['gender'];
+        $user->profession = $data['profession'];
+
+        $user->save();
 
         return response()->json([
             'status' => true,
-            'access_token' => $tokenResult,
-            'token_type' => 'Bearer',
+            'user' => $user
         ]);
-
     }
 
     public function forgotPassword(ForgotPassword $request)
