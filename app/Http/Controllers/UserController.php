@@ -30,7 +30,6 @@ class UserController extends Controller
      * @OA\Post(
      *   path="/user/login",
      *   summary="login user",
-     *   description="login user by email and password",
      *   operationId="login_user_by_uuid",
      *   tags={"Auth"},
      *   @OA\RequestBody(
@@ -76,20 +75,120 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'access_token' => $tokenResult,
-            'token_type' => 'Bearer',
-            ]);
+            'token_type' => 'Bearer'
+        ]);
     }
 
-    public function register(CreateUser $request)
+    /**
+     * @OA\Post(
+     *   path="/user/register-step1",
+     *   summary="register user step1",
+     *   operationId="register_user_step1",
+     *   tags={"Auth"},
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="email", type="string", example="a@example.com"),
+     *                 @OA\Property(property="password", type="string", example="123456"),
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function registerStep1(Request $request)
+    {
+        $request->validate([
+            'email' => 'email|required|unique:users',
+            'password' => 'required'
+        ]);
+
+        $user = $this->userRepo->create([
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
+        ]);
+
+        $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'status' => true,
+            'access_token' => $tokenResult,
+            'token_type' => 'Bearer'
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/user/register-step2",
+     *   summary="register user step2",
+     *   operationId="register_user_step2",
+     *   tags={"Auth"},
+     *   security={ {"token": {}} },
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="user_name", type="string", example="gotech"),
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function registerStep2(Request $request)
+    {
+        $user = auth()->user();
+        $request->validate([
+            'user_name' => 'required|unique:users,user_name,' . $user->id
+        ]);
+
+        $user->user_name = $request->user_name;
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/user/register-step3",
+     *   summary="register user step3",
+     *   operationId="register_user_step3",
+     *   tags={"Auth"},
+     *   security={ {"token": {}} },
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="user_name", type="string", example="gotech"),
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function registerStep3(CreateUser $request)
     {
         $req = $request->all();
-        $user = User::where('email', $req['email'])->first();
-        if(!empty($user)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User exist'
-            ]);
-        }
+
         $link = null;
         $user = User::create([
             'name' => $req['name'],

@@ -16,7 +16,7 @@ use App\Http\Controllers\UserImageController;
 
 /**************** user ****************/
 Route::group(['prefix' => 'user'], function() {
-    Route::post('register', [UserController::class, 'register']);
+    Route::post('register-step1', [UserController::class, 'registerStep1']);
     Route::post('login', [UserController::class, 'login']);
 });
 
@@ -28,6 +28,8 @@ Route::post('/forgot-password', [UserController::class, 'forgotPassword']);
 Route::get('/reset-password', [UserController::class, 'resetPassword']);
 
 Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
+    Route::post('register-step2', [UserController::class, 'registerStep2']);
+    Route::post('register-step3', [UserController::class, 'registerStep3']);
     Route::post('/reset-password', [UserController::class, 'newPassword']);
 });
 
