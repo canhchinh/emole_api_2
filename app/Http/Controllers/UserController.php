@@ -100,6 +100,14 @@ class UserController extends Controller
             'birthday' => date('Y-m-d', strToTime($req['birthday'])),
             'self_introduction' => @$req['self_introduction'],
         ]);
+        $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+
+        return response()->json([
+            'status' => true,
+            'access_token' => $tokenResult,
+            'token_type' => 'Bearer'
+        ]);
     }
 
     /**
@@ -131,14 +139,11 @@ class UserController extends Controller
             'email' => 'email|required|unique:users',
             'password' => 'required'
         ]);
-
         $user = $this->userRepo->create([
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
-
         $tokenResult = $user->createToken('authToken')->plainTextToken;
-
         return response()->json([
             'status' => true,
             'access_token' => $tokenResult,
@@ -215,7 +220,7 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function registerStep3(CreateUser $request)
+    public function registerStep3(Request $request)
     {
         $data = $request->all([
             'email', 'title', 'given_name', 'birthday', 'gender', 'profession'
@@ -234,11 +239,11 @@ class UserController extends Controller
                 $user->avatar = $url;
             }
         }
-
+        $birthday = \DateTime::createFromFormat('Y-m-d', $data['birthday'])->format('Y-m-d');
         $user->given_name = $data['given_name'];
         $user->email = $user->email ?? $data['email'];
         $user->title = $data['title'];
-        $user->birthday = $data['birthday'];
+        $user->birthday = $birthday;
         $user->gender = $data['gender'];
         $user->profession = $data['profession'];
 
