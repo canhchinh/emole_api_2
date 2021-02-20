@@ -48,7 +48,7 @@ Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() 
 });
 /**************** category ****************/
 Route::group(['prefix' => 'category', 'middleware' => 'auth:sanctum'], function() {
-    Route::get('list', [CategoryController::class, 'listCategory']);
+    Route::get('list/{career_id}', [CategoryController::class, 'listCategory']);
 });
 
 
