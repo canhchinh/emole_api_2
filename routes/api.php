@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserImageController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\SnsController;
+use App\Http\Controllers\CategoryController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,11 +42,14 @@ Route::group(['prefix' => 'user_image', 'middleware' => 'auth:sanctum'], functio
     Route::post('', [UserImageController::class, 'newImageUpload']);
 });
 /**************** career ****************/
-Route::group(['prefix' => 'career'], function() {
-    Route::get('list', [CareerController::class, 'listCareer']);
+Route::get('career/list', [CareerController::class, 'listCareer']);
+Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() {
+    Route::post('user-select', [CareerController::class, 'careerUserSelect']);
 });
-/**************** sns ****************/
-Route::group(['prefix' => 'sns'], function() {
+/**************** category ****************/
+Route::group(['prefix' => 'category', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('list', [CategoryController::class, 'listCategory']);
+});
 
-});
+
 
