@@ -18,6 +18,7 @@ class UserJob extends Model
     protected $fillable = [
         'id',
         'user_id',
+        'career_id',
         'job_id',
     ];
 }

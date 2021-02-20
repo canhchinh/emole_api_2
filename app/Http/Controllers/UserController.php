@@ -16,6 +16,10 @@ use App\Jobs\SendMailResetPassword;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use App\Models\UserCategory;
+use App\Models\UserJob;
+use App\Models\UserGenre;
+use App\Models\UserCareer;
 class UserController extends Controller
 {
     private $userRepo;
@@ -328,6 +332,49 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'user' => $user
+        ]);
+    }
+
+    public function activity(Request $request)
+    {
+        $user = auth()->user();
+        $careerId = $request->input('career_id');
+        $categoryIds = $request->input('category_ids');
+        $jobIds = $request->input('job_ids');
+        $genreIds = $request->input('genre_ids');
+        $tag = $request->input('tag');
+        foreach($categoryIds as $categoryId) {
+            $userCategory = [
+                'user_id' => $user->id,
+                'career_id' => $careerId,
+                'category_id' => $categoryId
+            ];
+            UserCategory::updateOrCreate($userCategory, $userCategory);
+        }
+        foreach($jobIds as $jobId) {
+            $userCategory = [
+                'user_id' => $user->id,
+                'career_id' => $careerId,
+                'job_id' => $jobId
+            ];
+            UserJob::updateOrCreate($userCategory, $userCategory);
+        }
+        foreach($genreIds as $genreId) {
+            $userCategory = [
+                'user_id' => $user->id,
+                'career_id' => $careerId,
+                'genre_id' => $genreId
+            ];
+            UserGenre::updateOrCreate($userCategory, $userCategory);
+        }
+        if(!empty($tag)) {
+            UserCareer::where('user_id', $user->id)->where('career_id', $careerId)->update([
+                'tag' => $tag
+            ]);
+        }
+
+        return response()->json([
+            'status' => true
         ]);
     }
 }

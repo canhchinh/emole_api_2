@@ -16,6 +16,7 @@ class CreateUserGenreTable extends Migration
         Schema::create('user_genre', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
+            $table->integer('career_id')->nullable();
             $table->integer('genre_id')->nullable();
         });
     }

@@ -18,6 +18,7 @@ class UserGenre extends Model
     protected $fillable = [
         'id',
         'user_id',
+        'career_id',
         'genre_id',
     ];
 }
