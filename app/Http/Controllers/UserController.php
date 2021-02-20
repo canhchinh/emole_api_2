@@ -319,4 +319,15 @@ class UserController extends Controller
             'status' => true
         ]);
     }
+
+    public function updateSelfIntroduction(Request $request)
+    {
+        $req = $request->all();
+        $user = auth()->user();
+        $user->update(['self_introduction' => $req['data']]);
+        return response()->json([
+            'status' => true,
+            'user' => $user
+        ]);
+    }
 }

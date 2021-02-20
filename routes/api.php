@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserImageController;
+use App\Http\Controllers\CareerController;
+use App\Http\Controllers\SnsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,11 +32,20 @@ Route::get('/reset-password', [UserController::class, 'resetPassword']);
 Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::post('register-step2', [UserController::class, 'registerStep2']);
     Route::post('register-step3', [UserController::class, 'registerStep3']);
-    Route::post('/reset-password', [UserController::class, 'newPassword']);
+    Route::post('reset-password', [UserController::class, 'newPassword']);
+    Route::put('self-introduction', [UserController::class, 'updateSelfIntroduction']);
 });
 
 /**************** user image upload ****************/
 Route::group(['prefix' => 'user_image', 'middleware' => 'auth:sanctum'], function() {
     Route::post('', [UserImageController::class, 'newImageUpload']);
+});
+/**************** career ****************/
+Route::group(['prefix' => 'career'], function() {
+    Route::get('list', [CareerController::class, 'listCareer']);
+});
+/**************** sns ****************/
+Route::group(['prefix' => 'sns'], function() {
+
 });
 
