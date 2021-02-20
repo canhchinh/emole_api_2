@@ -7,6 +7,7 @@ use App\Http\Controllers\CareerController;
 use App\Http\Controllers\SnsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\GenreController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -55,6 +56,9 @@ Route::group(['prefix' => 'category', 'middleware' => 'auth:sanctum'], function(
 Route::group(['prefix' => 'job', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list/{career_id}', [JobController::class, 'listJob']);
 });
-
+/**************** genre ****************/
+Route::group(['prefix' => 'genre', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('list/{career_id}', [GenreController::class, 'listGenre']);
+});
 
 
