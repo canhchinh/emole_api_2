@@ -5,19 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Career extends Model
+class UserCareer extends Model
 {
     use HasFactory;
-    protected $table = 'career';
+    protected $table = 'user_career';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-
-    public $incrementing = true;
+    public $timestamps = false;
     protected $fillable = [
         'id',
-        'title'
+        'user_id',
+        'career_id',
+        'tag'
     ];
 }

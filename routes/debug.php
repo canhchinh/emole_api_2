@@ -18,7 +18,3 @@ use App\Http\Controllers\DebugController;
 //    return $request->user();
 //});
 Route::get('seed', [DebugController::class, 'seed']);
-//Route::group(['prefix' => 'user'], function() {
-//    Route::post('register', [UserController::class, 'register']);
-//    Route::post('login', [UserController::class, 'login']);
-//});

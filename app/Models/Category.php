@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Career extends Model
+class Category extends Model
 {
     use HasFactory;
-    protected $table = 'career';
+    protected $table = 'category';
     /**
      * The attributes that are mass assignable.
      *
@@ -18,6 +18,7 @@ class Career extends Model
     public $incrementing = true;
     protected $fillable = [
         'id',
+        'career_id',
         'title'
     ];
 }

@@ -73,10 +73,32 @@ class UserController extends Controller
 
         $tokenResult = $user->createToken('authToken')->plainTextToken;
 
+
         return response()->json([
             'status' => true,
             'access_token' => $tokenResult,
             'token_type' => 'Bearer'
+        ]);
+    }
+    public function register(CreateUser $request)
+    {
+        $req = $request->all();
+        $user = User::where('email', $req['email'])->first();
+        if(!empty($user)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User exist'
+            ]);
+        }
+        $link = null;
+        $user = User::create([
+            'name' => $req['name'],
+            'email' => $req['email'],
+            'password' => Hash::make($req['password']),
+            'profession' => $req['profession'],
+            'gender' => $req['gender'],
+            'birthday' => date('Y-m-d', strToTime($req['birthday'])),
+            'self_introduction' => @$req['self_introduction'],
         ]);
     }
 

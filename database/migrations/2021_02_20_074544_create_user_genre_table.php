@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCareerChildrenTable extends Migration
+class CreateUserGenreTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateCareerChildrenTable extends Migration
      */
     public function up()
     {
-        Schema::create('career_children', function (Blueprint $table) {
+        Schema::create('user_genre', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('career_id');
-            $table->timestamps();
+            $table->integer('user_id')->nullable();
+            $table->integer('genre_id')->nullable();
         });
     }
 
@@ -28,6 +27,6 @@ class CreateCareerChildrenTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('career_children');
+        Schema::dropIfExists('user_genre');
     }
 }

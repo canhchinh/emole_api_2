@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Genre;
 use Illuminate\Http\Request;
 use App\Models\Career;
-use App\Models\CareerChildren;
+use App\Models\Category;
+use App\Models\Job;
 use App\Models\Sns;
 use App\Models\UserImage;
 class DebugController extends Controller
@@ -33,16 +35,83 @@ class DebugController extends Controller
         ];
         Career::insert($career);
 
-        $careerChildren = [
+        $category = [
             [
                 'id' => 1,
-                'title' => 'Video actor',
                 'career_id' => 1,
+                'title' => 'video_actor',
                 'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ]
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 2,
+                'career_id' => 1,
+                'title' => 'stage_actor',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 3,
+                'career_id' => 1,
+                'title' => 'audio_actor',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
         ];
-        CareerChildren::insert($careerChildren);
+
+        Category::insert($category);
+
+        $job = [
+            [
+                'id' => 1,
+                'career_id' => 1,
+                'title' => 'CM',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 2,
+                'career_id' => 1,
+                'title' => 'MV',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 3,
+                'career_id' => 1,
+                'title' => 'Image advertising',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+        ];
+
+        Job::insert($job);
+
+        $genre = [
+            [
+                'id' => 1,
+                'career_id' => 1,
+                'title' => 'comedy',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 2,
+                'career_id' => 1,
+                'title' => 'suspense',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 3,
+                'career_id' => 1,
+                'title' => 'horror',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+        ];
+
+        Genre::insert($genre);
 
         $sns = [
             'user_id' => 1,

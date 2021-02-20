@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCareerTable extends Migration
+class CreateUserJobTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateCareerTable extends Migration
      */
     public function up()
     {
-        Schema::create('career', function (Blueprint $table) {
+        Schema::create('user_job', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->text('tag')->nullable();
-            $table->timestamps();
+            $table->integer('user_id')->nullable();
+            $table->integer('job_id')->nullable();
         });
     }
 
@@ -28,6 +27,6 @@ class CreateCareerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('career');
+        Schema::dropIfExists('user_job');
     }
 }
