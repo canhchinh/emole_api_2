@@ -6,6 +6,7 @@ use App\Http\Controllers\UserImageController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\SnsController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\JobController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,6 +50,10 @@ Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() 
 /**************** category ****************/
 Route::group(['prefix' => 'category', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list/{career_id}', [CategoryController::class, 'listCategory']);
+});
+/**************** job ****************/
+Route::group(['prefix' => 'job', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('list/{career_id}', [JobController::class, 'listJob']);
 });
 
 
