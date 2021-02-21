@@ -164,7 +164,7 @@
                 "tags": [
                     "Job description"
                 ],
-                "summary": "job category",
+                "summary": "list job",
                 "operationId": "list_job",
                 "parameters": [
                     {

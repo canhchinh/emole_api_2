@@ -10,7 +10,7 @@ class JobController extends Controller
     /**
      * @OA\Get(
      *   path="/career/{career_id}/job/list",
-     *   summary="job category",
+     *   summary="list job",
      *   operationId="list_job",
      *   tags={"Job description"},
      *   security={ {"token": {}} },
