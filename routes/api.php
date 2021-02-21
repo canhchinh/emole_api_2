@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserImageController;
 use App\Http\Controllers\CareerController;
-use App\Http\Controllers\SnsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\GenreController;
@@ -44,8 +43,8 @@ Route::group(['prefix' => 'user_image', 'middleware' => 'auth:sanctum'], functio
     Route::post('', [UserImageController::class, 'newImageUpload']);
 });
 /**************** career ****************/
-Route::get('career/list', [CareerController::class, 'listCareer']);
 Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('list', [CareerController::class, 'listCareer']);
     Route::post('user-select', [CareerController::class, 'careerUserSelect']);
 });
 /**************** category ****************/

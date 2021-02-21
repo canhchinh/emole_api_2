@@ -14,11 +14,75 @@
     },
     "servers": [
         {
-            "url": "http://emole_api.test/api",
+            "url": "http://localhost/api",
             "description": "Emole API Server"
         }
     ],
     "paths": {
+        "/career/list": {
+            "get": {
+                "tags": [
+                    "Career"
+                ],
+                "summary": "list career",
+                "operationId": "list_career",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/user/login": {
             "post": {
                 "tags": [
@@ -188,6 +252,109 @@
                             "schema": {
                                 "properties": {
                                     "user_name": {
+                                        "type": "string",
+                                        "example": "gotech"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/user/register-step3": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "register user step3",
+                "operationId": "register_user_step3",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "avatar": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "given_name": {
+                                        "type": "string",
+                                        "example": "gotech"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "gotech"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "a@example.com"
+                                    },
+                                    "gender": {
+                                        "type": "integer",
+                                        "example": "MALE || FEMALE || OTHER"
+                                    },
+                                    "birthday": {
+                                        "type": "string",
+                                        "example": "2020-01-31"
+                                    },
+                                    "profession": {
                                         "type": "string",
                                         "example": "gotech"
                                     }
