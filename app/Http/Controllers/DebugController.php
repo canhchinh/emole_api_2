@@ -114,17 +114,55 @@ class DebugController extends Controller
         Genre::insert($genre);
 
         $sns = [
-            'user_id' => 1,
-            'twitter' => 'twitter',
-            'instagram' => 'instagram',
-            'youtube' => 'youtube',
-            'tiktok' => 'tiktok',
-            'facebook' => 'facebook',
-            'line' => 'line',
-            'note' => 'note',
-            'pinterest' => 'pinterest',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s')
+            [
+                'id' => 1,
+                'title' => 'twitter',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 2,
+                'title' => 'instagram',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 3,
+                'title' => 'youtube',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 4,
+                'title' => 'tiktok',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 5,
+                'title' => 'facebook',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 6,
+                'title' => 'line',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 7,
+                'title' => 'note',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 8,
+                'title' => 'pinterest',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+
         ];
 
         Sns::insert($sns);

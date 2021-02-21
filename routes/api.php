@@ -7,6 +7,7 @@ use App\Http\Controllers\CareerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\SnsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -45,15 +46,19 @@ Route::group(['prefix' => 'user_image', 'middleware' => 'auth:sanctum'], functio
 /**************** career ****************/
 Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list', [CareerController::class, 'listCareer']);
+    /**************** category ****************/
+    Route::group(['prefix' => '{career_id}/category', 'middleware' => 'auth:sanctum'], function() {
+        Route::get('list', [CategoryController::class, 'listCategory']);
+    });
     Route::post('user-select', [CareerController::class, 'careerUserSelect']);
-});
-/**************** category ****************/
-Route::group(['prefix' => 'category', 'middleware' => 'auth:sanctum'], function() {
-    Route::get('list/{career_id}', [CategoryController::class, 'listCategory']);
 });
 /**************** job ****************/
 Route::group(['prefix' => 'job', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list/{career_id}', [JobController::class, 'listJob']);
+});
+/**************** sns ****************/
+Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('list', [SnsController::class, 'listSns']);
 });
 /**************** genre ****************/
 Route::group(['prefix' => 'genre', 'middleware' => 'auth:sanctum'], function() {

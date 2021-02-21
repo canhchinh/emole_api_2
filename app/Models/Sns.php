@@ -17,15 +17,7 @@ class Sns extends Model
 
     public $incrementing = true;
     protected $fillable = [
-        'user_id',
-        'twitter',
-        'instagram',
-        'youtube',
-        'tiktok',
-        'facebook',
-        'line',
-        'pinterest',
-        'created_at',
-        'updated_at',
+        'id',
+        'title'
     ];
 }
