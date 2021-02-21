@@ -62,6 +62,9 @@ Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() 
         Route::post('', [UserController::class, 'activity']);
     });
 });
+Route::group(['prefix' => 'education', 'middleware' => 'auth:sanctum'], function() {
+    Route::post('', [UserController::class, 'education']);
+});
 
 /**************** sns ****************/
 Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function() {

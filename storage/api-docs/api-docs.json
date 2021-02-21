@@ -1019,6 +1019,109 @@
                 ]
             }
         },
+        "/education": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "user education",
+                "operationId": "education",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Rikkyo University"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "Faculty of Business Administration Department of Business Administration"
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "example": "2000-10-10"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "example": "2000-10-10"
+                                    },
+                                    "is_still_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "link": {
+                                        "type": "string",
+                                        "example": "www.https.//aaaaaaaaaaa.jp"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "For the first time in the band I was forming, I performed live in front of a large number of people"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/user/image": {
             "post": {
                 "tags": [

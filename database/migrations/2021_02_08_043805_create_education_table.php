@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEducationWorkHistoryTable extends Migration
+class CreateEducationTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class CreateEducationWorkHistoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('education_work_history', function (Blueprint $table) {
+        Schema::create('education', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id')->nullable();
             $table->string('title')->nullable();
             $table->string('role')->nullable();
             $table->dateTime('start_date')->nullable();
@@ -32,6 +33,6 @@ class CreateEducationWorkHistoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('education_work_history');
+        Schema::dropIfExists('education');
     }
 }
