@@ -837,9 +837,9 @@
             }
         },
         "/user/self-introduction": {
-            "post": {
+            "put": {
                 "tags": [
-                    "Auth"
+                    "User"
                 ],
                 "summary": "login self-introduction",
                 "operationId": "self-introduction",
@@ -907,7 +907,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
             }
         }
     },

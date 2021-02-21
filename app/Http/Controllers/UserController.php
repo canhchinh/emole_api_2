@@ -296,11 +296,12 @@ class UserController extends Controller
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *   path="/user/self-introduction",
      *   summary="login self-introduction",
      *   operationId="self-introduction",
-     *   tags={"Auth"},
+     *   tags={"User"},
+     *   security={ {"token": {}} },
      *   @OA\RequestBody(
      *      @OA\MediaType(
      *         mediaType="application/json",
