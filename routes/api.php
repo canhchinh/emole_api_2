@@ -37,12 +37,12 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::post('register-step3', [UserController::class, 'registerStep3']);
     Route::post('reset-password', [UserController::class, 'newPassword']);
     Route::put('self-introduction', [UserController::class, 'updateSelfIntroduction']);
+    Route::group(['prefix' => 'image'], function() {
+        Route::post('', [UserImageController::class, 'newImageUpload']);
+    });
 });
 
-/**************** user image upload ****************/
-Route::group(['prefix' => 'user_image', 'middleware' => 'auth:sanctum'], function() {
-    Route::post('', [UserImageController::class, 'newImageUpload']);
-});
+
 /**************** career ****************/
 Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list', [CareerController::class, 'listCareer']);
