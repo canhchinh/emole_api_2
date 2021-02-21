@@ -328,7 +328,45 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
-
+    /**
+     * @OA\Post(
+     *   path="/career/activity",
+     *   summary="user save activity",
+     *   operationId="save activity",
+     *   tags={"User"},
+     *   security={ {"token": {}} },
+     *      @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                 @OA\Property(property="career_id", type="integer", example="1"),
+     *                  @OA\Property(
+     *                      property="category_ids",
+     *                      type="json",
+     *                      example={1,2}
+     *                  ),
+     *                  @OA\Property(
+     *                      property="job_ids",
+     *                      type="json",
+     *                      example={1,2}
+     *                  ),
+     *                  @OA\Property(
+     *                      property="genre_ids",
+     *                      type="json",
+     *                      example={1,2}
+     *                  ),
+     *                  @OA\Property(property="tag", type="string", example="#letdoit")
+     *              )
+     *          )
+     *      ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
     public function activity(Request $request)
     {
         $user = auth()->user();

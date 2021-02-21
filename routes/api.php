@@ -58,6 +58,9 @@ Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() 
             Route::get('list', [GenreController::class, 'listGenre']);
         });
     });
+    Route::group(['prefix' => 'activity'], function() {
+        Route::post('', [UserController::class, 'activity']);
+    });
 });
 
 /**************** sns ****************/
@@ -65,9 +68,3 @@ Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list', [SnsController::class, 'listSns']);
     Route::post('save', [SnsController::class, 'save']);
 });
-
-Route::group(['prefix' => 'activity', 'middleware' => 'auth:sanctum'], function() {
-    Route::post('', [UserController::class, 'activity']);
-});
-
-
