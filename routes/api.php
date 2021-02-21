@@ -46,6 +46,7 @@ Route::group(['prefix' => 'user_image', 'middleware' => 'auth:sanctum'], functio
 /**************** career ****************/
 Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list', [CareerController::class, 'listCareer']);
+    Route::post('user-select', [CareerController::class, 'userSelect']);
     Route::group(['prefix' => '{career_id}'], function() {
         Route::group(['prefix' => 'category'], function() {
             Route::get('list', [CategoryController::class, 'listCategory']);
@@ -57,8 +58,6 @@ Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() 
             Route::get('list', [GenreController::class, 'listGenre']);
         });
     });
-
-    Route::post('user-select', [CareerController::class, 'careerUserSelect']);
 });
 
 /**************** sns ****************/

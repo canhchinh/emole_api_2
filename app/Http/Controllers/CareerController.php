@@ -32,7 +32,38 @@ class CareerController extends Controller
         ]);
     }
 
-    public function careerUserSelect(Request $request)
+    /**
+     * @OA\Post(
+     *   path="/career/user-select",
+     *   summary="user select career",
+     *   operationId="user-select-career",
+     *   tags={"Career"},
+     *   security={ {"token": {}} },
+     *      @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  @OA\Property(
+     *                      property="career_ids[]",
+     *                      type="array",
+     *                      @OA\Items(
+     *                         type="integer",
+     *                         format="query",
+     *                         @OA\Property(type="integer")
+     *                     )
+     *                  )
+     *              )
+     *          )
+     *      ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function userSelect(Request $request)
     {
         $request->validate([
             'career_ids' => 'required|array',
