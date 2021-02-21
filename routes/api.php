@@ -46,16 +46,15 @@ Route::group(['prefix' => 'user_image', 'middleware' => 'auth:sanctum'], functio
 /**************** career ****************/
 Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list', [CareerController::class, 'listCareer']);
-    /**************** category ****************/
     Route::group(['prefix' => '{career_id}/category', 'middleware' => 'auth:sanctum'], function() {
         Route::get('list', [CategoryController::class, 'listCategory']);
     });
+    Route::group(['prefix' => '{career_id}/job', 'middleware' => 'auth:sanctum'], function() {
+        Route::get('list', [JobController::class, 'listJob']);
+    });
     Route::post('user-select', [CareerController::class, 'careerUserSelect']);
 });
-/**************** job ****************/
-Route::group(['prefix' => 'job', 'middleware' => 'auth:sanctum'], function() {
-    Route::get('list/{career_id}', [JobController::class, 'listJob']);
-});
+
 /**************** sns ****************/
 Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list', [SnsController::class, 'listSns']);
