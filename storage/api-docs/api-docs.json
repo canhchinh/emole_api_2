@@ -83,13 +83,13 @@
                 ]
             }
         },
-        "/career/user-select": {
+        "/career/save": {
             "post": {
                 "tags": [
                     "Career"
                 ],
-                "summary": "user select career",
-                "operationId": "user-select-career",
+                "summary": "user save career",
+                "operationId": "save-career",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -386,12 +386,12 @@
                 ]
             }
         },
-        "/sns/user-select": {
+        "/sns/save": {
             "post": {
                 "tags": [
                     "Sns"
                 ],
-                "summary": "user select sns",
+                "summary": "user save sns",
                 "operationId": "select_sns",
                 "requestBody": {
                     "content": {

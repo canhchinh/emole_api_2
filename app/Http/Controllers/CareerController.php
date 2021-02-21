@@ -34,9 +34,9 @@ class CareerController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/career/user-select",
-     *   summary="user select career",
-     *   operationId="user-select-career",
+     *   path="/career/save",
+     *   summary="user save career",
+     *   operationId="save-career",
      *   tags={"Career"},
      *   security={ {"token": {}} },
      *      @OA\RequestBody(
@@ -63,7 +63,7 @@ class CareerController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function userSelect(Request $request)
+    public function save(Request $request)
     {
         $request->validate([
             'career_ids' => 'required|array',

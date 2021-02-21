@@ -34,8 +34,8 @@ class SnsController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/sns/user-select",
-     *   summary="user select sns",
+     *   path="/sns/save",
+     *   summary="user save sns",
      *   operationId="select_sns",
      *   tags={"Sns"},
      *   security={ {"token": {}} },
@@ -88,7 +88,7 @@ class SnsController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function userSelectSns(Request $request)
+    public function save(Request $request)
     {
         $request->validate([
             'sns' => 'required'
