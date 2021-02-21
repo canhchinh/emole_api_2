@@ -400,7 +400,40 @@
                                 "properties": {
                                     "sns": {
                                         "type": "json",
-                                        "example": "a@example.com"
+                                        "example": [
+                                            {
+                                                "id": 1,
+                                                "content": "twitter@twitter.com"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "content": "instagram@instagram.com"
+                                            },
+                                            {
+                                                "id": 3,
+                                                "content": "youtube@youtube.com"
+                                            },
+                                            {
+                                                "id": 4,
+                                                "content": ""
+                                            },
+                                            {
+                                                "id": 5,
+                                                "content": ""
+                                            },
+                                            {
+                                                "id": 6,
+                                                "content": ""
+                                            },
+                                            {
+                                                "id": 7,
+                                                "content": ""
+                                            },
+                                            {
+                                                "id": 8,
+                                                "content": ""
+                                            }
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -801,6 +834,80 @@
                         "token": []
                     }
                 ]
+            }
+        },
+        "/user/self-introduction": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "login self-introduction",
+                "operationId": "self-introduction",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "example": "note"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
             }
         }
     },

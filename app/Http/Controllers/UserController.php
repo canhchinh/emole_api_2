@@ -295,6 +295,28 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *   path="/user/self-introduction",
+     *   summary="login self-introduction",
+     *   operationId="self-introduction",
+     *   tags={"Auth"},
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="data", type="string", example="note"),
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
     public function updateSelfIntroduction(Request $request)
     {
         $req = $request->all();

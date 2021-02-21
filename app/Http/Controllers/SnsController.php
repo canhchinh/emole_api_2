@@ -43,7 +43,40 @@ class SnsController extends Controller
      *      @OA\MediaType(
      *         mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="sns", type="json", example="a@example.com")
+     *                 @OA\Property(property="sns", type="json", example={
+                            {
+                            "id": 1,
+                            "content": "twitter@twitter.com"
+                            },
+                            {
+                            "id": 2,
+                            "content": "instagram@instagram.com"
+                            },
+                            {
+                            "id": 3,
+                            "content": "youtube@youtube.com"
+                            },
+                            {
+                            "id": 4,
+                            "content": ""
+                            },
+                            {
+                            "id": 5,
+                            "content": ""
+                            },
+                            {
+                            "id": 6,
+                            "content": ""
+                            },
+                            {
+                            "id": 7,
+                            "content": ""
+                            },
+                            {
+                            "id": 8,
+                            "content": ""
+                            }
+                        })
      *             )
      *         )
      *     ),
