@@ -296,7 +296,7 @@ class UserController extends Controller
     }
 
     /**
-     * @OA\Put(
+     * @OA\Post(
      *   path="/user/self-introduction",
      *   summary="login self-introduction",
      *   operationId="self-introduction",

@@ -837,7 +837,7 @@
             }
         },
         "/user/self-introduction": {
-            "put": {
+            "post": {
                 "tags": [
                     "User"
                 ],
