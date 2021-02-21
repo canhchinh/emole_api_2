@@ -63,6 +63,7 @@ Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() 
 /**************** sns ****************/
 Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list', [SnsController::class, 'listSns']);
+    Route::post('user-select', [SnsController::class, 'userSelectSns']);
 });
 
 /**************** activity ****************/
