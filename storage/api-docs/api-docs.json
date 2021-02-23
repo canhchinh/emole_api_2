@@ -92,10 +92,10 @@
                 "operationId": "save-career",
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "appication/json": {
                             "schema": {
                                 "properties": {
-                                    "career_ids[]": {
+                                    "career_ids": {
                                         "type": "array",
                                         "items": {
                                             "properties": {
@@ -507,7 +507,7 @@
                 "operationId": "login_user_by_uuid",
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
                                     "email": {
@@ -585,7 +585,7 @@
                 "operationId": "register_user_step1",
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
                                     "email": {
@@ -663,7 +663,7 @@
                 "operationId": "register_user_step2",
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
                                     "user_name": {
@@ -742,7 +742,7 @@
                 "operationId": "register_user_step3",
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
                                     "avatar": {
@@ -772,6 +772,85 @@
                                     "profession": {
                                         "type": "string",
                                         "example": "gotech"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/user/avatar": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "avatar user",
+                "operationId": "avatar",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "avatar": {
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"
@@ -1045,7 +1124,7 @@
                                     },
                                     "end_date": {
                                         "type": "string",
-                                        "example": "2000-10-10"
+                                        "example": "2030-10-10"
                                     },
                                     "is_still_active": {
                                         "type": "boolean",

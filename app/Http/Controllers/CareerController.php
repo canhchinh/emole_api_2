@@ -41,10 +41,10 @@ class CareerController extends Controller
      *   security={ {"token": {}} },
      *      @OA\RequestBody(
      *          @OA\MediaType(
-     *              mediaType="multipart/form-data",
+     *              mediaType="appication/json",
      *              @OA\Schema(
      *                  @OA\Property(
-     *                      property="career_ids[]",
+     *                      property="career_ids",
      *                      type="array",
      *                      @OA\Items(
      *                         type="integer",

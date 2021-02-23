@@ -40,7 +40,7 @@ class UserController extends Controller
      *   tags={"Auth"},
      *   @OA\RequestBody(
      *      @OA\MediaType(
-     *         mediaType="multipart/form-data",
+     *         mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(property="email", type="string", example="a@example.com"),
      *                 @OA\Property(property="password", type="string", example="123456"),
@@ -94,7 +94,7 @@ class UserController extends Controller
      *   tags={"Auth"},
      *   @OA\RequestBody(
      *      @OA\MediaType(
-     *         mediaType="multipart/form-data",
+     *         mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(property="email", type="string", example="a@example.com"),
      *                 @OA\Property(property="password", type="string", example="123456"),
@@ -136,7 +136,7 @@ class UserController extends Controller
      *   security={ {"token": {}} },
      *   @OA\RequestBody(
      *      @OA\MediaType(
-     *         mediaType="multipart/form-data",
+     *         mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(property="user_name", type="string", example="gotech"),
      *             )
@@ -175,7 +175,7 @@ class UserController extends Controller
      *   security={ {"token": {}} },
      *   @OA\RequestBody(
      *      @OA\MediaType(
-     *         mediaType="multipart/form-data",
+     *         mediaType="application/json",
      *             @OA\Schema(
      *                @OA\Property(property="avatar",type="string", format="binary"),
      *                 @OA\Property(property="given_name", type="string", example="gotech"),
@@ -225,6 +225,50 @@ class UserController extends Controller
 
         $user->save();
 
+        return response()->json([
+            'status' => true,
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/user/avatar",
+     *   summary="avatar user",
+     *   operationId="avatar",
+     *   tags={"User"},
+     *   security={ {"token": {}} },
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                @OA\Property(property="avatar",type="string", format="binary")
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function avatar(Request $request)
+    {
+        $request->all([
+            'avatar'
+        ]);
+        $user = auth()->user();
+        $file = $request->file('avatar');
+        $extension = $file->getClientOriginalExtension();
+        if(in_array($extension, ['jpg', 'png', 'jpeg'])) {
+            $path = 'user/' . $user->id . '_'. time() . '.' . $extension;
+            Storage::disk('public')->put($path,  File::get($file));
+            $url = '/storage/'.$path;
+
+            $user->avatar = $url;
+        }
         return response()->json([
             'status' => true,
             'user' => $user

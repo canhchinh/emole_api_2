@@ -37,6 +37,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::post('register-step3', [UserController::class, 'registerStep3']);
     Route::post('reset-password', [UserController::class, 'newPassword']);
     Route::post('self-introduction', [UserController::class, 'updateSelfIntroduction']);
+    Route::post('avatar', [UserController::class, 'avatar']);
     Route::group(['prefix' => 'image'], function() {
         Route::post('', [UserImageController::class, 'newImageUpload']);
     });
