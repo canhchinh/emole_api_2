@@ -21,6 +21,9 @@ use App\Models\UserJob;
 use App\Models\UserGenre;
 use App\Models\UserCareer;
 use App\Models\Education;
+use App\Models\Portfolio;
+use App\Http\Requests\PortfolioRequest;
+use App\Http\Requests\PortfolioImageRequest;
 class UserController extends Controller
 {
     private $userRepo;
@@ -508,6 +511,112 @@ class UserController extends Controller
             'description' => $req['description'],
         ];
         Education::updateOrCreate(['user_id' => $user->id], $param);
+        return response()->json([
+            'status' => true
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/portfolio",
+     *   summary="user portfolio",
+     *   operationId="portfolio",
+     *   tags={"Portfolio"},
+     *   security={ {"token": {}} },
+     *      @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(property="title", type="string", example="Drum advertisement"),
+     *                  @OA\Property(property="job_description", type="string", example="CM"),
+     *                  @OA\Property(property="start_date", type="string", example="2020-10-20"),
+     *                  @OA\Property(property="end_date", type="string", example="2022-10-20"),
+     *                  @OA\Property(property="is_still_active", type="boolean", example=true),
+     *                  @OA\Property(property="member", type="string", example="Masakazu Hattori"),
+     *                  @OA\Property(property="budget", type="string", example="¥900,000"),
+     *                  @OA\Property(property="reach_number", type="string", example="285,000pv / 1ヶ月"),
+     *                  @OA\Property(property="view_count", type="string", example="1,000,000回"),
+     *                  @OA\Property(property="like_count", type="string", example="80,000件"),
+     *                  @OA\Property(property="comment_count", type="string", example="433件"),
+     *                  @OA\Property(property="cpa_count", type="string", example="約 3,900"),
+     *                  @OA\Property(property="video_link", type="string", example="https://www.youtube.com"),
+     *                  @OA\Property(property="work_link", type="string", example="https://camp-fire.jp/projects/view/370963?list"),
+     *                  @OA\Property(property="work_description", type="string", example="CM")
+     *              )
+     *          )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function portfolio(PortfolioRequest $request)
+    {
+        $user = auth()->user();
+        $req = $request->all();
+        $param = [
+            'user_id' => $user->id,
+            'title' => $req['title'],
+            'job_description' => $req['job_description'],
+            'start_date' => \DateTime::createFromFormat('Y-m-d', $req['start_date'])->format('Y-m-d'),
+            'end_date' => \DateTime::createFromFormat('Y-m-d', $req['end_date'])->format('Y-m-d'),
+            'is_still_active' => $req['is_still_active'],
+            'member' => $req['member'],
+            'budget' => $req['budget'],
+            'reach_number' => $req['reach_number'],
+            'view_count' => $req['view_count'],
+            'like_count' => $req['like_count'],
+            'comment_count' => $req['comment_count'],
+            'cpa_count' => $req['cpa_count'],
+            'video_link' => $req['video_link'],
+            'work_link' => $req['work_link'],
+            'work_description' => $req['work_description'],
+        ];
+        Portfolio::updateOrCreate(['user_id' => $user->id], $param);
+        return response()->json([
+            'status' => true
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/portfolio/image",
+     *   summary="portfolio image",
+     *   operationId="portfolio_image",
+     *   tags={"Portfolio"},
+     *   security={ {"token": {}} },
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                @OA\Property(property="image",type="string", format="binary")
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function portfolioImage(PortfolioImageRequest $request)
+    {
+        $user = auth()->user();
+        $file = $request->file('image');
+        $extension = $file->getClientOriginalExtension();
+        if(in_array($extension, ['jpg', 'png', 'jpeg'])) {
+            $path = 'user/' . $user->id . '/work/'. time() . '.' . $extension;
+            Storage::disk('public')->put($path,  File::get($file));
+            $url = '/storage/'.$path;
+            Portfolio::where('user_id', $user->id)->update([
+                'image' => $url
+            ]);
+        }
         return response()->json([
             'status' => true
         ]);

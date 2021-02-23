@@ -1201,6 +1201,220 @@
                 ]
             }
         },
+        "/portfolio": {
+            "post": {
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "user portfolio",
+                "operationId": "portfolio",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Drum advertisement"
+                                    },
+                                    "job_description": {
+                                        "type": "string",
+                                        "example": "CM"
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "example": "2020-10-20"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "example": "2022-10-20"
+                                    },
+                                    "is_still_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "member": {
+                                        "type": "string",
+                                        "example": "Masakazu Hattori"
+                                    },
+                                    "budget": {
+                                        "type": "string",
+                                        "example": "¥900,000"
+                                    },
+                                    "reach_number": {
+                                        "type": "string",
+                                        "example": "285,000pv / 1ヶ月"
+                                    },
+                                    "view_count": {
+                                        "type": "string",
+                                        "example": "1,000,000回"
+                                    },
+                                    "like_count": {
+                                        "type": "string",
+                                        "example": "80,000件"
+                                    },
+                                    "comment_count": {
+                                        "type": "string",
+                                        "example": "433件"
+                                    },
+                                    "cpa_count": {
+                                        "type": "string",
+                                        "example": "約 3,900"
+                                    },
+                                    "video_link": {
+                                        "type": "string",
+                                        "example": "https://www.youtube.com"
+                                    },
+                                    "work_link": {
+                                        "type": "string",
+                                        "example": "https://camp-fire.jp/projects/view/370963?list"
+                                    },
+                                    "work_description": {
+                                        "type": "string",
+                                        "example": "CM"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/portfolio/image": {
+            "post": {
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "portfolio image",
+                "operationId": "portfolio_image",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/user/image": {
             "post": {
                 "tags": [
