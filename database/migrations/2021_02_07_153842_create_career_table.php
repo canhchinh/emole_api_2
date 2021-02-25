@@ -13,7 +13,7 @@ class CreateCareerTable extends Migration
      */
     public function up()
     {
-        Schema::create('career', function (Blueprint $table) {
+        Schema::create('careers', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateCareerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('career');
+        Schema::dropIfExists('careers');
     }
 }

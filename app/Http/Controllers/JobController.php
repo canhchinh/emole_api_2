@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\JobRepository;
 use Illuminate\Http\Request;
-use App\Models\Job;
 
 class JobController extends Controller
 {
+    private $jobRepo;
+
+    public function __construct(
+        JobRepository $jobRepo
+    ) {
+        $this->jobRepo = $jobRepo;
+    }
+
     /**
      * @OA\Get(
      *   path="/career/{career_id}/job/list",
@@ -34,11 +42,11 @@ class JobController extends Controller
      */
     public function listJob(Request $request, $careerId)
     {
-        $job = Job::where('career_id', $careerId)
+        $job = $this->jobRepo->where('career_id', $careerId)
             ->select(['id', 'career_id', 'title'])->get();
         return response()->json([
             'status' => true,
-            'date' => $job
+            'date' => $job,
         ]);
     }
 }

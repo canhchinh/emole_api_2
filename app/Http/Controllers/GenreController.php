@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Genre;
+use App\Repositories\GenreRepository;
 
 class GenreController extends Controller
 {
-    public function listGenre(Request $request, $careerId)
+    private $genreRepo;
+
+    public function __construct(
+        GenreRepository $genreRepo
+    ) {
+        $this->genreRepo = $genreRepo;
+    }
+    public function listGenre($careerId)
     {
-        $genre = Genre::where('career_id', $careerId)
+        $genre = $this->genreRepo->where('career_id', $careerId)
             ->select(['id', 'career_id', 'title'])->get();
         return response()->json([
             'status' => true,
-            'date' => $genre
+            'data' => $genre,
         ]);
     }
 }

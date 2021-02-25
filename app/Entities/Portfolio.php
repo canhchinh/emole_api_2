@@ -1,14 +1,21 @@
 <?php
 
-namespace App\Models;
+namespace App\Entities;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Prettus\Repository\Contracts\Transformable;
+use Prettus\Repository\Traits\TransformableTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Portfolio extends Model
+/**
+ * Class Portfolio.
+ *
+ * @package namespace App\Entities;
+ */
+class Portfolio extends Model implements Transformable
 {
-    use HasFactory;
-    protected $table = 'portfolio';
+    use TransformableTrait,HasFactory;
+    protected $table = 'portfolios';
     /**
      * The attributes that are mass assignable.
      *
@@ -36,4 +43,5 @@ class Portfolio extends Model
         'work_link',
         'work_description'
     ];
+
 }

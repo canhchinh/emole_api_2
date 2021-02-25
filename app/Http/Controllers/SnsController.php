@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\SnsRepository;
+use App\Repositories\UserSnsRepository;
 use Illuminate\Http\Request;
-use App\Models\Sns;
-use App\Models\UserSns;
 
 class SnsController extends Controller
 {
+    private $snsRepo;
+    private $userSnsRepo;
+
+    public function __construct(
+        SnsRepository $snsRepo,
+        UserSnsRepository $userSnsRepo
+    ) {
+        $this->snsRepo = $snsRepo;
+        $this->userSnsRepo = $userSnsRepo;
+    }
     /**
      * @OA\Get(
      *   path="/sns/list",
@@ -23,12 +33,12 @@ class SnsController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function listSns(Request $request)
+    public function listSns()
     {
-        $category = Sns::select(['id', 'title'])->get();
+        $category = $this->snsRepo->select(['id', 'title'])->get();
         return response()->json([
             'status' => true,
-            'date' => $category
+            'data' => $category,
         ]);
     }
 
@@ -44,39 +54,39 @@ class SnsController extends Controller
      *         mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(property="sns", type="json", example={
-                            {
-                            "id": 1,
-                            "content": "twitter@twitter.com"
-                            },
-                            {
-                            "id": 2,
-                            "content": "instagram@instagram.com"
-                            },
-                            {
-                            "id": 3,
-                            "content": "youtube@youtube.com"
-                            },
-                            {
-                            "id": 4,
-                            "content": ""
-                            },
-                            {
-                            "id": 5,
-                            "content": ""
-                            },
-                            {
-                            "id": 6,
-                            "content": ""
-                            },
-                            {
-                            "id": 7,
-                            "content": ""
-                            },
-                            {
-                            "id": 8,
-                            "content": ""
-                            }
-                        })
+    {
+    "id": 1,
+    "content": "twitter@twitter.com"
+    },
+    {
+    "id": 2,
+    "content": "instagram@instagram.com"
+    },
+    {
+    "id": 3,
+    "content": "youtube@youtube.com"
+    },
+    {
+    "id": 4,
+    "content": ""
+    },
+    {
+    "id": 5,
+    "content": ""
+    },
+    {
+    "id": 6,
+    "content": ""
+    },
+    {
+    "id": 7,
+    "content": ""
+    },
+    {
+    "id": 8,
+    "content": ""
+    }
+    })
      *             )
      *         )
      *     ),
@@ -91,20 +101,20 @@ class SnsController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-            'sns' => 'required'
+            'sns' => 'required',
         ]);
         $req = $request->all();
         $user = auth()->user();
-        foreach($req['sns'] as $item) {
+        foreach ($req['sns'] as $item) {
             $data = [
                 'user_id' => $user->id,
                 'sns_id' => $item['id'],
-                'content' => $item['content']
+                'content' => $item['content'],
             ];
-            UserSns::updateOrCreate($data, $data);
+            $this->userSnsRepo->updateOrCreate($data, $data);
         }
         return response()->json([
-            'status' => true
+            'status' => true,
         ]);
     }
 }

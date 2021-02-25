@@ -3,11 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use App\Models\UserImage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+
 class UserImageController extends Controller
 {
+    private $userImageRepo;
+
+    public function __construct(
+        UserImageController $userImageRepo
+    ) {
+        $this->userImageRepo = $userImageRepo;
+    }
     /**
      * @OA\Post(
      *   path="/user/image",
@@ -37,23 +44,23 @@ class UserImageController extends Controller
             $user = $request->user();
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension();
-            if(in_array($extension, ['jpg', 'png', 'jpeg'])) {
-                $path = 'user/' . $user->id . '/'. time() . '.' . $extension;
-                Storage::disk('public')->put($path,  File::get($file));
-                $url = '/storage/'.$path;
+            if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
+                $path = 'user/' . $user->id . '/' . time() . '.' . $extension;
+                Storage::disk('public')->put($path, File::get($file));
+                $url = '/storage/' . $path;
 
-                UserImage::create([
+                $this->userImageRepo->create([
                     'user_id' => $user->id,
-                    'url' => $url
+                    'url' => $url,
                 ]);
             }
             return response()->json([
-                'status' => true
+                'status' => true,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
         }
     }

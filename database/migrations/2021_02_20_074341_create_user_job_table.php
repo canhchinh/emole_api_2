@@ -13,7 +13,7 @@ class CreateUserJobTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_job', function (Blueprint $table) {
+        Schema::create('user_jobs', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
             $table->integer('career_id')->nullable();
@@ -28,6 +28,6 @@ class CreateUserJobTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_job');
+        Schema::dropIfExists('user_jobs');
     }
 }

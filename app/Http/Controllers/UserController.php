@@ -2,37 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\PasswordReset;
-use App\Http\Requests\CreateUser;
 use App\Http\Requests\ForgotPassword;
-use App\Http\Requests\ResetPassword;
 use App\Http\Requests\NewPassword;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use App\Jobs\SendMailResetPassword;
-use App\Repositories\UserRepository;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use App\Models\UserCategory;
-use App\Models\UserJob;
-use App\Models\UserGenre;
-use App\Models\UserCareer;
-use App\Models\Education;
-use App\Models\Portfolio;
-use App\Http\Requests\PortfolioRequest;
 use App\Http\Requests\PortfolioImageRequest;
+use App\Http\Requests\PortfolioRequest;
+use App\Http\Requests\ResetPassword;
+use App\Jobs\SendMailResetPassword;
+use App\Models\PasswordReset;
+use App\Repositories\EducationRepository;
+use App\Repositories\PortfolioRepository;
+use App\Repositories\UserCareerRepository;
+use App\Repositories\UserCategoryRepository;
+use App\Repositories\UserGenreRepository;
+use App\Repositories\UserJobRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 class UserController extends Controller
 {
     private $userRepo;
+    private $userCategoryRepo;
+    private $portfolioRepo;
+    private $educationRepo;
+    private $userCareerRepo;
+    private $userGenreRepo;
+    private $userJobRepo;
 
     public function __construct(
-        UserRepository $userRepo
-    )
-    {
+        UserRepository $userRepo,
+        UserCategoryRepository $userCategoryRepo,
+        PortfolioRepository $portfolioRepo,
+        EducationRepository $educationRepo,
+        UserCareerRepository $userCareerRepo,
+        UserGenreRepository $userGenreRepo,
+        UserJobRepository $userJobRepo
+    ) {
         $this->userRepo = $userRepo;
+        $this->userCategoryRepo = $userCategoryRepo;
+        $this->portfolioRepo = $portfolioRepo;
+        $this->educationRepo = $educationRepo;
+        $this->userCareerRepo = $userCareerRepo;
+        $this->userGenreRepo = $userGenreRepo;
+        $this->userJobRepo = $userJobRepo;
     }
 
     /**
@@ -62,30 +77,29 @@ class UserController extends Controller
     {
         $request->validate([
             'email' => 'email|required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $user = $this->userRepo->where('email', $request->email)->first();
 
-        if(empty($user->email) || empty($user->id)) {
+        if (empty($user->email) || empty($user->id)) {
             return response()->json([
                 'status' => false,
-                'message' => "email doesn't exist."
+                'message' => "email doesn't exist.",
             ], 403);
         } elseif (!Hash::check($request->password, $user->password)) {
             return response()->json([
                 'status' => false,
-                'message' => "password doesn't match."
+                'message' => "password doesn't match.",
             ], 403);
         }
 
         $tokenResult = $user->createToken('authToken')->plainTextToken;
 
-
         return response()->json([
             'status' => true,
             'access_token' => $tokenResult,
-            'token_type' => 'Bearer'
+            'token_type' => 'Bearer',
         ]);
     }
 
@@ -116,17 +130,17 @@ class UserController extends Controller
     {
         $request->validate([
             'email' => 'email|required|unique:users',
-            'password' => 'required'
+            'password' => 'required',
         ]);
         $user = $this->userRepo->create([
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
         ]);
         $tokenResult = $user->createToken('authToken')->plainTextToken;
         return response()->json([
             'status' => true,
             'access_token' => $tokenResult,
-            'token_type' => 'Bearer'
+            'token_type' => 'Bearer',
         ]);
     }
 
@@ -157,7 +171,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $request->validate([
-            'user_name' => 'required|unique:users,user_name,' . $user->id
+            'user_name' => 'required|unique:users,user_name,' . $user->id,
         ]);
 
         $user->user_name = $request->user_name;
@@ -165,7 +179,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => true,
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -202,18 +216,18 @@ class UserController extends Controller
     public function registerStep3(Request $request)
     {
         $data = $request->all([
-            'email', 'title', 'given_name', 'birthday', 'gender', 'profession'
+            'email', 'title', 'given_name', 'birthday', 'gender', 'profession',
         ]);
 
         $user = auth()->user();
 
         $file = $request->file('avatar');
-        if(!empty($file)){
+        if (!empty($file)) {
             $extension = $file->getClientOriginalExtension();
-            if(in_array($extension, ['jpg', 'png', 'jpeg'])) {
-                $path = 'user/' . $user->id . '_'. time() . '.' . $extension;
-                Storage::disk('public')->put($path,  File::get($file));
-                $url = '/storage/'.$path;
+            if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
+                $path = 'user/' . $user->id . '_' . time() . '.' . $extension;
+                Storage::disk('public')->put($path, File::get($file));
+                $url = '/storage/' . $path;
 
                 $user->avatar = $url;
             }
@@ -230,7 +244,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => true,
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -260,29 +274,29 @@ class UserController extends Controller
     public function avatar(Request $request)
     {
         $request->all([
-            'avatar'
+            'avatar',
         ]);
         $user = auth()->user();
         $file = $request->file('avatar');
         $extension = $file->getClientOriginalExtension();
-        if(in_array($extension, ['jpg', 'png', 'jpeg'])) {
-            $path = 'user/' . $user->id . '_'. time() . '.' . $extension;
-            Storage::disk('public')->put($path,  File::get($file));
-            $url = '/storage/'.$path;
+        if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
+            $path = 'user/' . $user->id . '_' . time() . '.' . $extension;
+            Storage::disk('public')->put($path, File::get($file));
+            $url = '/storage/' . $path;
 
             $user->avatar = $url;
         }
         return response()->json([
             'status' => true,
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
     public function forgotPassword(ForgotPassword $request)
     {
         $req = $request->all();
-        $user = User::where('email', $req['email'])->first();
-        if(empty($user)) {
+        $user = $this->userRepo->where('email', $req['email'])->first();
+        if (empty($user)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Email not found',
@@ -292,12 +306,12 @@ class UserController extends Controller
         PasswordReset::insert([
             'email' => $req['email'],
             'token' => $token,
-            'created_at' => date('Y-m-d H:i:s')
+            'created_at' => date('Y-m-d H:i:s'),
         ]);
 
         SendMailResetPassword::dispatch($req['email'], $token)->onQueue('default');
         return response()->json([
-            'status' => true
+            'status' => true,
         ]);
     }
 
@@ -307,13 +321,13 @@ class UserController extends Controller
         $passwordReset = PasswordReset::where('token', $req['token'])
             ->orderBy('created_at', 'desc')
             ->first();
-        if(empty($passwordReset)) {
+        if (empty($passwordReset)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Token invalid',
             ]);
         }
-        $user = User::where('email', $passwordReset->email)->first();
+        $user = $this->userRepo->where('email', $passwordReset->email)->first();
         $tokenResult = $user->createToken('authToken')->plainTextToken;
 
         return redirect(config('common.frontend_url'))->with('access_token', $tokenResult);
@@ -323,23 +337,23 @@ class UserController extends Controller
     {
         $req = $request->all();
         $user = $request->user();
-        if(empty($user)) {
+        if (empty($user)) {
             return response()->json([
                 'status' => false,
                 'message' => 'User invalid',
             ]);
         }
-        if(!Hash::check($req['exist_password'], $user->password)) {
+        if (!Hash::check($req['exist_password'], $user->password)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Password invalid',
             ]);
         }
         $user->update([
-            'password' => Hash::make($req['new_password'])
+            'password' => Hash::make($req['new_password']),
         ]);
         return response()->json([
-            'status' => true
+            'status' => true,
         ]);
     }
 
@@ -373,7 +387,7 @@ class UserController extends Controller
         $user->update(['self_introduction' => $req['data']]);
         return response()->json([
             'status' => true,
-            'user' => $user
+            'user' => $user,
         ]);
     }
     /**
@@ -423,38 +437,38 @@ class UserController extends Controller
         $jobIds = $request->input('job_ids');
         $genreIds = $request->input('genre_ids');
         $tag = $request->input('tag');
-        foreach($categoryIds as $categoryId) {
+        foreach ($categoryIds as $categoryId) {
             $userCategory = [
                 'user_id' => $user->id,
                 'career_id' => $careerId,
-                'category_id' => $categoryId
+                'category_id' => $categoryId,
             ];
-            UserCategory::updateOrCreate($userCategory, $userCategory);
+            $this->userCategoryRepo->updateOrCreate($userCategory, $userCategory);
         }
-        foreach($jobIds as $jobId) {
+        foreach ($jobIds as $jobId) {
             $userCategory = [
                 'user_id' => $user->id,
                 'career_id' => $careerId,
-                'job_id' => $jobId
+                'job_id' => $jobId,
             ];
-            UserJob::updateOrCreate($userCategory, $userCategory);
+            $this->userJobRepo->updateOrCreate($userCategory, $userCategory);
         }
-        foreach($genreIds as $genreId) {
+        foreach ($genreIds as $genreId) {
             $userCategory = [
                 'user_id' => $user->id,
                 'career_id' => $careerId,
-                'genre_id' => $genreId
+                'genre_id' => $genreId,
             ];
-            UserGenre::updateOrCreate($userCategory, $userCategory);
+            $this->userGenreRepo->updateOrCreate($userCategory, $userCategory);
         }
-        if(!empty($tag)) {
-            UserCareer::where('user_id', $user->id)->where('career_id', $careerId)->update([
-                'tag' => $tag
+        if (!empty($tag)) {
+            $this->userCareerRepo->where('user_id', $user->id)->where('career_id', $careerId)->update([
+                'tag' => $tag,
             ]);
         }
 
         return response()->json([
-            'status' => true
+            'status' => true,
         ]);
     }
 
@@ -496,7 +510,7 @@ class UserController extends Controller
             'end_date' => 'required',
             'is_still_active' => 'required',
             'link' => 'required',
-            'description' => 'required'
+            'description' => 'required',
         ]);
         $user = auth()->user();
         $req = $request->all();
@@ -510,9 +524,9 @@ class UserController extends Controller
             'link' => $req['link'],
             'description' => $req['description'],
         ];
-        Education::updateOrCreate(['user_id' => $user->id], $param);
+        $this->educationRepo->updateOrCreate(['user_id' => $user->id], $param);
         return response()->json([
-            'status' => true
+            'status' => true,
         ]);
     }
 
@@ -575,9 +589,9 @@ class UserController extends Controller
             'work_link' => $req['work_link'],
             'work_description' => $req['work_description'],
         ];
-        Portfolio::updateOrCreate(['user_id' => $user->id], $param);
+        $this->portfolioRepo->updateOrCreate(['user_id' => $user->id], $param);
         return response()->json([
-            'status' => true
+            'status' => true,
         ]);
     }
 
@@ -609,16 +623,16 @@ class UserController extends Controller
         $user = auth()->user();
         $file = $request->file('image');
         $extension = $file->getClientOriginalExtension();
-        if(in_array($extension, ['jpg', 'png', 'jpeg'])) {
-            $path = 'user/' . $user->id . '/work/'. time() . '.' . $extension;
-            Storage::disk('public')->put($path,  File::get($file));
-            $url = '/storage/'.$path;
-            Portfolio::where('user_id', $user->id)->update([
-                'image' => $url
+        if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
+            $path = 'user/' . $user->id . '/work/' . time() . '.' . $extension;
+            Storage::disk('public')->put($path, File::get($file));
+            $url = '/storage/' . $path;
+            $this->portfolioRepo->where('user_id', $user->id)->update([
+                'image' => $url,
             ]);
         }
         return response()->json([
-            'status' => true
+            'status' => true,
         ]);
     }
 }

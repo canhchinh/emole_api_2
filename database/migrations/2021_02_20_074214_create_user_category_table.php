@@ -13,7 +13,7 @@ class CreateUserCategoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_category', function (Blueprint $table) {
+        Schema::create('user_categories', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
             $table->integer('career_id')->nullable();
@@ -28,6 +28,6 @@ class CreateUserCategoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_category');
+        Schema::dropIfExists('user_categories');
     }
 }

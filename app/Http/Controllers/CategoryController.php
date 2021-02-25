@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Category;
+use App\Repositories\CategoryRepository;
+
 class CategoryController extends Controller
 {
+    private $categoryRepo;
+
+    public function __construct(
+        CategoryRepository $categoryRepo
+    ) {
+        $this->categoryRepo = $categoryRepo;
+    }
     /**
      * @OA\Get(
      *   path="/career/{career_id}/category/list",
@@ -32,13 +39,13 @@ class CategoryController extends Controller
      * )
      */
 
-    public function listCategory(Request $request, $careerId)
+    public function listCategory($careerId)
     {
-        $category = Category::where('career_id', $careerId)
+        $category = $this->categoryRepo->where('career_id', $careerId)
             ->select(['id', 'career_id', 'title'])->get();
         return response()->json([
             'status' => true,
-            'date' => $category
+            'data' => $category,
         ]);
     }
 }

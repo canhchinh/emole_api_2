@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\CareerRepository;
+use App\Repositories\UserCareerRepository;
 use Illuminate\Http\Request;
-use App\Models\Career;
-use App\Models\UserCareer;
-use Illuminate\Support\Facades\Auth;
+
 class CareerController extends Controller
 {
+
+    private $careerRepo;
+    private $userCareerRepo;
+
+    public function __construct(
+        CareerRepository $careerRepo,
+        UserCareerRepository $userCareerRepo
+    ) {
+        $this->careerRepo = $careerRepo;
+        $this->userCareerRepo = $userCareerRepo;
+    }
     /**
      * @OA\Get(
      *   path="/career/list",
@@ -23,12 +34,12 @@ class CareerController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function listCareer(Request $request)
+    public function listCareer()
     {
-        $careers = Career::select(['id', 'title'])->get();
+        $careers = $this->careerRepo->select(['id', 'title'])->get();
         return response()->json([
             'status' => true,
-            'data' => $careers
+            'data' => $careers,
         ]);
     }
 
@@ -70,9 +81,9 @@ class CareerController extends Controller
         ]);
         $careerIds = $request->input('career_ids');
         $user = auth()->user();
-        foreach($careerIds as $careerId) {
-            $param = ['user_id'=>$user->id, 'career_id' => $careerId];
-            UserCareer::updateOrCreate($param, $param);
+        foreach ($careerIds as $careerId) {
+            $param = ['user_id' => $user->id, 'career_id' => $careerId];
+            $this->userCareerRepo->updateOrCreate($param, $param);
         }
         return response()->json([
             'status' => true,
