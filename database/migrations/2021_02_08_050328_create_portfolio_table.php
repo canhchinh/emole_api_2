@@ -29,7 +29,7 @@ class CreatePortfolioTable extends Migration
             $table->string('like_count')->nullable();
             $table->string('comment_count')->nullable();
             $table->string('cpa_count')->nullable();
-            $table->string('link')->nullable();
+            $table->string('video_link')->nullable();
             $table->string('work_link')->nullable();
             $table->text('work_description')->nullable();
             $table->timestamps();
