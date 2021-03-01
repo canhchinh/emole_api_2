@@ -135,6 +135,7 @@ class UserController extends Controller
         $user = $this->userRepo->create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'register_finish_step' => 1
         ]);
         $tokenResult = $user->createToken('authToken')->plainTextToken;
         return response()->json([
@@ -175,6 +176,7 @@ class UserController extends Controller
         ]);
 
         $user->user_name = $request->user_name;
+        $user->register_finish_step = 2;
         $user->save();
 
         return response()->json([
@@ -239,6 +241,7 @@ class UserController extends Controller
         $user->birthday = $birthday;
         $user->gender = $data['gender'];
         $user->profession = $data['profession'];
+        $user->register_finish_step = 3;
 
         $user->save();
 

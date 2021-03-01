@@ -35,7 +35,8 @@ class User extends Authenticatable implements Transformable
         'gender',
         'birthday',
         'self_introduction',
-        'avatar'
+        'avatar',
+        'register_finish_step'
     ];
 
     /**
