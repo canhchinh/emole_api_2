@@ -194,13 +194,13 @@ class UserController extends Controller
      *   security={ {"token": {}} },
      *   @OA\RequestBody(
      *      @OA\MediaType(
-     *         mediaType="application/json",
+     *         mediaType="multipart/form-data",
      *             @OA\Schema(
      *                @OA\Property(property="avatar",type="string", format="binary"),
      *                 @OA\Property(property="given_name", type="string", example="gotech"),
      *                 @OA\Property(property="title", type="string", example="gotech"),
      *                 @OA\Property(property="email", type="string", example="a@example.com"),
-     *                 @OA\Property(property="gender", type="integer", example="MALE || FEMALE || OTHER"),
+     *                 @OA\Property(property="gender", type="integer", example="MALE"),
      *                 @OA\Property(property="birthday", type="string", example="2020-01-31"),
      *                 @OA\Property(property="profession", type="string", example="gotech"),
 
@@ -642,8 +642,8 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *   path="/user",
-     *   summary="user infomation",
-     *   operationId="user_infomation",
+     *   summary="user information",
+     *   operationId="user_information",
      *   tags={"User"},
      *   security={ {"token": {}} },
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
