@@ -40,7 +40,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::post('self-introduction', [UserController::class, 'updateSelfIntroduction']);
     Route::post('avatar', [UserController::class, 'avatar']);
     Route::group(['prefix' => 'image'], function() {
-        Route::post('', [UserImageController::class, 'newImageUpload']);
+        Route::post('', [UserImageController::class, 'imageUpload']);
     });
 });
 
