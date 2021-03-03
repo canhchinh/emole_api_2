@@ -22,7 +22,8 @@ class ResetPassword extends Base
     public function rules()
     {
         return [
-            'token' => 'required|string'
+            'token' => 'required|string',
+            'password' => 'required|confirmed'
         ];
     }
 }

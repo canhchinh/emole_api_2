@@ -295,6 +295,28 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *   path="/forgot-password",
+     *   summary="password user",
+     *   operationId="password_user",
+     *   tags={"User"},
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                @OA\Property(property="email",type="string", example="abc@gmail.com")
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
     public function forgotPassword(ForgotPassword $request)
     {
         $req = $request->all();
@@ -318,12 +340,37 @@ class UserController extends Controller
         ]);
     }
 
+     /**
+     * @OA\Post(
+     *   path="/reset-password",
+     *   summary="password user reset",
+     *   operationId="password_user_reset",
+     *   tags={"User"},
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                @OA\Property(property="password",type="string", example="abc123"),
+     *                @OA\Property(property="password_confirmation",type="string", example="abc123"),
+     *                @OA\Property(property="token",type="string", example="abc123")
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
     public function resetPassword(ResetPassword $request)
     {
         $req = $request->all();
         $passwordReset = PasswordReset::where('token', $req['token'])
             ->orderBy('created_at', 'desc')
             ->first();
+
         if (empty($passwordReset)) {
             return response()->json([
                 'status' => false,
@@ -331,9 +378,14 @@ class UserController extends Controller
             ]);
         }
         $user = $this->userRepo->where('email', $passwordReset->email)->first();
+        $user->password = Hash::make($req['password']);
+        $user->save();
+
         $tokenResult = $user->createToken('authToken')->plainTextToken;
 
-        return redirect(config('common.frontend_url'))->with('access_token', $tokenResult);
+        return response()->json([
+            'token' => $tokenResult
+        ]);
     }
 
     public function newPassword(NewPassword $request)
