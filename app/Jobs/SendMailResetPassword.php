@@ -2,13 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Mail\ResetPassword;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Mail\ResetPassword;
 use Illuminate\Support\Facades\Mail;
 
 class SendMailResetPassword implements ShouldQueue
@@ -24,7 +23,7 @@ class SendMailResetPassword implements ShouldQueue
     public function __construct($email, $token)
     {
         $this->email = $email;
-        $this->resetPasswordLink = config('common.api_url').'/reset-password?'.http_build_query(['token' => $token]);
+        $this->resetPasswordLink = config('common.api_url') . '/reset-password?' . http_build_query(['token' => $token]);
     }
 
     /**

@@ -61,6 +61,8 @@ services:
     ports:
       - 8080:8080
     restart: always
+    networks:
+      - app-network
 volumes:
   db_data:
 #Docker Networks

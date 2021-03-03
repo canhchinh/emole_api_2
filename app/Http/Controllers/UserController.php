@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\PasswordReset;
 use App\Http\Requests\ForgotPassword;
 use App\Http\Requests\NewPassword;
 use App\Http\Requests\PortfolioImageRequest;
 use App\Http\Requests\PortfolioRequest;
 use App\Http\Requests\ResetPassword;
 use App\Jobs\SendMailResetPassword;
-use App\Models\PasswordReset;
 use App\Repositories\EducationRepository;
 use App\Repositories\PortfolioRepository;
 use App\Repositories\UserCareerRepository;
@@ -135,7 +135,7 @@ class UserController extends Controller
         $user = $this->userRepo->create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'register_finish_step' => 1
+            'register_finish_step' => 1,
         ]);
         $tokenResult = $user->createToken('authToken')->plainTextToken;
         return response()->json([
@@ -340,7 +340,7 @@ class UserController extends Controller
         ]);
     }
 
-     /**
+    /**
      * @OA\Post(
      *   path="/reset-password",
      *   summary="password user reset",
@@ -384,7 +384,7 @@ class UserController extends Controller
         $tokenResult = $user->createToken('authToken')->plainTextToken;
 
         return response()->json([
-            'token' => $tokenResult
+            'token' => $tokenResult,
         ]);
     }
 
@@ -711,7 +711,7 @@ class UserController extends Controller
         $user = auth()->user();
         return response()->json([
             'status' => true,
-            'data' => $user
+            'data' => $user,
         ]);
     }
 }
