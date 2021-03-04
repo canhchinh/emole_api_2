@@ -42,6 +42,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::group(['prefix' => 'image'], function() {
         Route::post('', [UserImageController::class, 'imageUpload']);
     });
+    Route::put('basic-information', [UserController::class, 'basicInformation']);
 });
 
 

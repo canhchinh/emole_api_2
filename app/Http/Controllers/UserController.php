@@ -714,4 +714,45 @@ class UserController extends Controller
             'data' => $user,
         ]);
     }
+
+    /**
+     * @OA\Put(
+     *   path="/user/basic-information",
+     *   summary="change basic information",
+     *   operationId="change_basic_information",
+     *   tags={"Account setting"},
+     *   security={ {"token": {}} },
+     *      @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(property="user_name", type="string", example="aimiho")
+     *              )
+     *          )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function basicInformation(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $req = $request->all();
+            $user->update(['user_name' => $req['user_name']]);
+            return response()->json([
+                'status' => true,
+                'data' => $user
+            ]);
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'data' => $e->getMessage()
+            ]);
+        }
+    }
 }
