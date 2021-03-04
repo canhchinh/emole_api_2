@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://emole.local/api",
+            "url": "http://localhost/api",
             "description": "Emole API Server"
         }
     ],

@@ -49,7 +49,7 @@ services:
     networks:
       - app-network
   adminer:
-    image: adminer:4.8.0
+    image: adminer:4
     ports:
       - 8989:8080
     restart: always

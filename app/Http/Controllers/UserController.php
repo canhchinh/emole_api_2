@@ -375,7 +375,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Token invalid',
-            ]);
+            ], 404);
         }
         $user = $this->userRepo->where('email', $passwordReset->email)->first();
         $user->password = Hash::make($req['password']);
@@ -385,7 +385,7 @@ class UserController extends Controller
 
         return response()->json([
             'token' => $tokenResult,
-        ]);
+        ], 200);
     }
 
     public function newPassword(NewPassword $request)
