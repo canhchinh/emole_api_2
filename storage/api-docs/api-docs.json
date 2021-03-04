@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost/api",
+            "url": "http://emole.local/api",
             "description": "Emole API Server"
         }
     ],
@@ -1647,9 +1647,12 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
-                                    "image": {
-                                        "type": "string",
-                                        "format": "binary"
+                                    "images[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
                                     }
                                 },
                                 "type": "object"

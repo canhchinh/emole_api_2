@@ -1,7 +1,7 @@
 version: "3"
 services:
   #PHP Service
-  app:
+  app_emole:
     build:
       context: .
       dockerfile: Dockerfile
@@ -20,9 +20,9 @@ services:
       - app-network
 
   #Nginx Service
-  webserver:
+  webserver_emole:
     image: nginx:alpine
-    container_name: webserver
+    container_name: webserver_emole
     restart: always
     tty: true
     ports:
@@ -36,9 +36,9 @@ services:
       - app-network
 
   #MySQL Service
-  db:
+  db_emole:
     image: mysql:5.7
-    container_name: db
+    container_name: db_emole
     volumes:
       - db_data:/var/lib/mysql
     restart: always
@@ -46,7 +46,7 @@ services:
     ports:
       - "3309:3306"
     environment:
-      MYSQL_DATABASE: laravel
+      MYSQL_DATABASE: emole
       MYSQL_ROOT_PASSWORD: Chinh@123123
       MYSQL_USER: root
       MYSQL_PASSWORD: secret
@@ -56,10 +56,10 @@ services:
       - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
     networks:
       - app-network
-  manage_db:
+  manage_db_emole:
     image: adminer:latest
     ports:
-      - 8080:8080
+      - 8989:8080
     restart: always
     networks:
       - app-network

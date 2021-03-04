@@ -325,7 +325,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Email not found',
-            ]);
+            ],422);
         }
         $token = Str::random(60);
         PasswordReset::insert([
@@ -334,7 +334,7 @@ class UserController extends Controller
             'created_at' => date('Y-m-d H:i:s'),
         ]);
 
-        SendMailResetPassword::dispatch($req['email'], $token)->onQueue('default');
+        SendMailResetPassword::dispatch($req['email'], $token)->onQueue('processing');
         return response()->json([
             'status' => true,
         ]);
