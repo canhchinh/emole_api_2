@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Http\Requests\UpdateBasicInformationRequest;
 
 class UserController extends Controller
 {
@@ -738,7 +739,7 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function basicInformation(Request $request)
+    public function basicInformation(UpdateBasicInformationRequest $request)
     {
         try {
             $user = auth()->user();
