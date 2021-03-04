@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\Http\Requests\UpdateBasicInformationRequest;
+use App\Http\Requests\UpdateAccountNameRequest;
 
 class UserController extends Controller
 {
@@ -718,9 +718,9 @@ class UserController extends Controller
 
     /**
      * @OA\Put(
-     *   path="/user/basic-information",
-     *   summary="change basic information",
-     *   operationId="change_basic_information",
+     *   path="/user/account-name",
+     *   summary="change account name",
+     *   operationId="change_account_name",
      *   tags={"Account setting"},
      *   security={ {"token": {}} },
      *      @OA\RequestBody(
@@ -739,7 +739,7 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function basicInformation(UpdateBasicInformationRequest $request)
+    public function accountName(UpdateAccountNameRequest $request)
     {
         try {
             $user = auth()->user();

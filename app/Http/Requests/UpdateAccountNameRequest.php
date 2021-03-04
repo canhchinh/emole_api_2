@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class UpdateBasicInformationRequest extends Base
+class UpdateAccountNameRequest extends Base
 {
     /**
      * Determine if the user is authorized to make this request.
