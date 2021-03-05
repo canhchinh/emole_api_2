@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Http\Requests\UpdateBasicInformationRequest;
 use App\Http\Requests\UpdateEmailRequest;
+use App\Http\Requests\UpdateEmailNotificationRequest;
 
 class UserController extends Controller
 {
@@ -866,6 +867,50 @@ class UserController extends Controller
             $req = $request->all();
             $user = auth()->user();
             $user->email = $req['email'];
+
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * @OA\Put(
+     *   path="/user/email-notification",
+     *   summary="change email notification",
+     *   operationId="change_email_notification",
+     *   tags={"Account setting"},
+     *   security={ {"token": {}} },
+     *      @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(property="status", type="boolean", example=true),
+     *              )
+     *          )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function emailNotification(UpdateEmailNotificationRequest $request)
+    {
+        try {
+            $req = $request->all();
+            $user = auth()->user();
+            $user->is_enable_email_notification = $req['status'];
 
             $user->save();
 

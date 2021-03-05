@@ -46,6 +46,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::put('account-name', [UserController::class, 'accountName']);
     Route::put('basic-information', [UserController::class, 'basicInformation']);
     Route::put('email', [UserController::class, 'email']);
+    Route::put('email-notification', [UserController::class, 'emailNotification']);
 });
 
 

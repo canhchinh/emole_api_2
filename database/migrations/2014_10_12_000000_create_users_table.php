@@ -29,6 +29,7 @@ class CreateUsersTable extends Migration
             $table->string('avatar')->nullable();
             $table->integer('register_finish_step')->default(0);
             $table->integer('activity_base_id')->nullable();
+            $table->boolean('is_enable_email_notification')->nullable();
             $table->timestamps();
         });
     }
