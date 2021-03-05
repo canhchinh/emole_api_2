@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class UpdateAccountNameRequest extends Base
+class UpdateEmailRequest extends Base
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class UpdateAccountNameRequest extends Base
     public function rules()
     {
         return [
-            'user_name' => 'required|string'
+            'email' => 'required|email'
         ];
     }
 }
