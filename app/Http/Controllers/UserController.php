@@ -204,6 +204,7 @@ class UserController extends Controller
      *                 @OA\Property(property="gender", type="integer", example="MALE"),
      *                 @OA\Property(property="birthday", type="string", example="2020-01-31"),
      *                 @OA\Property(property="profession", type="string", example="gotech"),
+     *                 @OA\Property(property="activity_base_id", type="integer", example=1),
 
      *             )
      *         )
@@ -243,6 +244,7 @@ class UserController extends Controller
         $user->gender = $data['gender'];
         $user->profession = $data['profession'];
         $user->register_finish_step = 3;
+        $user->activity_base_id = 1;
 
         $user->save();
 

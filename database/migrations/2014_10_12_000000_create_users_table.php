@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->text('self_introduction')->nullable();
             $table->string('avatar')->nullable();
             $table->integer('register_finish_step')->default(0);
+            $table->integer('activity_base_id')->nullable();
             $table->timestamps();
         });
     }
