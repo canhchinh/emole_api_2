@@ -15,6 +15,7 @@ use App\Repositories\UserCareerRepository;
 use App\Repositories\UserCategoryRepository;
 use App\Repositories\UserGenreRepository;
 use App\Repositories\UserJobRepository;
+use App\Repositories\ActivityBaseRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -32,6 +33,7 @@ class UserController extends Controller
     private $userCareerRepo;
     private $userGenreRepo;
     private $userJobRepo;
+    private $activityBaseRepo;
 
     public function __construct(
         UserRepository $userRepo,
@@ -40,7 +42,8 @@ class UserController extends Controller
         EducationRepository $educationRepo,
         UserCareerRepository $userCareerRepo,
         UserGenreRepository $userGenreRepo,
-        UserJobRepository $userJobRepo
+        UserJobRepository $userJobRepo,
+        ActivityBaseRepository $activityBaseRepo
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -49,6 +52,7 @@ class UserController extends Controller
         $this->userCareerRepo = $userCareerRepo;
         $this->userGenreRepo = $userGenreRepo;
         $this->userJobRepo = $userJobRepo;
+        $this->activityBaseRepo = $activityBaseRepo;
     }
 
     /**
@@ -219,9 +223,7 @@ class UserController extends Controller
      */
     public function registerStep3(Request $request)
     {
-        $data = $request->all([
-            'email', 'title', 'given_name', 'birthday', 'gender', 'profession',
-        ]);
+        $data = $request->all();
 
         $user = auth()->user();
 
@@ -236,6 +238,15 @@ class UserController extends Controller
                 $user->avatar = $url;
             }
         }
+        $activityBase = $this->activityBaseRepo->where('id', $data['activity_base_id'])->first();
+        if(empty($activityBase)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Activity base not found',
+            ]);
+        }
+
+
         $birthday = \DateTime::createFromFormat('Y-m-d', $data['birthday'])->format('Y-m-d');
         $user->given_name = $data['given_name'];
         $user->email = $user->email ?? $data['email'];
@@ -244,7 +255,7 @@ class UserController extends Controller
         $user->gender = $data['gender'];
         $user->profession = $data['profession'];
         $user->register_finish_step = 3;
-        $user->activity_base_id = 1;
+        $user->activity_base_id = $data['activity_base_id'];
 
         $user->save();
 
@@ -755,6 +766,70 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'data' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * @OA\Put(
+     *   path="/user/basic-information",
+     *   summary="change basic information",
+     *   operationId="change_basic_information",
+     *   tags={"Account setting"},
+     *   security={ {"token": {}} },
+     *      @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(property="given_name", type="string", example="Miho Ai"),
+     *                  @OA\Property(property="title", type="string", example="Actress / artist"),
+     *                  @OA\Property(property="gender", type="string", example="FEMALE"),
+     *                  @OA\Property(property="birthday", type="string", example="1996-07-18"),
+     *                  @OA\Property(property="activity_base_id", type="integer", example=1)
+     *              )
+     *          )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function basicInformation(UpdateAccountNameRequest $request)
+    {
+        try {
+            $req = $request->all();
+
+            $user = auth()->user();
+
+            $activityBase = $this->activityBaseRepo->where('id', $req['activity_base_id'])->first();
+            if(empty($activityBase)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Activity base not found',
+                ]);
+            }
+
+
+            $birthday = \DateTime::createFromFormat('Y-m-d', $req['birthday'])->format('Y-m-d');
+            $user->given_name = $req['given_name'];
+            $user->title = $req['title'];
+            $user->gender = $req['gender'];
+            $user->birthday = $birthday;
+            $user->activity_base_id = $req['activity_base_id'];
+
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
             ]);
         }
     }
