@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\SnsController;
+use App\Http\Controllers\ActivityController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -78,3 +79,7 @@ Route::group(['prefix' => 'portfolio', 'middleware' => 'auth:sanctum'], function
     Route::post('', [UserController::class, 'portfolio']);
     Route::post('image', [UserController::class, 'portfolioImage']);
 });
+Route::group(['prefix' => 'activity-base', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('', [ActivityController::class, 'listActivityBase']);
+});
+

@@ -199,5 +199,14 @@ class DebugController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         ];
         $this->userImageRepo->insert($userImage);
+
+        $activityBase = [
+            [
+                'id' => 1,
+                'title' => 'tokyo',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]
+        ];
     }
 }
