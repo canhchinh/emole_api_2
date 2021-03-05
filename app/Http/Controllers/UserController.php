@@ -26,6 +26,8 @@ use Illuminate\Support\Str;
 use App\Http\Requests\UpdateBasicInformationRequest;
 use App\Http\Requests\UpdateEmailRequest;
 use App\Http\Requests\UpdateEmailNotificationRequest;
+use App\Http\Requests\UpdatePasswordRequest;
+use App\Http\Requests\SelfIntroductionRequest;
 
 class UserController extends Controller
 {
@@ -440,7 +442,7 @@ class UserController extends Controller
      *      @OA\MediaType(
      *         mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="data", type="string", example="note"),
+     *                 @OA\Property(property="introduce", type="string", example="note"),
      *             )
      *         )
      *     ),
@@ -452,11 +454,11 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function updateSelfIntroduction(Request $request)
+    public function updateSelfIntroduction(SelfIntroductionRequest $request)
     {
         $req = $request->all();
         $user = auth()->user();
-        $user->update(['self_introduction' => $req['data']]);
+        $user->update(['self_introduction' => $req['introduce']]);
         return response()->json([
             'status' => true,
             'user' => $user,
@@ -917,6 +919,61 @@ class UserController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * @OA\Put(
+     *   path="/user/change-password",
+     *   summary="change password",
+     *   operationId="change_password",
+     *   tags={"Account setting"},
+     *   security={ {"token": {}} },
+     *      @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(property="exist_password", type="password", example="123456"),
+     *                  @OA\Property(property="new_password", type="password", example="1234567")
+     *              )
+     *          )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function changePassword(UpdatePasswordRequest $request)
+    {
+        try {
+            $req = $request->all();
+            $user = $request->user();
+            if (empty($user)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User invalid',
+                ]);
+            }
+            if (!Hash::check($req['exist_password'], $user->password)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Password invalid',
+                ]);
+            }
+            $user->update([
+                'password' => Hash::make($req['new_password']),
+            ]);
+            return response()->json([
+                'status' => true,
             ]);
         } catch (\Exception $e) {
             return response()->json([
