@@ -89,7 +89,6 @@ class UserController extends Controller
             'email' => 'email|required',
             'password' => 'required',
         ]);
-
         $user = $this->userRepo->where('email', $request->email)->first();
 
         if (empty($user->email) || empty($user->id)) {
@@ -456,13 +455,21 @@ class UserController extends Controller
      */
     public function updateSelfIntroduction(SelfIntroductionRequest $request)
     {
-        $req = $request->all();
-        $user = auth()->user();
-        $user->update(['self_introduction' => $req['introduce']]);
-        return response()->json([
-            'status' => true,
-            'user' => $user,
-        ]);
+        try {
+            $req = $request->all();
+            $user = auth()->user();
+            $user->update(['self_introduction' => $req['introduce']]);
+            return response()->json([
+                'status' => true,
+                'user' => $user,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'user' => $e->getMessage()
+            ]);
+        }
+
     }
     /**
      * @OA\Post(
@@ -939,8 +946,8 @@ class UserController extends Controller
      *          @OA\MediaType(
      *              mediaType="application/json",
      *              @OA\Schema(
-     *                  @OA\Property(property="exist_password", type="password", example="123456"),
-     *                  @OA\Property(property="new_password", type="password", example="1234567")
+     *                  @OA\Property(property="exist_password", type="string", example="123456"),
+     *                  @OA\Property(property="new_password", type="string", example="1234567")
      *              )
      *          )
      *     ),
