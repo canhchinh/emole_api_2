@@ -2,10 +2,10 @@
 
 namespace App\Entities;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class Career.
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class ActivityBase extends Model implements Transformable
 {
-    use TransformableTrait,HasFactory;
+    use TransformableTrait, HasFactory;
     protected $table = 'activity_base';
     /**
      * The attributes that are mass assignable.
@@ -25,6 +25,6 @@ class ActivityBase extends Model implements Transformable
     public $incrementing = true;
     protected $fillable = [
         'id',
-        'title'
+        'title',
     ];
 }

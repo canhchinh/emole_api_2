@@ -22,7 +22,7 @@ class ImageUploadRequest extends Base
     public function rules()
     {
         return [
-            'images.*' => 'required|mimetypes:image/jpeg,image/png,image/jpg',
+            'images.*' => 'required',
         ];
     }
 }

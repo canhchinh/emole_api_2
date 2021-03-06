@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use App\Repositories\UserImageRepository;
 use App\Http\Requests\ImageUploadRequest;
+use App\Repositories\UserImageRepository;
+use Illuminate\Http\Request;
 
 class UserImageController extends Controller
 {
@@ -52,22 +50,32 @@ class UserImageController extends Controller
     {
         try {
             $user = $request->user();
-            $files = $request->file('images');
-            foreach($files as $k=>$file) {
-                $extension = $file->getClientOriginalExtension();
-                if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
-                    $fileName = time()+$k;
+            $files = $request->images;
+            foreach ($files as $k => $file) {
+                $extension = explode('/', mime_content_type($file))[1];
+                if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
+                    $fileName = time() + $k;
                     $path = 'user/' . $user->id . '/' . $fileName . '.' . $extension;
-                    Storage::disk('public')->put($path, File::get($file));
+                    $this->saveImgBase64($file, $path);
                     $url = '/storage/' . $path;
-
                     $this->userImageRepo->create([
                         'user_id' => $user->id,
                         'url' => $url,
                     ]);
                 }
-            }
+                // $extension = $file->getClientOriginalExtension();
+                // if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
+                //     $fileName = time() + $k;
+                //     $path = 'user/' . $user->id . '/' . $fileName . '.' . $extension;
+                //     Storage::disk('public')->put($path, File::get($file));
+                //     $url = '/storage/' . $path;
 
+                //     $this->userImageRepo->create([
+                //         'user_id' => $user->id,
+                //         'url' => $url,
+                //     ]);
+                // }
+            }
             return response()->json([
                 'status' => true,
             ]);

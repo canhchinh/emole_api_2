@@ -8,26 +8,26 @@ use App\Http\Requests\NewPassword;
 use App\Http\Requests\PortfolioImageRequest;
 use App\Http\Requests\PortfolioRequest;
 use App\Http\Requests\ResetPassword;
+use App\Http\Requests\SelfIntroductionRequest;
 use App\Http\Requests\UpdateAccountNameRequest;
+use App\Http\Requests\UpdateBasicInformationRequest;
+use App\Http\Requests\UpdateEmailNotificationRequest;
+use App\Http\Requests\UpdateEmailRequest;
+use App\Http\Requests\UpdatePasswordRequest;
 use App\Jobs\SendMailResetPassword;
+use App\Repositories\ActivityBaseRepository;
 use App\Repositories\EducationRepository;
 use App\Repositories\PortfolioRepository;
 use App\Repositories\UserCareerRepository;
 use App\Repositories\UserCategoryRepository;
 use App\Repositories\UserGenreRepository;
 use App\Repositories\UserJobRepository;
-use App\Repositories\ActivityBaseRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\Http\Requests\UpdateBasicInformationRequest;
-use App\Http\Requests\UpdateEmailRequest;
-use App\Http\Requests\UpdateEmailNotificationRequest;
-use App\Http\Requests\UpdatePasswordRequest;
-use App\Http\Requests\SelfIntroductionRequest;
 
 class UserController extends Controller
 {
@@ -228,28 +228,35 @@ class UserController extends Controller
     public function registerStep3(Request $request)
     {
         $data = $request->all();
-
         $user = auth()->user();
-
-        $file = $request->file('avatar');
+        $file = $request->avatar;
         if (!empty($file)) {
-            $extension = $file->getClientOriginalExtension();
-            if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
-                $path = 'user/' . $user->id . '_' . time() . '.' . $extension;
-                Storage::disk('public')->put($path, File::get($file));
+            $extension = explode('/', mime_content_type($file))[1];
+            $path = 'user/' . $user->id . '_' . time() . '.' . $extension;
+            if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
+                $this->saveImgBase64($file, $path);
                 $url = '/storage/' . $path;
-
                 $user->avatar = $url;
             }
-        }
-        $activityBase = $this->activityBaseRepo->where('id', $data['activity_base_id'])->first();
-        if(empty($activityBase)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Activity base not found',
-            ]);
+            // $extension = $file->getClientOriginalExtension();
+            // if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
+            //     $path = 'user/' . $user->id . '_' . time() . '.' . $extension;
+            //     Storage::disk('public')->put($path, File::get($file));
+            //     $url = '/storage/' . $path;
+
+            //     $user->avatar = $url;
+            // }
         }
 
+        // code comment ở phía dưới bị lỗi thiếu activity_base_id
+
+        // $activityBase = $this->activityBaseRepo->where('id', $data['activity_base_id'])->first();
+        // if(empty($activityBase)) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'Activity base not found',
+        //     ]);
+        // }
 
         $birthday = \DateTime::createFromFormat('Y-m-d', $data['birthday'])->format('Y-m-d');
         $user->given_name = $data['given_name'];
@@ -259,7 +266,8 @@ class UserController extends Controller
         $user->gender = $data['gender'];
         $user->profession = $data['profession'];
         $user->register_finish_step = 3;
-        $user->activity_base_id = $data['activity_base_id'];
+        // code comment ở phía dưới bị lỗi thiếu activity_base_id
+        // $user->activity_base_id = $data['activity_base_id'];
 
         $user->save();
 
@@ -343,7 +351,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Email not found',
-            ],422);
+            ], 422);
         }
         $token = Str::random(60);
         PasswordReset::insert([
@@ -466,7 +474,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'user' => $e->getMessage()
+                'user' => $e->getMessage(),
             ]);
         }
 
@@ -772,12 +780,12 @@ class UserController extends Controller
             $user->update(['user_name' => $req['user_name']]);
             return response()->json([
                 'status' => true,
-                'data' => $user
+                'data' => $user,
             ]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'data' => $e->getMessage()
+                'data' => $e->getMessage(),
             ]);
         }
     }
@@ -817,13 +825,12 @@ class UserController extends Controller
             $user = auth()->user();
 
             $activityBase = $this->activityBaseRepo->where('id', $req['activity_base_id'])->first();
-            if(empty($activityBase)) {
+            if (empty($activityBase)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Activity base not found',
                 ]);
             }
-
 
             $birthday = \DateTime::createFromFormat('Y-m-d', $req['birthday'])->format('Y-m-d');
             $user->given_name = $req['given_name'];
@@ -836,7 +843,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => true,
-                'data' => $user
+                'data' => $user,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -845,7 +852,6 @@ class UserController extends Controller
             ]);
         }
     }
-
 
     /**
      * @OA\Put(
@@ -881,7 +887,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => true,
-                'data' => $user
+                'data' => $user,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -925,7 +931,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => true,
-                'data' => $user
+                'data' => $user,
             ]);
         } catch (\Exception $e) {
             return response()->json([
