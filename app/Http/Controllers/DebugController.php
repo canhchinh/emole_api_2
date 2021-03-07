@@ -8,6 +8,8 @@ use App\Repositories\GenreRepository;
 use App\Repositories\JobRepository;
 use App\Repositories\SnsRepository;
 use App\Repositories\UserImageRepository;
+use App\Repositories\ActivityContentRepository;
+use App\Repositories\ActivityBaseRepository;
 
 class DebugController extends Controller
 {
@@ -17,6 +19,7 @@ class DebugController extends Controller
     private $genreRepo;
     private $userImageRepo;
     private $snsRepo;
+    private $activityContentRepo, $activityBaseRepo;
 
     public function __construct(
         CareerRepository $careerRepo,
@@ -24,7 +27,9 @@ class DebugController extends Controller
         JobRepository $jobRepo,
         GenreRepository $genreRepo,
         UserImageRepository $userImageRepo,
-        SnsRepository $snsRepo
+        SnsRepository $snsRepo,
+        ActivityContentRepository $activityContentRepo,
+        ActivityBaseRepository $activityBaseRepo
     ) {
         $this->careerRepo = $careerRepo;
         $this->categoryRepo = $categoryRepo;
@@ -33,6 +38,8 @@ class DebugController extends Controller
         $this->jobRepo = $jobRepo;
         $this->userImageRepo = $userImageRepo;
         $this->snsRepo = $snsRepo;
+        $this->activityContentRepo = $activityContentRepo;
+        $this->activityBaseRepo = $activityBaseRepo;
     }
 
     public function seed()
@@ -63,6 +70,7 @@ class DebugController extends Controller
             [
                 'id' => 1,
                 'career_id' => 1,
+                'key' => config('common.activity_content.category.key'),
                 'title' => 'video_actor',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
@@ -70,6 +78,7 @@ class DebugController extends Controller
             [
                 'id' => 2,
                 'career_id' => 1,
+                'key' => config('common.activity_content.category.key'),
                 'title' => 'stage_actor',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
@@ -77,128 +86,135 @@ class DebugController extends Controller
             [
                 'id' => 3,
                 'career_id' => 1,
+                'key' => config('common.activity_content.category.key'),
                 'title' => 'audio_actor',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-        ];
-
-        $this->categoryRepo->insert($category);
-
-        $job = [
-            [
-                'id' => 1,
-                'career_id' => 1,
-                'title' => 'CM',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'id' => 2,
-                'career_id' => 1,
-                'title' => 'MV',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'id' => 3,
-                'career_id' => 1,
-                'title' => 'Image advertising',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-        ];
-
-        $this->jobRepo->insert($job);
-
-        $genre = [
-            [
-                'id' => 1,
-                'career_id' => 1,
-                'title' => 'comedy',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'id' => 2,
-                'career_id' => 1,
-                'title' => 'suspense',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'id' => 3,
-                'career_id' => 1,
-                'title' => 'horror',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-        ];
-
-        $this->genreRepo->insert($genre);
-
-        $sns = [
-            [
-                'id' => 1,
-                'title' => 'twitter',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'id' => 2,
-                'title' => 'instagram',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'id' => 3,
-                'title' => 'youtube',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
                 'id' => 4,
-                'title' => 'tiktok',
+                'career_id' => 1,
+                'key' => config('common.activity_content.job.key'),
+                'title' => 'CM',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
                 'id' => 5,
-                'title' => 'facebook',
+                'career_id' => 1,
+                'key' => config('common.activity_content.job.key'),
+                'title' => 'MV',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
                 'id' => 6,
-                'title' => 'line',
+                'career_id' => 1,
+                'key' => config('common.activity_content.job.key'),
+                'title' => 'Image advertising',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
                 'id' => 7,
-                'title' => 'note',
+                'career_id' => 1,
+                'key' => config('common.activity_content.genre.key'),
+                'title' => 'comedy',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
                 'id' => 8,
+                'career_id' => 1,
+                'key' => config('common.activity_content.genre.key'),
+                'title' => 'suspense',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 9,
+                'career_id' => 1,
+                'key' => config('common.activity_content.genre.key'),
+                'title' => 'horror',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 10,
+                'career_id' => null,
+                'key' => config('common.activity_content.sns.key'),
+                'title' => 'twitter',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 11,
+                'career_id' => null,
+                'key' => config('common.activity_content.sns.key'),
+                'title' => 'instagram',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 12,
+                'career_id' => null,
+                'key' => config('common.activity_content.sns.key'),
+                'title' => 'youtube',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 13,
+                'career_id' => null,
+                'key' => config('common.activity_content.sns.key'),
+                'title' => 'tiktok',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 14,
+                'career_id' => null,
+                'key' => config('common.activity_content.sns.key'),
+                'title' => 'facebook',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 15,
+                'career_id' => null,
+                'key' => config('common.activity_content.sns.key'),
+                'title' => 'line',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 16,
+                'career_id' => null,
+                'key' => config('common.activity_content.sns.key'),
+                'title' => 'note',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 17,
+                'career_id' => null,
+                'key' => config('common.activity_content.sns.key'),
                 'title' => 'pinterest',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
-
         ];
 
-        $this->snsRepo->insert($sns);
+        $this->activityContentRepo->insert($category);
 
-        $userImage = [
-            'id' => 1,
-            'user_id' => 1,
-            'url' => '/storage/1/1.png',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ];
-        $this->userImageRepo->insert($userImage);
+//        $userImage = [
+//            'id' => 1,
+//            'user_id' => 1,
+//            'url' => '/storage/1/1.png',
+//            'created_at' => date('Y-m-d H:i:s'),
+//            'updated_at' => date('Y-m-d H:i:s'),
+//        ];
+//        $this->userImageRepo->insert($userImage);
 
         $activityBase = [
             [
@@ -208,5 +224,6 @@ class DebugController extends Controller
                 'updated_at' => date('Y-m-d H:i:s'),
             ]
         ];
+        $this->activityBaseRepo->insert($activityBase);
     }
 }

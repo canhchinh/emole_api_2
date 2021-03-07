@@ -32,6 +32,7 @@ class CreateUsersTable extends Migration
             $table->boolean('is_enable_email_notification')->nullable();
             $table->jsonb('category_ids')->nullable();
             $table->jsonb('job_ids')->nullable();
+            $table->jsonb('genre_ids')->nullable();
             $table->timestamps();
         });
     }
