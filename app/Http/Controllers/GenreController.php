@@ -3,16 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\GenreRepository;
+use App\Repositories\ActivityContentRepository;
 
 class GenreController extends Controller
 {
-    private $genreRepo;
+    private $genreRepo, $activityContentRepo;
 
     public function __construct(
-        GenreRepository $genreRepo
+        GenreRepository $genreRepo,
+        ActivityContentRepository $activityContentRepo
     ) {
         $this->genreRepo = $genreRepo;
+        $this->activityContentRepo = $activityContentRepo;
     }
+
     /**
      * @OA\Get(
      *   path="/career/{career_id}/genre/list",
@@ -40,7 +44,8 @@ class GenreController extends Controller
      */
     public function listGenre($careerId)
     {
-        $genre = $this->genreRepo->where('career_id', $careerId)
+        $genre = $this->activityContentRepo->where('career_id', $careerId)
+            ->where('key', config('common.activity_content.genre.key'))
             ->select(['id', 'career_id', 'title'])->get();
         return response()->json([
             'status' => true,

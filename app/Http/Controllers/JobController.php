@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\JobRepository;
+use App\Repositories\ActivityContentRepository;
 use Illuminate\Http\Request;
 
 class JobController extends Controller
 {
-    private $jobRepo;
+    private $jobRepo, $activityContentRepo;
 
     public function __construct(
-        JobRepository $jobRepo
+        JobRepository $jobRepo,
+        ActivityContentRepository $activityContentRepo
     ) {
         $this->jobRepo = $jobRepo;
+        $this->activityContentRepo = $activityContentRepo;
     }
 
     /**
@@ -42,11 +45,13 @@ class JobController extends Controller
      */
     public function listJob(Request $request, $careerId)
     {
-        $job = $this->jobRepo->where('career_id', $careerId)
-            ->select(['id', 'career_id', 'title'])->get();
+        $job = $this->activityContentRepo->where('key', config('common.activity_content.job.key'))
+            ->where('career_id', $careerId)
+            ->select(['id', 'career_id', 'title'])
+            ->get();
         return response()->json([
             'status' => true,
-            'date' => $job,
+            'data' => $job
         ]);
     }
 }

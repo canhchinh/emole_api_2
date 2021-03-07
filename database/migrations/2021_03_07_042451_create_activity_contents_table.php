@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserCareerTable extends Migration
+class CreateActivityContentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateUserCareerTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_careers', function (Blueprint $table) {
+        Schema::create('activity_contents', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->nullable();
             $table->integer('career_id')->nullable();
-            $table->text('tag')->nullable();
-            $table->jsonb('category_ids')->nullable();
-            $table->jsonb('job_ids')->nullable();
-            $table->jsonb('genre_ids')->nullable();
+            $table->string('key')->nullable();
+            $table->string('title')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -31,6 +29,6 @@ class CreateUserCareerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_careers');
+        Schema::dropIfExists('activity_contents');
     }
 }

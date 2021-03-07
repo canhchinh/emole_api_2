@@ -26,6 +26,8 @@ use App\Repositories\UserGenreRepository;
 use App\Repositories\UserJobRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\CareerRepository;
+use App\Repositories\ActivityContentRepository;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -43,7 +45,12 @@ class UserController extends Controller
     private $userJobRepo;
     private $activityBaseRepo;
     private $followRepo;
+
+    private $careerRepo;
+    private $activityContentRepo;
+
     private $careerRepository;
+
 
     public function __construct(
         UserRepository $userRepo,
@@ -55,7 +62,12 @@ class UserController extends Controller
         UserJobRepository $userJobRepo,
         ActivityBaseRepository $activityBaseRepo,
         FollowRepository $followRepo,
+
+        CareerRepository $careerRepo,
+        ActivityContentRepository $activityContentRepo
+
         CareerRepository $careerRepository
+
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -66,7 +78,12 @@ class UserController extends Controller
         $this->userJobRepo = $userJobRepo;
         $this->activityBaseRepo = $activityBaseRepo;
         $this->followRepo = $followRepo;
+
+        $this->careerRepo = $careerRepo;
+        $this->activityContentRepo = $activityContentRepo;
+
         $this->careerRepository = $careerRepository;
+
     }
 
     /**
@@ -516,45 +533,81 @@ class UserController extends Controller
      */
     public function activity(Request $request)
     {
-        $user = auth()->user();
-        $careerId = $request->input('career_id');
-        $categoryIds = $request->input('category_ids');
-        $jobIds = $request->input('job_ids');
-        $genreIds = $request->input('genre_ids');
-        $tag = $request->input('tag');
-        foreach ($categoryIds as $categoryId) {
-            $userCategory = [
-                'user_id' => $user->id,
-                'career_id' => $careerId,
-                'category_id' => $categoryId,
-            ];
-            $this->userCategoryRepo->updateOrCreate($userCategory, $userCategory);
-        }
-        foreach ($jobIds as $jobId) {
-            $userCategory = [
-                'user_id' => $user->id,
-                'career_id' => $careerId,
-                'job_id' => $jobId,
-            ];
-            $this->userJobRepo->updateOrCreate($userCategory, $userCategory);
-        }
-        foreach ($genreIds as $genreId) {
-            $userCategory = [
-                'user_id' => $user->id,
-                'career_id' => $careerId,
-                'genre_id' => $genreId,
-            ];
-            $this->userGenreRepo->updateOrCreate($userCategory, $userCategory);
-        }
-        if (!empty($tag)) {
-            $this->userCareerRepo->where('user_id', $user->id)->where('career_id', $careerId)->update([
-                'tag' => $tag,
+        try {
+            $user = auth()->user();
+            $careerId = $request->input('career_id');
+            $categoryIds = $request->input('category_ids');
+            $jobIds = $request->input('job_ids');
+            $genreIds = $request->input('genre_ids');
+            $tag = $request->input('tag');
+            $career = $this->careerRepo->where('id', $careerId)->first();
+            if(empty($career)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Career not found'
+                ]);
+            }
+            $activityContent = $this->activityContentRepo->where('career_id', $careerId)
+                ->select(['id', 'key'])->get();
+            if(empty($activityContent)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Some thing wrong'
+                ]);
+            }
+            $categoryIdsDb = [];
+            $jobIdsDb = [];
+            $genreIdsDb = [];
+            $activityContent = $activityContent->toArray();
+            foreach($activityContent as $item) {
+                if($item['key'] == config('common.activity_content.category.key')) {
+                    array_push($categoryIdsDb, $item['id']);
+                }
+                if($item['key'] == config('common.activity_content.job.key')) {
+                    array_push($jobIdsDb, $item['id']);
+                }
+                if($item['key'] == config('common.activity_content.genre.key')) {
+                    array_push($genreIdsDb, $item['id']);
+                }
+            }
+
+            if(!empty(array_diff($categoryIds, $categoryIdsDb))) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Category not found'
+                ]);
+            }
+            if(!empty(array_diff($jobIds, $jobIdsDb))) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Job not found'
+                ]);
+            }
+            if(!empty(array_diff($genreIds, $genreIdsDb))) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Genre not found'
+                ]);
+            }
+
+            if (!empty($tag)) {
+                $this->userCareerRepo->where('user_id', $user->id)->where('career_id', $careerId)->update([
+                    'tag' => $tag,
+                    'category_ids' => $categoryIds,
+                    'job_ids' => $jobIds,
+                    'genre_ids' => $genreIds
+                ]);
+            }
+
+            return response()->json([
+                'status' => true,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
             ]);
         }
-
-        return response()->json([
-            'status' => true,
-        ]);
     }
 
     /**

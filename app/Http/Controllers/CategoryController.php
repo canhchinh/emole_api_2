@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\CategoryRepository;
-
+use App\Repositories\ActivityContentRepository;
 class CategoryController extends Controller
 {
-    private $categoryRepo;
+    private $categoryRepo, $activityContentRepo;
 
     public function __construct(
-        CategoryRepository $categoryRepo
+        CategoryRepository $categoryRepo,
+        ActivityContentRepository $activityContentRepo
     ) {
         $this->categoryRepo = $categoryRepo;
+        $this->activityContentRepo = $activityContentRepo;
     }
     /**
      * @OA\Get(
@@ -41,11 +43,13 @@ class CategoryController extends Controller
 
     public function listCategory($careerId)
     {
-        $category = $this->categoryRepo->where('career_id', $careerId)
-            ->select(['id', 'career_id', 'title'])->get();
+        $category = $this->activityContentRepo->where('key', config('common.activity_content.category.key'))
+            ->where('career_id', $careerId)
+            ->select(['id', 'career_id', 'title'])
+            ->get();
         return response()->json([
             'status' => true,
-            'data' => $category,
+            'data' => $category
         ]);
     }
 }

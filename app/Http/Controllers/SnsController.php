@@ -4,19 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Repositories\SnsRepository;
 use App\Repositories\UserSnsRepository;
+use App\Repositories\ActivityContentRepository;
 use Illuminate\Http\Request;
 
 class SnsController extends Controller
 {
-    private $snsRepo;
-    private $userSnsRepo;
+    private $snsRepo, $userSnsRepo, $activityContentRepo;
 
     public function __construct(
         SnsRepository $snsRepo,
-        UserSnsRepository $userSnsRepo
+        UserSnsRepository $userSnsRepo,
+        ActivityContentRepository $activityContentRepo
     ) {
         $this->snsRepo = $snsRepo;
         $this->userSnsRepo = $userSnsRepo;
+        $this->activityContentRepo = $activityContentRepo;
     }
     /**
      * @OA\Get(
@@ -35,7 +37,8 @@ class SnsController extends Controller
      */
     public function listSns()
     {
-        $category = $this->snsRepo->select(['id', 'title'])->get();
+        $category = $this->activityContentRepo->where('key', config('common.activity_content.sns.key'))
+            ->select(['id', 'title'])->get();
         return response()->json([
             'status' => true,
             'data' => $category,
