@@ -13,6 +13,9 @@ return [
         ],
         'sns' => [
             'key' => 'sns'
+        ],
+        'genre' => [
+            'key' => 'genre'
         ]
     ]
 ];
