@@ -64,7 +64,7 @@ class UserController extends Controller
         FollowRepository $followRepo,
 
         CareerRepository $careerRepo,
-        ActivityContentRepository $activityContentRepo
+        ActivityContentRepository $activityContentRepo,
 
         CareerRepository $careerRepository
 
