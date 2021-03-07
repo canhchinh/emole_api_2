@@ -1128,4 +1128,31 @@ class UserController extends Controller
             'data' => $list
         ]);
     }
+
+    /**
+     * @OA\Get(
+     *   path="/user/follower",
+     *   summary="get list follower by user",
+     *   operationId="get_list_follower_by_user",
+     *   tags={"User"},
+     *   security={ {"token": {}} },
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function getFollower()
+    {
+        $owner = auth()->user();
+
+        $list = $this->followRepo->getListFollowerByUser($owner->id);
+
+        return response()->json([
+            'status' => true,
+            'data' => $list
+        ]);
+    }
 }

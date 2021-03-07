@@ -12,4 +12,7 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface FollowRepository extends RepositoryInterface
 {
     public function getListFollowByUser(int $userId);
+
+    public function getListFollowerByUser(int $userId);
+
 }

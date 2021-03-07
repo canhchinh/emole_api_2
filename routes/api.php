@@ -41,6 +41,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::post('self-introduction', [UserController::class, 'updateSelfIntroduction']);
     Route::post('follow', [UserController::class, 'postFollow']);
     Route::get('follow', [UserController::class, 'getFollow']);
+    Route::get('follower', [UserController::class, 'getFollower']);
 
     Route::post('avatar', [UserController::class, 'avatar']);
     Route::group(['prefix' => 'image'], function() {
