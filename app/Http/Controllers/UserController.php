@@ -735,9 +735,10 @@ class UserController extends Controller
     public function userInfo(Request $request)
     {
         $user = auth()->user();
+        $userInfo = $this->userRepo->where('id', $user->id)->with(['careers'])->first();
         return response()->json([
             'status' => true,
-            'data' => $user,
+            'data' => $userInfo,
         ]);
     }
 
