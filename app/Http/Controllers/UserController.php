@@ -1068,6 +1068,11 @@ class UserController extends Controller
     {
         $owner = auth()->user();
 
+        $list = $this->followRepo->getListFollowByUser($owner->id);
 
+        return response()->json([
+            'status' => true,
+            'data' => $list
+        ]);
     }
 }
