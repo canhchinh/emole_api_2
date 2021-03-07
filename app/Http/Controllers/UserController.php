@@ -27,6 +27,7 @@ use App\Repositories\UserJobRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\CareerRepository;
 use App\Repositories\ActivityContentRepository;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -44,8 +45,12 @@ class UserController extends Controller
     private $userJobRepo;
     private $activityBaseRepo;
     private $followRepo;
+
     private $careerRepo;
     private $activityContentRepo;
+
+    private $careerRepository;
+
 
     public function __construct(
         UserRepository $userRepo,
@@ -57,8 +62,12 @@ class UserController extends Controller
         UserJobRepository $userJobRepo,
         ActivityBaseRepository $activityBaseRepo,
         FollowRepository $followRepo,
+
         CareerRepository $careerRepo,
         ActivityContentRepository $activityContentRepo
+
+        CareerRepository $careerRepository
+
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -69,8 +78,12 @@ class UserController extends Controller
         $this->userJobRepo = $userJobRepo;
         $this->activityBaseRepo = $activityBaseRepo;
         $this->followRepo = $followRepo;
+
         $this->careerRepo = $careerRepo;
         $this->activityContentRepo = $activityContentRepo;
+
+        $this->careerRepository = $careerRepository;
+
     }
 
     /**
@@ -224,7 +237,6 @@ class UserController extends Controller
      *                 @OA\Property(property="email", type="string", example="a@example.com"),
      *                 @OA\Property(property="gender", type="integer", example="MALE"),
      *                 @OA\Property(property="birthday", type="string", example="2020-01-31"),
-     *                 @OA\Property(property="profession", type="string", example="gotech"),
      *                 @OA\Property(property="activity_base_id", type="integer", example=1),
 
      *             )
@@ -267,7 +279,6 @@ class UserController extends Controller
         $user->title = $data['title'];
         $user->birthday = $birthday;
         $user->gender = $data['gender'];
-        $user->profession = $data['profession'];
         $user->register_finish_step = 3;
         $user->activity_base_id = $data['activity_base_id'];
 
@@ -781,9 +792,17 @@ class UserController extends Controller
     public function userInfo(Request $request)
     {
         $user = auth()->user();
+        $userInfo = $this->userRepo->where('id', $user->id)->first();
+        $careerIds = $this->userCareerRepo->where('user_id', $user->id)->pluck('career_id');
+        if(empty($careerIds)) {
+            $userInfo['careers'] = [];
+        } else {
+            $careerIds = $careerIds->toArray();
+            $userInfo['careers'] = $this->careerRepository->whereIn('id', $careerIds)->get();
+        }
         return response()->json([
             'status' => true,
-            'data' => $user,
+            'data' => $userInfo,
         ]);
     }
 
@@ -1102,6 +1121,11 @@ class UserController extends Controller
     {
         $owner = auth()->user();
 
+        $list = $this->followRepo->getListFollowByUser($owner->id);
 
+        return response()->json([
+            'status' => true,
+            'data' => $list
+        ]);
     }
 }

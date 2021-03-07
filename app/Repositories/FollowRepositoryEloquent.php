@@ -46,9 +46,8 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
                 users.profession,
                 users.self_introduction,
                 users.avatar,
-                user.birthday
-            ")
-            ->withCast;
+                users.birthday
+            ");
 
         return $query->paginate(config('common.paging'));
     }

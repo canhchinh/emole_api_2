@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Entities\UserCareer;
+use App\Entities\Career;
 
 /**
  * Class User.
@@ -60,4 +62,9 @@ class User extends Authenticatable implements Transformable
         'email_verified_at' => 'datetime',
     ];
 
+    public function careers()
+    {
+        return $this->belongsToMany('App\Entities\Career', 'App\Entities\UserCareer',
+            'career_id', 'user_id');
+    }
 }
