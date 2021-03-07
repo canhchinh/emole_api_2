@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Entities\PasswordReset;
+use App\Http\Requests\FollowRequest;
 use App\Http\Requests\ForgotPassword;
 use App\Http\Requests\NewPassword;
 use App\Http\Requests\PortfolioImageRequest;
@@ -17,6 +18,7 @@ use App\Http\Requests\UpdatePasswordRequest;
 use App\Jobs\SendMailResetPassword;
 use App\Repositories\ActivityBaseRepository;
 use App\Repositories\EducationRepository;
+use App\Repositories\FollowRepository;
 use App\Repositories\PortfolioRepository;
 use App\Repositories\UserCareerRepository;
 use App\Repositories\UserCategoryRepository;
@@ -39,6 +41,7 @@ class UserController extends Controller
     private $userGenreRepo;
     private $userJobRepo;
     private $activityBaseRepo;
+    private $followRepo;
 
     public function __construct(
         UserRepository $userRepo,
@@ -48,7 +51,8 @@ class UserController extends Controller
         UserCareerRepository $userCareerRepo,
         UserGenreRepository $userGenreRepo,
         UserJobRepository $userJobRepo,
-        ActivityBaseRepository $activityBaseRepo
+        ActivityBaseRepository $activityBaseRepo,
+        FollowRepository $followRepo
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -58,6 +62,7 @@ class UserController extends Controller
         $this->userGenreRepo = $userGenreRepo;
         $this->userJobRepo = $userJobRepo;
         $this->activityBaseRepo = $activityBaseRepo;
+        $this->followRepo = $followRepo;
     }
 
     /**
@@ -238,25 +243,15 @@ class UserController extends Controller
                 $url = '/storage/' . $path;
                 $user->avatar = $url;
             }
-            // $extension = $file->getClientOriginalExtension();
-            // if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
-            //     $path = 'user/' . $user->id . '_' . time() . '.' . $extension;
-            //     Storage::disk('public')->put($path, File::get($file));
-            //     $url = '/storage/' . $path;
-
-            //     $user->avatar = $url;
-            // }
         }
 
-        // code comment ở phía dưới bị lỗi thiếu activity_base_id
-
-        // $activityBase = $this->activityBaseRepo->where('id', $data['activity_base_id'])->first();
-        // if(empty($activityBase)) {
-        //     return response()->json([
-        //         'status' => false,
-        //         'message' => 'Activity base not found',
-        //     ]);
-        // }
+        $activityBase = $this->activityBaseRepo->where('id', $data['activity_base_id'])->first();
+        if(empty($activityBase)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Activity base not found',
+            ]);
+        }
 
         $birthday = \DateTime::createFromFormat('Y-m-d', $data['birthday'])->format('Y-m-d');
         $user->given_name = $data['given_name'];
@@ -266,8 +261,7 @@ class UserController extends Controller
         $user->gender = $data['gender'];
         $user->profession = $data['profession'];
         $user->register_finish_step = 3;
-        // code comment ở phía dưới bị lỗi thiếu activity_base_id
-        // $user->activity_base_id = $data['activity_base_id'];
+        $user->activity_base_id = $data['activity_base_id'];
 
         $user->save();
 
@@ -994,5 +988,76 @@ class UserController extends Controller
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/user/follow",
+     *   summary="follow/unfollow user",
+     *   operationId="follow_unfollow_user",
+     *   tags={"User"},
+     *   security={ {"token": {}} },
+     *      @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(property="target_id", type="integer", example="1"),
+     *                  @OA\Property(property="status", type="string", example="FOLLOW || UNFOLLOW")
+     *              )
+     *          )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function postFollow(FollowRequest $request)
+    {
+        $data = $request->all([
+            'target_id', 'status'
+        ]);
+
+        $owner = auth()->user();
+        $record = $this->followRepo->where('user_id', $owner->id)
+            ->where('target_id', $data['target_id'])
+            ->first();
+
+        if($data['status'] == 'UNFOLLOW' && !empty($record->id)) {
+            $record->delete();
+        } elseif ($data['status'] == 'FOLLOW' && empty($record->id)) {
+            $this->followRepo->create([
+                'user_id' => $owner->id,
+                'target_id' => $data['target_id']
+            ]);
+        }
+
+        return response()->json([
+            'status' => true
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/user/follow",
+     *   summary="get list follow by user",
+     *   operationId="get_list_follow_by_user",
+     *   tags={"User"},
+     *   security={ {"token": {}} },
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function getFollow()
+    {
+        $owner = auth()->user();
+
+
     }
 }

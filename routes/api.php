@@ -39,6 +39,9 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::post('register-step3', [UserController::class, 'registerStep3']);
     Route::post('new-password', [UserController::class, 'newPassword']);
     Route::post('self-introduction', [UserController::class, 'updateSelfIntroduction']);
+    Route::post('follow', [UserController::class, 'postFollow']);
+    Route::get('follow', [UserController::class, 'getFollow']);
+
     Route::post('avatar', [UserController::class, 'avatar']);
     Route::group(['prefix' => 'image'], function() {
         Route::post('', [UserImageController::class, 'imageUpload']);
