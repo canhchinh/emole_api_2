@@ -584,7 +584,7 @@ class UserController extends Controller
                 'job_ids' => $jobIds,
                 'genre_ids' => $genreIds
             ]);
-            
+
 
             if (!empty($tag)) {
                 $this->userCareerRepo->where('user_id', $user->id)->where('career_id', $careerId)->update([

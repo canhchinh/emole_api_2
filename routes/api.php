@@ -68,6 +68,7 @@ Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() 
         Route::group(['prefix' => 'genre'], function() {
             Route::get('list', [GenreController::class, 'listGenre']);
         });
+        Route::get('info', [ActivityController::class, 'info']);
     });
     Route::group(['prefix' => 'activity'], function() {
         Route::post('', [UserController::class, 'activity']);

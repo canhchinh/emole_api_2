@@ -3,17 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\ActivityBaseRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\UserCareerRepository;
+use App\Repositories\ActivityContentRepository;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
 {
 
-    private $activityRepo;
+    private $activityRepo, $userRepo, $userCareerRepo, $activityContentRepo;
 
     public function __construct(
-        ActivityBaseRepository $activityRepo
+        ActivityBaseRepository $activityRepo,
+        UserRepository $userRepo,
+        UserCareerRepository $userCareerRepo,
+        ActivityContentRepository $activityContentRepo
     ) {
         $this->activityRepo = $activityRepo;
+        $this->userRepo = $userRepo;
+        $this->userCareerRepo = $userCareerRepo;
+        $this->activityContentRepo = $activityContentRepo;
     }
     /**
      * @OA\Get(
@@ -37,5 +46,23 @@ class ActivityController extends Controller
             'status' => true,
             'data' => $activityBase,
         ]);
+    }
+
+    public function info(Request $request, $careerId)
+    {
+        $user = auth()->user();
+        $userCareer = $this->userCareerRepo->where([
+            'user_id' => $user->id,
+            'career_id' => $careerId
+        ])
+        ->first();
+        if(empty($userCareer)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Career not found'
+            ]);
+        }
+        
+
     }
 }
