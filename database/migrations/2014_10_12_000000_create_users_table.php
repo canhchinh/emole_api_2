@@ -30,6 +30,8 @@ class CreateUsersTable extends Migration
             $table->integer('register_finish_step')->default(0);
             $table->integer('activity_base_id')->nullable();
             $table->boolean('is_enable_email_notification')->nullable();
+            $table->jsonb('category_ids')->nullable();
+            $table->jsonb('job_ids')->nullable();
             $table->timestamps();
         });
     }
