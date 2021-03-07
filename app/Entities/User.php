@@ -38,10 +38,7 @@ class User extends Authenticatable implements Transformable
         'avatar',
         'register_finish_step',
         'activity_base_id',
-        'is_enable_email_notification',
-        'category_ids',
-        'job_ids',
-        'genre_ids'
+        'is_enable_email_notification'
     ];
 
     /**
