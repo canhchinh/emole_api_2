@@ -25,6 +25,7 @@ use App\Repositories\UserCategoryRepository;
 use App\Repositories\UserGenreRepository;
 use App\Repositories\UserJobRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\CareerRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -42,6 +43,7 @@ class UserController extends Controller
     private $userJobRepo;
     private $activityBaseRepo;
     private $followRepo;
+    private $careerRepository;
 
     public function __construct(
         UserRepository $userRepo,
@@ -52,7 +54,8 @@ class UserController extends Controller
         UserGenreRepository $userGenreRepo,
         UserJobRepository $userJobRepo,
         ActivityBaseRepository $activityBaseRepo,
-        FollowRepository $followRepo
+        FollowRepository $followRepo,
+        CareerRepository $careerRepository
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -63,6 +66,7 @@ class UserController extends Controller
         $this->userJobRepo = $userJobRepo;
         $this->activityBaseRepo = $activityBaseRepo;
         $this->followRepo = $followRepo;
+        $this->careerRepository = $careerRepository;
     }
 
     /**
@@ -735,7 +739,14 @@ class UserController extends Controller
     public function userInfo(Request $request)
     {
         $user = auth()->user();
-        $userInfo = $this->userRepo->where('id', $user->id)->with(['careers'])->first();
+        $userInfo = $this->userRepo->where('id', $user->id)->first();
+        $careerIds = $this->userCareerRepo->where('user_id', $user->id)->pluck('career_id');
+        if(empty($careerIds)) {
+            $userInfo['careers'] = [];
+        } else {
+            $careerIds = $careerIds->toArray();
+            $userInfo['careers'] = $this->careerRepository->whereIn('id', $careerIds)->get();
+        }
         return response()->json([
             'status' => true,
             'data' => $userInfo,
