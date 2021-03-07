@@ -589,15 +589,17 @@ class UserController extends Controller
                     'message' => 'Genre not found'
                 ]);
             }
+            $param = [
+                'category_ids' => json_encode($categoryIds),
+                'job_ids' => json_encode($jobIds),
+                'genre_ids' => json_encode($genreIds)
+            ];
 
             if (!empty($tag)) {
-                $this->userCareerRepo->where('user_id', $user->id)->where('career_id', $careerId)->update([
-                    'tag' => $tag,
-                    'category_ids' => $categoryIds,
-                    'job_ids' => $jobIds,
-                    'genre_ids' => $genreIds
-                ]);
+                $param['tag'] = $tag;
             }
+            $this->userCareerRepo->where('user_id', $user->id)
+                ->where('career_id', $careerId)->update($param);
 
             return response()->json([
                 'status' => true,
