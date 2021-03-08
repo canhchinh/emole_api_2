@@ -40,6 +40,7 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
         $query = $this->join('users', 'users.id', '=', 'follows.target_id')
             ->where('follows.user_id', $userId)
             ->selectRaw("
+                users.id,
                 users.gender,
                 users.given_name,
                 users.title,
@@ -57,6 +58,7 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
         $query = $this->join('users', 'users.id', '=', 'follows.target_id')
             ->where('follows.target_id', $userId)
             ->selectRaw("
+                users.id,
                 users.gender,
                 users.given_name,
                 users.title,
