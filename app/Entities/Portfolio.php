@@ -41,7 +41,8 @@ class Portfolio extends Model implements Transformable
         'cpa_count',
         'video_link',
         'work_link',
-        'work_description'
+        'work_description',
+        'member_ids'
     ];
 
 }

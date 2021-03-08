@@ -689,6 +689,13 @@ class UserController extends Controller
      *                       format="binary",
      *                  ),
      *               ),
+     *                  @OA\Property(
+     *                      property="member_ids[]",
+     *                      type="array",
+     *                      @OA\Items(
+     *                         type="integer"
+     *                     )
+     *                  ),
      *                  @OA\Property(property="title", type="string", example="Drum advertisement"),
      *                  @OA\Property(property="job_description", type="string", example="CM"),
      *                  @OA\Property(property="start_date", type="string", example="2020-10-20"),
@@ -721,6 +728,14 @@ class UserController extends Controller
             $user = auth()->user();
             $req = $request->all();
             $imageUrl = [];
+            $userIds = $this->userRepo->whereIn('id', $req['member_ids'])->pluck('id');
+            if(empty($userIds) || (count($req['member_ids']) != count($userIds))) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Member not found'
+                ], config('common.status_code.500'));
+            }
+
             if($request->hasFile('images')) {
                 $files = $request->file('images');
                 foreach($files as $k=>$file) {
@@ -752,6 +767,7 @@ class UserController extends Controller
                 'video_link' => $req['video_link'],
                 'work_link' => $req['work_link'],
                 'work_description' => $req['work_description'],
+                'member_ids' => $req['member_ids']
             ];
             if(!empty($imageUrl)) {
                 $param['image'] = $imageUrl;

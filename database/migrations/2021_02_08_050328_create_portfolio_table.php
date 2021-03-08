@@ -32,6 +32,7 @@ class CreatePortfolioTable extends Migration
             $table->string('video_link')->nullable();
             $table->string('work_link')->nullable();
             $table->text('work_description')->nullable();
+            $table->string('member_ids')->nullable();
             $table->timestamps();
         });
     }

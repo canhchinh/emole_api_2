@@ -22,6 +22,8 @@ class PortfolioRequest extends Base
     public function rules()
     {
         return [
+            'images' => 'required',
+            'member_ids' => 'required',
             'title' => 'required',
             'job_description' => 'required',
             'start_date' => 'required',
