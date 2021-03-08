@@ -733,7 +733,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Member not found'
-                ], config('common.status_code.500'));
+                ], 500);
             }
 
             if($request->hasFile('images')) {
@@ -778,7 +778,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Fail'
-                ], config('common.status_code.500'));
+                ], 500);
             }
             return response()->json([
                 'status' => true
@@ -787,7 +787,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage()
-            ], config('common.status_code.500'));
+            ], 500);
         }
 
     }
