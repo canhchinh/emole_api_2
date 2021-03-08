@@ -623,14 +623,20 @@ class UserController extends Controller
      *          @OA\MediaType(
      *              mediaType="application/json",
      *              @OA\Schema(
-     *                  @OA\Property(property="title", type="string", example="Rikkyo University"),
+     *               @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(
+     *                          @OA\Property(property="title", type="string", example="Rikkyo University"),
      *                  @OA\Property(property="role", type="string", example="Faculty of Business Administration Department of Business Administration"),
      *                  @OA\Property(property="start_date", type="string", example="2000-10-10"),
      *                  @OA\Property(property="end_date", type="string", example="2030-10-10"),
      *                  @OA\Property(property="is_still_active", type="boolean", example=true),
      *                  @OA\Property(property="link", type="string", example="www.https.//aaaaaaaaaaa.jp"),
      *                  @OA\Property(property="description", type="string", example="For the first time in the band I was forming, I performed live in front of a large number of people")
-     *              )
+     *                  )
+     *               ),
+     *             )
      *          )
      *     ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
@@ -641,30 +647,25 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
+
+
     public function education(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'role' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required',
-            'is_still_active' => 'required',
-            'link' => 'required',
-            'description' => 'required',
-        ]);
         $user = auth()->user();
         $req = $request->all();
-        $param = [
-            'user_id' => $user->id,
-            'title' => $req['title'],
-            'role' => $req['role'],
-            'start_date' => \DateTime::createFromFormat('Y-m-d', $req['start_date'])->format('Y-m-d'),
-            'end_date' => \DateTime::createFromFormat('Y-m-d', $req['end_date'])->format('Y-m-d'),
-            'is_still_active' => $req['is_still_active'],
-            'link' => $req['link'],
-            'description' => $req['description'],
-        ];
-        $this->educationRepo->updateOrCreate(['user_id' => $user->id], $param);
+        foreach($req['data'] as $item) {
+            $param = [
+                'user_id' => $user->id,
+                'title' => $item['title'],
+                'role' => $item['role'],
+                'start_date' => \DateTime::createFromFormat('Y-m-d', $item['start_date'])->format('Y-m-d'),
+                'end_date' => \DateTime::createFromFormat('Y-m-d', $item['end_date'])->format('Y-m-d'),
+                'is_still_active' => $item['is_still_active'],
+                'link' => $item['link'],
+                'description' => $item['description'],
+            ];
+            $this->educationRepo->create($param);
+        }
         return response()->json([
             'status' => true,
         ]);
