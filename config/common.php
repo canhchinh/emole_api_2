@@ -17,5 +17,8 @@ return [
         'genre' => [
             'key' => 'genre'
         ]
+    ],
+    'status_code' => [
+        '500' => 500
     ]
 ];
