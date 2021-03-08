@@ -203,6 +203,150 @@ class DebugController extends Controller
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
+            [
+                'id' => 18,
+                'career_id' => 2,
+                'key' => config('common.activity_content.category.key'),
+                'title' => 'video_actor',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 19,
+                'career_id' => 2,
+                'key' => config('common.activity_content.category.key'),
+                'title' => 'stage_actor',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 20,
+                'career_id' => 2,
+                'key' => config('common.activity_content.category.key'),
+                'title' => 'audio_actor',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 21,
+                'career_id' => 2,
+                'key' => config('common.activity_content.job.key'),
+                'title' => 'CM',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 22,
+                'career_id' => 2,
+                'key' => config('common.activity_content.job.key'),
+                'title' => 'MV',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 23,
+                'career_id' => 2,
+                'key' => config('common.activity_content.job.key'),
+                'title' => 'Image advertising',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 24,
+                'career_id' => 2,
+                'key' => config('common.activity_content.genre.key'),
+                'title' => 'comedy',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 25,
+                'career_id' => 2,
+                'key' => config('common.activity_content.genre.key'),
+                'title' => 'suspense',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 26,
+                'career_id' => 2,
+                'key' => config('common.activity_content.genre.key'),
+                'title' => 'horror',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 27,
+                'career_id' => 3,
+                'key' => config('common.activity_content.category.key'),
+                'title' => 'video_actor',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 28,
+                'career_id' => 3,
+                'key' => config('common.activity_content.category.key'),
+                'title' => 'stage_actor',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 29,
+                'career_id' => 3,
+                'key' => config('common.activity_content.category.key'),
+                'title' => 'audio_actor',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 30,
+                'career_id' => 3,
+                'key' => config('common.activity_content.job.key'),
+                'title' => 'CM',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 31,
+                'career_id' => 3,
+                'key' => config('common.activity_content.job.key'),
+                'title' => 'MV',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 32,
+                'career_id' => 3,
+                'key' => config('common.activity_content.job.key'),
+                'title' => 'Image advertising',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 33,
+                'career_id' => 3,
+                'key' => config('common.activity_content.genre.key'),
+                'title' => 'comedy',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 34,
+                'career_id' => 3,
+                'key' => config('common.activity_content.genre.key'),
+                'title' => 'suspense',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => 35,
+                'career_id' => 3,
+                'key' => config('common.activity_content.genre.key'),
+                'title' => 'horror',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
         ];
 
         $this->activityContentRepo->insert($category);
@@ -215,15 +359,15 @@ class DebugController extends Controller
 //            'updated_at' => date('Y-m-d H:i:s'),
 //        ];
 //        $this->userImageRepo->insert($userImage);
-
-        $activityBase = [
-            [
-                'id' => 1,
-                'title' => 'tokyo',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ]
-        ];
-        $this->activityBaseRepo->insert($activityBase);
+//
+//        $activityBase = [
+//            [
+//                'id' => 1,
+//                'title' => 'tokyo',
+//                'created_at' => date('Y-m-d H:i:s'),
+//                'updated_at' => date('Y-m-d H:i:s'),
+//            ]
+//        ];
+//        $this->activityBaseRepo->insert($activityBase);
     }
 }
