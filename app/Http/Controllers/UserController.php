@@ -1157,4 +1157,75 @@ class UserController extends Controller
             'data' => $list
         ]);
     }
+
+    /**
+     * @OA\Get(
+     *   path="/users/list",
+     *   summary="get list users",
+     *   operationId="get_list_users",
+     *   tags={"Users"},
+     *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="current_page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="keyword",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="limit",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function listUsers(Request $request)
+    {
+        $req = $request->all();
+        $page = 1;
+        $filters = [];
+        $limit = 10;
+        if(!empty($req['current_page'])) {
+            $page = $req['current_page'];
+        }
+        if(!empty($req['keyword'])) {
+            $filters['keyword'] = $req['keyword'];
+        }
+        if(!empty($req['limit'])) {
+            $limit = $req['limit'];
+        }
+
+        $user = $this->userRepo->listUsers($filters, $page, $limit);
+
+        return response()->json([
+            'status'     => true,
+            'data'       => $user['data'],
+            'pagination' => [
+                'total'        => $user['total'],
+                'per_page'     => (int)$user['per_page'],
+                'current_page' => $user['current_page'],
+                'total_page'   => $user['last_page']
+            ]
+        ]);
+
+
+    }
 }

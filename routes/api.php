@@ -54,6 +54,10 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::put('change-password', [UserController::class, 'changePassword']);
 });
 
+Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('list', [UserController::class, 'listUsers']);
+});
+
 
 /**************** career ****************/
 Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() {
