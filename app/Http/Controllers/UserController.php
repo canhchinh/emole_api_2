@@ -488,7 +488,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'user' => $e->getMessage(),
-            ]);
+            ], config('common.status_code.500'));
         }
 
     }
@@ -608,7 +608,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage()
-            ]);
+            ], config('common.status_code.500'));
         }
     }
 
@@ -679,8 +679,16 @@ class UserController extends Controller
      *   security={ {"token": {}} },
      *      @OA\RequestBody(
      *          @OA\MediaType(
-     *              mediaType="application/json",
+     *              mediaType="multipart/form-data",
      *              @OA\Schema(
+     *               @OA\Property(
+     *                  property="images[]",
+     *                  type="array",
+     *                  @OA\Items(
+     *                       type="string",
+     *                       format="binary",
+     *                  ),
+     *               ),
      *                  @OA\Property(property="title", type="string", example="Drum advertisement"),
      *                  @OA\Property(property="job_description", type="string", example="CM"),
      *                  @OA\Property(property="start_date", type="string", example="2020-10-20"),
@@ -709,30 +717,63 @@ class UserController extends Controller
      */
     public function portfolio(PortfolioRequest $request)
     {
-        $user = auth()->user();
-        $req = $request->all();
-        $param = [
-            'user_id' => $user->id,
-            'title' => $req['title'],
-            'job_description' => $req['job_description'],
-            'start_date' => \DateTime::createFromFormat('Y-m-d', $req['start_date'])->format('Y-m-d'),
-            'end_date' => \DateTime::createFromFormat('Y-m-d', $req['end_date'])->format('Y-m-d'),
-            'is_still_active' => $req['is_still_active'],
-            'member' => $req['member'],
-            'budget' => $req['budget'],
-            'reach_number' => $req['reach_number'],
-            'view_count' => $req['view_count'],
-            'like_count' => $req['like_count'],
-            'comment_count' => $req['comment_count'],
-            'cpa_count' => $req['cpa_count'],
-            'video_link' => $req['video_link'],
-            'work_link' => $req['work_link'],
-            'work_description' => $req['work_description'],
-        ];
-        $this->portfolioRepo->updateOrCreate(['user_id' => $user->id], $param);
-        return response()->json([
-            'status' => true,
-        ]);
+        try {
+            $user = auth()->user();
+            $req = $request->all();
+            $imageUrl = [];
+            if($request->hasFile('images')) {
+                $files = $request->file('images');
+                foreach($files as $k=>$file) {
+                    $extension = $file->getClientOriginalExtension();
+                    if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
+                        $imageName = time() + $k;
+                        $path = 'user/' . $user->id . '/work/' . $imageName . '.' . $extension;
+                        Storage::disk('public')->put($path, File::get($file));
+                        $url = '/storage/' . $path;
+                        array_push($imageUrl, $url);
+                    }
+                }
+            }
+
+            $param = [
+                'user_id' => $user->id,
+                'title' => $req['title'],
+                'job_description' => $req['job_description'],
+                'start_date' => \DateTime::createFromFormat('Y-m-d', $req['start_date'])->format('Y-m-d'),
+                'end_date' => \DateTime::createFromFormat('Y-m-d', $req['end_date'])->format('Y-m-d'),
+                'is_still_active' => $req['is_still_active'],
+                'member' => $req['member'],
+                'budget' => $req['budget'],
+                'reach_number' => $req['reach_number'],
+                'view_count' => $req['view_count'],
+                'like_count' => $req['like_count'],
+                'comment_count' => $req['comment_count'],
+                'cpa_count' => $req['cpa_count'],
+                'video_link' => $req['video_link'],
+                'work_link' => $req['work_link'],
+                'work_description' => $req['work_description'],
+            ];
+            if(!empty($imageUrl)) {
+                $param['image'] = $imageUrl;
+            }
+
+            $portfolio = $this->portfolioRepo->updateOrCreate(['user_id' => $user->id], $param);
+            if(empty($portfolio)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Fail'
+                ], config('common.status_code.500'));
+            }
+            return response()->json([
+                'status' => true
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], config('common.status_code.500'));
+        }
+
     }
 
     /**
@@ -845,7 +886,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'data' => $e->getMessage(),
-            ]);
+            ], config('common.status_code.500'));
         }
     }
 
@@ -908,7 +949,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
-            ]);
+            ], config('common.status_code.500'));
         }
     }
 
@@ -952,7 +993,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
-            ]);
+            ], config('common.status_code.500'));
         }
     }
 
@@ -996,7 +1037,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
-            ]);
+            ], config('common.status_code.500'));
         }
     }
 
@@ -1051,7 +1092,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
-            ]);
+            ], config('common.status_code.500'));
         }
     }
 

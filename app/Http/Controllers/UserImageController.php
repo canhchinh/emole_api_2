@@ -83,7 +83,7 @@ class UserImageController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
-            ]);
+            ], config('common.status_code.500'));
         }
     }
 }
