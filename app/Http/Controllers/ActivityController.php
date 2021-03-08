@@ -85,7 +85,7 @@ class ActivityController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Career not found'
-            ]);
+            ], config('common.status_code.500'));
         }
         $categories = $this->activityContentRepo->where('career_id', $careerId)
             ->whereIn('id', json_decode($userCareer->category_ids))->get();

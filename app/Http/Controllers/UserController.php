@@ -270,7 +270,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Activity base not found',
-            ]);
+            ], config('common.status_code.500'));
         }
 
         $birthday = \DateTime::createFromFormat('Y-m-d', $data['birthday'])->format('Y-m-d');
@@ -435,13 +435,13 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'User invalid',
-            ]);
+            ], config('common.status_code.500'));
         }
         if (!Hash::check($req['exist_password'], $user->password)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Password invalid',
-            ]);
+            ], config('common.status_code.500'));
         }
         $user->update([
             'password' => Hash::make($req['new_password']),
@@ -545,7 +545,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Career not found'
-                ]);
+                ], config('common.status_code.500'));
             }
             $activityContent = $this->activityContentRepo->where('career_id', $careerId)
                 ->select(['id', 'key'])->get();
@@ -553,7 +553,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Some thing wrong'
-                ]);
+                ], config('common.status_code.500'));
             }
             $categoryIdsDb = [];
             $jobIdsDb = [];
@@ -575,19 +575,19 @@ class UserController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Category not found'
-                ]);
+                ], config('common.status_code.500'));
             }
             if(!empty(array_diff($jobIds, $jobIdsDb))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Job not found'
-                ]);
+                ], config('common.status_code.500'));
             }
             if(!empty(array_diff($genreIds, $genreIdsDb))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Genre not found'
-                ]);
+                ], config('common.status_code.500'));
             }
             $param = [
                 'category_ids' => json_encode($categoryIds),
@@ -888,7 +888,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Activity base not found',
-                ]);
+                ], config('common.status_code.500'));
             }
 
             $birthday = \DateTime::createFromFormat('Y-m-d', $req['birthday'])->format('Y-m-d');
@@ -1033,13 +1033,13 @@ class UserController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'User invalid',
-                ]);
+                ], config('common.status_code.500'));
             }
             if (!Hash::check($req['exist_password'], $user->password)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Password invalid',
-                ]);
+                ], config('common.status_code.500'));
             }
             $user->update([
                 'password' => Hash::make($req['new_password']),
