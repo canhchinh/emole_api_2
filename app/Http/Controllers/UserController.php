@@ -519,7 +519,14 @@ class UserController extends Controller
      *                      type="json",
      *                      example={1,2}
      *                  ),
-     *                  @OA\Property(property="tag", type="string", example="#letdoit")
+     *               @OA\Property(
+     *                  property="tags",
+     *                  type="array",
+     *                  example={ "tag1","tag2" },
+     *                  @OA\Items(
+     *                       type="string",
+     *                  ),
+     *               ),
      *              )
      *          )
      *      ),
@@ -539,7 +546,7 @@ class UserController extends Controller
             $categoryIds = $request->input('category_ids');
             $jobIds = $request->input('job_ids');
             $genreIds = $request->input('genre_ids');
-            $tag = $request->input('tag');
+            $tags = $request->input('tags');
             $career = $this->careerRepo->where('id', $careerId)->first();
             if(empty($career)) {
                 return response()->json([
@@ -592,12 +599,10 @@ class UserController extends Controller
             $param = [
                 'category_ids' => json_encode($categoryIds),
                 'job_ids' => json_encode($jobIds),
-                'genre_ids' => json_encode($genreIds)
+                'genre_ids' => json_encode($genreIds),
+                'tags' => $tags
             ];
 
-            if (!empty($tag)) {
-                $param['tag'] = $tag;
-            }
             $this->userCareerRepo->where('user_id', $user->id)
                 ->where('career_id', $careerId)->update($param);
 

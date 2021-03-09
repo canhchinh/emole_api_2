@@ -26,7 +26,7 @@ class UserCareer extends Model implements Transformable
         'id',
         'user_id',
         'career_id',
-        'tag',
+        'tags',
         'category_ids',
         'job_ids',
         'genre_ids'
