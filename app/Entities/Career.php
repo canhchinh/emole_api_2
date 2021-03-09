@@ -27,4 +27,7 @@ class Career extends Model implements Transformable
         'id',
         'title'
     ];
+    protected $hidden = [
+        'pivot'
+    ];
 }

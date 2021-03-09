@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Entities\Career;
 
 /**
  * Class UserCareer.
@@ -30,5 +31,8 @@ class UserCareer extends Model implements Transformable
         'category_ids',
         'job_ids',
         'genre_ids'
+    ];
+    protected $hidden = [
+        'pivot'
     ];
 }

@@ -51,8 +51,8 @@ class User extends Authenticatable implements Transformable
     protected $hidden = [
         'password',
         'remember_token',
+        'pivot'
     ];
-
     /**
      * The attributes that should be cast to native types.
      *
@@ -65,6 +65,6 @@ class User extends Authenticatable implements Transformable
     public function careers()
     {
         return $this->belongsToMany('App\Entities\Career', 'App\Entities\UserCareer',
-            'career_id', 'user_id');
+            'career_id', 'user_id', 'id', 'id');
     }
 }
