@@ -20,7 +20,7 @@ class UserImageController extends Controller
      *   path="/user/image",
      *   summary="user upload image",
      *   operationId="upload_image",
-     *   tags={"User"},
+     *   tags={"Image"},
      *   security={ {"token": {}} },
      *   @OA\RequestBody(
      *       @OA\MediaType(
@@ -63,18 +63,6 @@ class UserImageController extends Controller
                         'url' => $url,
                     ]);
                 }
-                // $extension = $file->getClientOriginalExtension();
-                // if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
-                //     $fileName = time() + $k;
-                //     $path = 'user/' . $user->id . '/' . $fileName . '.' . $extension;
-                //     Storage::disk('public')->put($path, File::get($file));
-                //     $url = '/storage/' . $path;
-
-                //     $this->userImageRepo->create([
-                //         'user_id' => $user->id,
-                //         'url' => $url,
-                //     ]);
-                // }
             }
             return response()->json([
                 'status' => true,
@@ -83,7 +71,46 @@ class UserImageController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
-            ], config('common.status_code.500'));
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/user/image",
+     *   summary="list image",
+     *   operationId="list_image",
+     *   tags={"Image"},
+     *   security={ {"token": {}} },
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function listImage(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $data = [];
+            $images = $this->userImageRepo->where('user_id', $user->id)
+                ->select(['id', 'url'])->get();
+            if(!empty($images)) {
+                $images->map(function ($value) {
+                    $value->url = config('common.app_url').$value->url;
+                });
+            }
+            return response()->json([
+                'status' => true,
+                'data' => $images
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 500);
         }
     }
 }
