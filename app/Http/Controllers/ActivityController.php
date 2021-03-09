@@ -85,7 +85,7 @@ class ActivityController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Career not found'
-            ], config('common.status_code.500'));
+            ], 500);
         }
         $categories = $this->activityContentRepo->where('career_id', $careerId)
             ->whereIn('id', json_decode($userCareer->category_ids))->get();
@@ -98,6 +98,12 @@ class ActivityController extends Controller
         $genres = $this->activityContentRepo->where('career_id', $careerId)
             ->whereIn('id', json_decode($userCareer->genre_ids))->get();
         $userCareer['genres'] = $genres;
+
+        $userCareer['tags'] = json_decode($userCareer['tags']);
+
+        unset($userCareer['category_ids']);
+        unset($userCareer['job_ids']);
+        unset($userCareer['genre_ids']);
 
         return response()->json([
             'status' => true,
