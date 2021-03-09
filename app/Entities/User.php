@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Entities\UserCareer;
-use App\Entities\Career;
+use App\Entities\ActivityBase;
 
 /**
  * Class User.
@@ -66,5 +65,10 @@ class User extends Authenticatable implements Transformable
     {
         return $this->belongsToMany('App\Entities\Career', 'App\Entities\UserCareer',
             'career_id', 'user_id', 'id', 'id');
+    }
+
+    public function activity_base()
+    {
+        return $this->hasOne(ActivityBase::class, 'id', 'activity_base_id');
     }
 }

@@ -113,9 +113,14 @@ class CareerController extends Controller
     {
         $user = auth()->user();
         $userInfo = $this->userRepo->where('id', $user->id)
-            ->with(['careers' => function($q) {
-                $q->select(['careers.id', 'careers.title']);
-            }])
+            ->with([
+                'careers' => function($q) {
+                    $q->select(['careers.id', 'careers.title']);
+                },
+                'activity_base' => function($q) {
+                    $q->select(['activity_base.id', 'activity_base.title']);
+                }
+            ])
             ->first();
         return response()->json([
             'status' => true,
