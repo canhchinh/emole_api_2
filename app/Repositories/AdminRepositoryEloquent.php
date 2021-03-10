@@ -31,7 +31,7 @@ class AdminRepositoryEloquent extends BaseRepository implements AdminRepository
      * @param  mixed $request
      * @return bool
      */
-    public function checkLogin($request): bool
+    public function checkLogin($request)
     {
         $credentials = [
             'password' => $request['password'],
@@ -44,7 +44,13 @@ class AdminRepositoryEloquent extends BaseRepository implements AdminRepository
         return false;
     }
 
-    private function returnEmailOrUsername($request): string
+    /**
+     * returnEmailOrUsername
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    private function returnEmailOrUsername($request)
     {
         return filter_var($request, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
     }
