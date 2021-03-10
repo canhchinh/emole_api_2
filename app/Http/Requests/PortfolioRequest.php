@@ -25,7 +25,7 @@ class PortfolioRequest extends Base
             'images' => 'required',
             'member_ids' => 'required',
             'title' => 'required',
-            'job_description' => 'required',
+            'job_ids' => 'required',
             'start_date' => 'required',
             'end_date' => 'required',
             'is_still_active' => 'required',

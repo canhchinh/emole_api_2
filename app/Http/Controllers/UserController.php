@@ -737,7 +737,6 @@ class UserController extends Controller
     public function portfolio(PortfolioRequest $request)
     {
         try {
-            dd(1);
             $user = auth()->user();
             $req = $request->all();
             $imageUrl = [];
