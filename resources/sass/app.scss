@@ -1,0 +1,26 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+
+html, body{
+    font-family: $font-default;
+    font-size: 12px;
+    color: $color-text;
+}
+.color-header{
+    color: $color-header;
+}
+.color-active{
+    color: $color-active;
+}
+.color-gray{
+    color: $color-gray;
+}
+
+
