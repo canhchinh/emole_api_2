@@ -16,13 +16,12 @@ class CreatePortfolioTable extends Migration
         Schema::create('portfolios', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
-            $table->integer('title')->nullable();
+            $table->string('title')->nullable();
             $table->string('image', 2000)->nullable();
             $table->string('job_ids')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->boolean('is_still_active')->nullable();
-            $table->string('member')->nullable();
             $table->string('budget')->nullable();
             $table->string('reach_number')->nullable();
             $table->string('view_count')->nullable();

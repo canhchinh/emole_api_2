@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Entities\User;
 
 /**
  * Class Portfolio.
@@ -45,4 +46,12 @@ class Portfolio extends Model implements Transformable
         'member_ids'
     ];
 
+    public function getImageAttribute($value)
+    {
+        $value = json_decode($value);
+        foreach($value as $k=>$item) {
+            $value[$k] = config('common.app_url'). $item;
+        }
+        return $value;
+    }
 }

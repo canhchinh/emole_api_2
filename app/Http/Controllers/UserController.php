@@ -45,12 +45,8 @@ class UserController extends Controller
     private $userJobRepo;
     private $activityBaseRepo;
     private $followRepo;
-
     private $careerRepo;
     private $activityContentRepo;
-
-    private $careerRepository;
-
 
     public function __construct(
         UserRepository $userRepo,
@@ -62,12 +58,8 @@ class UserController extends Controller
         UserJobRepository $userJobRepo,
         ActivityBaseRepository $activityBaseRepo,
         FollowRepository $followRepo,
-
         CareerRepository $careerRepo,
-        ActivityContentRepository $activityContentRepo,
-
-        CareerRepository $careerRepository
-
+        ActivityContentRepository $activityContentRepo
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -78,11 +70,8 @@ class UserController extends Controller
         $this->userJobRepo = $userJobRepo;
         $this->activityBaseRepo = $activityBaseRepo;
         $this->followRepo = $followRepo;
-
         $this->careerRepo = $careerRepo;
         $this->activityContentRepo = $activityContentRepo;
-
-        $this->careerRepository = $careerRepository;
 
     }
 
@@ -1334,6 +1323,64 @@ class UserController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'data' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/portfolio",
+     *   summary="portfolio detail",
+     *   operationId="portfolio-detail",
+     *   tags={"Portfolio"},
+     *   security={ {"token": {}} },
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function portfolioDetail(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $portfolio = $this->portfolioRepo->where('user_id', $user->id)
+                ->first();
+            if(empty($portfolio)) {
+                return response()->json([
+                    'status' => true,
+                    'data' => []
+                ]);
+            }
+            $memberIds = json_decode($portfolio->member_ids);
+            if(!empty($memberIds)) {
+                $members = $this->userRepo->whereIn('id', $memberIds)
+                    ->select(['id', 'user_name', 'given_name', 'email', 'title', 'gender', 'avatar'])
+                    ->get();
+                $portfolio['members'] = $members;
+            }
+            $jobIds = json_decode($portfolio->job_ids);
+            if(!empty($jobIds)) {
+                $jobs = $this->activityContentRepo->whereIn('id', $jobIds)
+                    ->where('key', config('common.activity_content.job.key'))
+                    ->select(['id', 'title'])
+                    ->get();
+                $portfolio['jobs'] = $jobs;
+            }
+
+            unset($portfolio['member_ids']);
+            unset($portfolio['job_ids']);
+
+            return response()->json([
+                'status' => true,
+                'data' => $portfolio
             ]);
         } catch (\Exception $e) {
             return response()->json([
