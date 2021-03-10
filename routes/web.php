@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('admin.auth.login');
+Route::match(['get', 'post'], '/forgot-password', [AuthController::class, 'forgotPassword'])->name('admin.auth.forgot');
+Route::get('/reset-password/{token}', [AuthController::class, 'getResetPassword'])->name('admin.auth.get.resetPassword');
+Route::post('/reset-password', [AuthController::class, 'postResetPassword'])->name('admin.auth.post.newPassword');
 Route::middleware('auth')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('admin.home.index');
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.auth.logout');

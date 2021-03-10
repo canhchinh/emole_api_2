@@ -51,4 +51,39 @@ class AuthController extends Controller
 
         return redirect('/login');
     }
+
+    /**
+     * forgotPassword
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function forgotPassword(Request $request)
+    {
+        if ($request->getMethod() === "GET") {
+            return view('admin.auth.forgot');
+        }
+    }
+
+
+    /**
+     * getResetPassword
+     *
+     * @param  mixed $token
+     * @return void
+     */
+    public function getResetPassword($token)
+    {
+        return view('admin.auth.new_password', compact('token'));
+    }
+
+    /**
+     * postResetPassword
+     *
+     * @return void
+     */
+    public function postResetPassword(Request $request)
+    {
+        dd($request->all());
+    }
 }
