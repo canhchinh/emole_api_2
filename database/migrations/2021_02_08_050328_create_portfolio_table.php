@@ -18,7 +18,7 @@ class CreatePortfolioTable extends Migration
             $table->integer('user_id')->nullable();
             $table->integer('title')->nullable();
             $table->string('image', 2000)->nullable();
-            $table->text('job_description')->nullable();
+            $table->string('job_ids')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->boolean('is_still_active')->nullable();

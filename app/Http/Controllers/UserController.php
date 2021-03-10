@@ -703,7 +703,13 @@ class UserController extends Controller
      *                     )
      *                  ),
      *                  @OA\Property(property="title", type="string", example="Drum advertisement"),
-     *                  @OA\Property(property="job_description", type="string", example="CM"),
+     *                  @OA\Property(
+     *                      property="job_ids[]",
+     *                      type="array",
+     *                      @OA\Items(
+     *                         type="integer"
+     *                     )
+     *                  ),
      *                  @OA\Property(property="start_date", type="string", example="2020-10-20"),
      *                  @OA\Property(property="end_date", type="string", example="2022-10-20"),
      *                  @OA\Property(property="is_still_active", type="boolean", example=true),
@@ -731,6 +737,7 @@ class UserController extends Controller
     public function portfolio(PortfolioRequest $request)
     {
         try {
+            dd(1);
             $user = auth()->user();
             $req = $request->all();
             $imageUrl = [];
@@ -739,6 +746,17 @@ class UserController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Member not found'
+                ], 500);
+            }
+
+            $jobIds  = $this->activityContentRepo->whereIn('id', $req['job_ids'])
+                ->where('key', config('common.activity_content.job.key'))
+                ->pluck('id');
+
+            if(empty($jobIds) || (count($req['job_ids']) != count($jobIds))) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Job description not found'
                 ], 500);
             }
 
@@ -759,7 +777,7 @@ class UserController extends Controller
             $param = [
                 'user_id' => $user->id,
                 'title' => $req['title'],
-                'job_description' => $req['job_description'],
+                'job_ids' => $req['job_ids'],
                 'start_date' => \DateTime::createFromFormat('Y-m-d', $req['start_date'])->format('Y-m-d'),
                 'end_date' => \DateTime::createFromFormat('Y-m-d', $req['end_date'])->format('Y-m-d'),
                 'is_still_active' => $req['is_still_active'],
