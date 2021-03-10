@@ -622,7 +622,7 @@ class UserController extends Controller
      *   path="/education",
      *   summary="user education",
      *   operationId="education",
-     *   tags={"User"},
+     *   tags={"Work-Education"},
      *   security={ {"token": {}} },
      *      @OA\RequestBody(
      *          @OA\MediaType(
@@ -1307,5 +1307,39 @@ class UserController extends Controller
         ]);
 
 
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/education",
+     *   summary="work education",
+     *   operationId="work-education",
+     *   tags={"Work-Education"},
+     *   security={ {"token": {}} },
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function listWorkEducation(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $data = $this->educationRepo->where('user_id', $user->id)->orderBy('id', 'DESC')
+                ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description'])
+                ->get();
+            return response()->json([
+                'status' => true,
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'data' => $e->getMessage()
+            ], 500);
+        }
     }
 }

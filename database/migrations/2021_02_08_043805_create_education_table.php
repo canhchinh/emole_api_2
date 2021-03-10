@@ -18,8 +18,8 @@ class CreateEducationTable extends Migration
             $table->integer('user_id')->nullable();
             $table->string('title')->nullable();
             $table->string('role')->nullable();
-            $table->dateTime('start_date')->nullable();
-            $table->dateTime('end_date')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->boolean('is_still_active')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
