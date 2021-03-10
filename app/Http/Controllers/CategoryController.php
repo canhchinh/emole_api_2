@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\CategoryRepository;
 use App\Repositories\ActivityContentRepository;
+
 class CategoryController extends Controller
 {
     private $categoryRepo, $activityContentRepo;

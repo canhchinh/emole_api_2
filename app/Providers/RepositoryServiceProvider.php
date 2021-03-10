@@ -40,6 +40,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\ActivityBaseRepository::class, \App\Repositories\ActivityBaseRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\FollowRepository::class, \App\Repositories\FollowRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\ActivityContentRepository::class, \App\Repositories\ActivityContentRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\PostRepository::class, \App\Repositories\PostRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\AdminRepository::class, \App\Repositories\AdminRepositoryEloquent::class);
         //:end-bindings:
     }
 }

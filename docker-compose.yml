@@ -51,8 +51,21 @@ services:
   adminer:
     image: adminer:4
     ports:
-      - 8989:8080
+      - 9999:8080
     restart: always
+    networks:
+      - app-network
+  phpmyadmin:
+    image: phpmyadmin:5
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: Chinh@123123
+    ports:
+      - 8888:80
+    depends_on:
+      - db
     networks:
       - app-network
 volumes:

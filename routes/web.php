@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('admin.auth.login');
+Route::middleware('auth')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('admin.home.index');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('admin.auth.logout');
 });

@@ -63,8 +63,14 @@ class User extends Authenticatable implements Transformable
 
     public function careers()
     {
-        return $this->belongsToMany('App\Entities\Career', 'App\Entities\UserCareer',
-            'career_id', 'user_id', 'id', 'id');
+        return $this->belongsToMany(
+            'App\Entities\Career',
+            'App\Entities\UserCareer',
+            'career_id',
+            'user_id',
+            'id',
+            'id'
+        );
     }
 
     public function activity_base()
