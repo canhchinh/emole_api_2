@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\CareerRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\UserCareerRepository;
+use App\Repositories\ActivityContentRepository;
 use Illuminate\Http\Request;
 
 class CareerController extends Controller
@@ -13,15 +14,18 @@ class CareerController extends Controller
     private $careerRepo;
     private $userCareerRepo;
     private $userRepo;
+    private $activityContentRepo;
 
     public function __construct(
         CareerRepository $careerRepo,
         UserCareerRepository $userCareerRepo,
-        UserRepository $userRepo
+        UserRepository $userRepo,
+        ActivityContentRepository $activityContentRepo
     ) {
         $this->careerRepo = $careerRepo;
         $this->userCareerRepo = $userCareerRepo;
         $this->userRepo = $userRepo;
+        $this->activityContentRepo = $activityContentRepo;
     }
     /**
      * @OA\Get(
@@ -126,5 +130,48 @@ class CareerController extends Controller
             'status' => true,
             'data' => $userInfo
         ]);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/job-description",
+     *   summary="job description",
+     *   operationId="job-description",
+     *   tags={"Job description"},
+     *   security={ {"token": {}} },
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function jobDescription(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $userCareers = $this->userCareerRepo->where('user_id', $user->id)->select(['job_ids'])->get();
+            $jobIds = [];
+            if(!empty($userCareers)) {
+                $userCareers = $userCareers->toArray();
+                foreach($userCareers as $item) {
+                    $jobIds = array_merge($jobIds, json_decode($item['job_ids']));
+                }
+            }
+            $activityContent = $this->activityContentRepo->whereIn('id', $jobIds)
+                ->where('key', config('common.activity_content.job.key'))
+                ->select(['id', 'career_id', 'title'])
+                ->get();
+            return response()->json([
+                'status' => true,
+                'data' => $activityContent
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'data' => $e->getMessage()
+            ], 500);
+        }
     }
 }

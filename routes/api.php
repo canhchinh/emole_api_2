@@ -99,5 +99,6 @@ Route::group(['prefix' => 'activity-base', 'middleware' => 'auth:sanctum'], func
 
 Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('user-career', [CareerController::class, 'userCareer']);
+    Route::get('job-description', [CareerController::class, 'jobDescription']);
 });
 
