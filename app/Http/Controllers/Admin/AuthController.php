@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Repositories\AdminRepository;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -16,7 +16,6 @@ class AuthController extends Controller
     ) {
         $this->adminRepo = $adminRepo;
     }
-
 
     /**
      * login
@@ -64,7 +63,6 @@ class AuthController extends Controller
             return view('admin.auth.forgot');
         }
     }
-
 
     /**
      * getResetPassword
