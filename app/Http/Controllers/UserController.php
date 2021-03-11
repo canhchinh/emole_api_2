@@ -869,7 +869,7 @@ class UserController extends Controller
             $userInfo['careers'] = [];
         } else {
             $careerIds = $careerIds->toArray();
-            $userInfo['careers'] = $this->careerRepository->whereIn('id', $careerIds)->get();
+            $userInfo['careers'] = $this->careerRepo->whereIn('id', $careerIds)->get();
         }
         return response()->json([
             'status' => true,
