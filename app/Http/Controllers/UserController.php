@@ -728,12 +728,14 @@ class UserController extends Controller
             $user = auth()->user();
             $req = $request->all();
             $imageUrl = [];
-            $userIds = $this->userRepo->whereIn('id', $req['member_ids'])->pluck('id');
-            if(empty($userIds) || (count($req['member_ids']) != count($userIds))) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Member not found'
-                ], 500);
+            if(!empty($req['member_ids'])) {
+                $userIds = $this->userRepo->whereIn('id', $req['member_ids'])->pluck('id');
+                if(empty($userIds) || (count($req['member_ids']) != count($userIds))) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Member not found'
+                    ], 500);
+                }
             }
 
             $jobIds  = $this->activityContentRepo->whereIn('id', $req['job_ids'])
@@ -766,7 +768,7 @@ class UserController extends Controller
             $param = [
                 'user_id' => $user->id,
                 'title' => $req['title'],
-                'job_ids' => json_encode($req['job_ids']),
+                'job_ids' => !empty($req['job_ids'])? json_encode($req['job_ids']): null,
                 'start_date' => \DateTime::createFromFormat('Y-m-d', $startDate)->format('Y-m-d'),
                 'end_date' => \DateTime::createFromFormat('Y-m-d', $endDate)->format('Y-m-d'),
                 'is_still_active' => 1,
@@ -779,7 +781,7 @@ class UserController extends Controller
                 'video_link' => $req['video_link'],
                 'work_link' => $req['work_link'],
                 'work_description' => $req['work_description'],
-                'member_ids' => json_encode($req['member_ids'])
+                'member_ids' => !empty($req['member_ids'])? json_encode($req['member_ids']): null
             ];
 
             if(!empty($imageUrl)) {
