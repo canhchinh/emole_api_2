@@ -23,13 +23,11 @@ class PortfolioRequest extends Base
     {
         return [
             'images' => 'required',
-            'member_ids' => 'required',
             'title' => 'required',
             'job_ids' => 'required',
             'start_date' => 'required',
             'end_date' => 'required',
             'is_still_active' => 'required',
-            'member' => 'required',
             'budget' => 'required',
             'reach_number' => 'required',
             'view_count' => 'required',

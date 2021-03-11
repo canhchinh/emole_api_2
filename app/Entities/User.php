@@ -66,8 +66,8 @@ class User extends Authenticatable implements Transformable
         return $this->belongsToMany(
             'App\Entities\Career',
             'App\Entities\UserCareer',
-            'career_id',
             'user_id',
+            'career_id',
             'id',
             'id'
         );
