@@ -771,7 +771,7 @@ class UserController extends Controller
                 'job_ids' => !empty($req['job_ids'])? json_encode($req['job_ids']): null,
                 'start_date' => \DateTime::createFromFormat('Y-m-d', $startDate)->format('Y-m-d'),
                 'end_date' => \DateTime::createFromFormat('Y-m-d', $endDate)->format('Y-m-d'),
-                'is_still_active' => 1,
+                'is_still_active' => $req['is_still_active'],
                 'budget' => $req['budget'],
                 'reach_number' => $req['reach_number'],
                 'view_count' => $req['view_count'],
