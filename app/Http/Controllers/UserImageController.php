@@ -103,7 +103,7 @@ class UserImageController extends Controller
             }
             return response()->json([
                 'status' => true,
-                'data' => $images
+                'data' => $images,
             ]);
         } catch (\Exception $e) {
             return response()->json([

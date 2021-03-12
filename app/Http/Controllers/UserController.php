@@ -17,6 +17,8 @@ use App\Http\Requests\UpdateEmailRequest;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Jobs\SendMailResetPassword;
 use App\Repositories\ActivityBaseRepository;
+use App\Repositories\ActivityContentRepository;
+use App\Repositories\CareerRepository;
 use App\Repositories\EducationRepository;
 use App\Repositories\FollowRepository;
 use App\Repositories\PortfolioRepository;
@@ -25,9 +27,6 @@ use App\Repositories\UserCategoryRepository;
 use App\Repositories\UserGenreRepository;
 use App\Repositories\UserJobRepository;
 use App\Repositories\UserRepository;
-use App\Repositories\CareerRepository;
-use App\Repositories\ActivityContentRepository;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -243,6 +242,7 @@ class UserController extends Controller
         $data = $request->all();
         $user = auth()->user();
         $file = $request->avatar;
+        \Log::info('start ');
         if (!empty($file)) {
             $extension = explode('/', mime_content_type($file))[1];
             $path = 'user/';
@@ -250,6 +250,7 @@ class UserController extends Controller
                 $fileName = $this->saveImgBase64($file, $path, $user->id);
                 $url = '/storage/' . $path . $fileName;
                 $user->avatar = $url;
+                \Log::info('end ' . $url);
             }
         }
 
@@ -538,7 +539,7 @@ class UserController extends Controller
             if (empty($career)) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Career not found'
+                    'message' => 'Career not found',
                 ], config('common.status_code.500'));
             }
             $activityContent = $this->activityContentRepo->where('career_id', $careerId)
@@ -546,7 +547,7 @@ class UserController extends Controller
             if (empty($activityContent)) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Some thing wrong'
+                    'message' => 'Some thing wrong',
                 ], config('common.status_code.500'));
             }
             $categoryIdsDb = [];
@@ -568,26 +569,26 @@ class UserController extends Controller
             if (!empty(array_diff($categoryIds, $categoryIdsDb))) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Category not found'
+                    'message' => 'Category not found',
                 ], config('common.status_code.500'));
             }
             if (!empty(array_diff($jobIds, $jobIdsDb))) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Job not found'
+                    'message' => 'Job not found',
                 ], config('common.status_code.500'));
             }
             if (!empty(array_diff($genreIds, $genreIdsDb))) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Genre not found'
+                    'message' => 'Genre not found',
                 ], config('common.status_code.500'));
             }
             $param = [
                 'category_ids' => json_encode($categoryIds),
                 'job_ids' => json_encode($jobIds),
                 'genre_ids' => json_encode($genreIds),
-                'tags' => $tags
+                'tags' => $tags,
             ];
 
             $this->userCareerRepo->where('user_id', $user->id)
@@ -599,7 +600,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], config('common.status_code.500'));
         }
     }
@@ -639,7 +640,6 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-
 
     public function education(Request $request)
     {
@@ -731,19 +731,19 @@ class UserController extends Controller
                 if (empty($userIds) || (count($req['member_ids']) != count($userIds))) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Member not found'
+                        'message' => 'Member not found',
                     ], 500);
                 }
             }
 
-            $jobIds  = $this->activityContentRepo->whereIn('id', $req['job_ids'])
+            $jobIds = $this->activityContentRepo->whereIn('id', $req['job_ids'])
                 ->where('key', config('common.activity_content.job.key'))
                 ->pluck('id');
 
             if (empty($jobIds) || (count($req['job_ids']) != count($jobIds))) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Job description not found'
+                    'message' => 'Job description not found',
                 ], 500);
             }
 
@@ -779,7 +779,7 @@ class UserController extends Controller
                 'video_link' => $req['video_link'],
                 'work_link' => $req['work_link'],
                 'work_description' => $req['work_description'],
-                'member_ids' => !empty($req['member_ids']) ? json_encode($req['member_ids']) : null
+                'member_ids' => !empty($req['member_ids']) ? json_encode($req['member_ids']) : null,
             ];
 
             if (!empty($imageUrl)) {
@@ -789,16 +789,16 @@ class UserController extends Controller
             if (empty($portfolio)) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Fail'
+                    'message' => 'Fail',
                 ], 500);
             }
             return response()->json([
-                'status' => true
+                'status' => true,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -1151,7 +1151,7 @@ class UserController extends Controller
     public function postFollow(FollowRequest $request)
     {
         $data = $request->all([
-            'target_id', 'status'
+            'target_id', 'status',
         ]);
 
         $owner = auth()->user();
@@ -1164,12 +1164,12 @@ class UserController extends Controller
         } elseif ($data['status'] == 'FOLLOW' && empty($record->id)) {
             $this->followRepo->create([
                 'user_id' => $owner->id,
-                'target_id' => $data['target_id']
+                'target_id' => $data['target_id'],
             ]);
         }
 
         return response()->json([
-            'status' => true
+            'status' => true,
         ]);
     }
 
@@ -1196,7 +1196,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => $list
+            'data' => $list,
         ]);
     }
 
@@ -1223,7 +1223,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => $list
+            'data' => $list,
         ]);
     }
 
@@ -1285,14 +1285,14 @@ class UserController extends Controller
         $user = $this->userRepo->listUsers($filters, $page, $limit);
 
         return response()->json([
-            'status'     => true,
-            'data'       => $user['data'],
+            'status' => true,
+            'data' => $user['data'],
             'pagination' => [
-                'total'        => $user['total'],
-                'per_page'     => (int)$user['per_page'],
+                'total' => $user['total'],
+                'per_page' => (int) $user['per_page'],
                 'current_page' => $user['current_page'],
-                'total_page'   => $user['last_page']
-            ]
+                'total_page' => $user['last_page'],
+            ],
         ]);
     }
 
@@ -1320,12 +1320,12 @@ class UserController extends Controller
                 ->get();
             return response()->json([
                 'status' => true,
-                'data' => $data
+                'data' => $data,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'data' => $e->getMessage()
+                'data' => $e->getMessage(),
             ], 500);
         }
     }
@@ -1354,7 +1354,7 @@ class UserController extends Controller
             if (empty($portfolio)) {
                 return response()->json([
                     'status' => true,
-                    'data' => []
+                    'data' => [],
                 ]);
             }
             $memberIds = json_decode($portfolio->member_ids);
@@ -1378,12 +1378,12 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => true,
-                'data' => $portfolio
+                'data' => $portfolio,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'data' => $e->getMessage()
+                'data' => $e->getMessage(),
             ], 500);
         }
     }
