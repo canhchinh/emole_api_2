@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost/api",
+            "url": "https://emole-api.t4code.xyz/api",
             "description": "Emole API Server"
         }
     ],
@@ -1605,9 +1605,71 @@
             }
         },
         "/education": {
+            "get": {
+                "tags": [
+                    "Work-Education"
+                ],
+                "summary": "work education",
+                "operationId": "work-education",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
             "post": {
                 "tags": [
-                    "User"
+                    "Work-Education"
                 ],
                 "summary": "user education",
                 "operationId": "education",
@@ -1716,6 +1778,68 @@
             }
         },
         "/portfolio": {
+            "get": {
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "portfolio detail",
+                "operationId": "portfolio-detail",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
             "post": {
                 "tags": [
                     "Portfolio"
@@ -1744,25 +1868,23 @@
                                         "type": "string",
                                         "example": "Drum advertisement"
                                     },
-                                    "job_description": {
-                                        "type": "string",
-                                        "example": "CM"
+                                    "job_ids[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
                                     },
                                     "start_date": {
                                         "type": "string",
-                                        "example": "2020-10-20"
+                                        "example": "2006-01"
                                     },
                                     "end_date": {
                                         "type": "string",
-                                        "example": "2022-10-20"
+                                        "example": "2006-02"
                                     },
                                     "is_still_active": {
                                         "type": "boolean",
                                         "example": true
-                                    },
-                                    "member": {
-                                        "type": "string",
-                                        "example": "Masakazu Hattori"
                                     },
                                     "budget": {
                                         "type": "string",
