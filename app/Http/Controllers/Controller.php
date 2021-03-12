@@ -58,13 +58,10 @@ class Controller extends BaseController
         $newFileName = $idUser . '_' . $fileName;
 
         if ($group) {
-            \Log::info('group ');
             $storage->put($folder . '/group/' . $newFileName, base64_decode($content), 'public');
         } else {
-            \Log::info('avatar ');
             $storage->put($folder . '/' . $newFileName, base64_decode($content), 'public');
         }
-        \Log::info('file Name ', $newFileName);
         return $newFileName;
     }
 }

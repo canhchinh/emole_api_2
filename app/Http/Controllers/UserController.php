@@ -242,7 +242,6 @@ class UserController extends Controller
         $data = $request->all();
         $user = auth()->user();
         $file = $request->avatar;
-        \Log::info('start ');
         if (!empty($file)) {
             $extension = explode('/', mime_content_type($file))[1];
             $path = 'user/';
@@ -250,7 +249,6 @@ class UserController extends Controller
                 $fileName = $this->saveImgBase64($file, $path, $user->id);
                 $url = '/storage/' . $path . $fileName;
                 $user->avatar = $url;
-                \Log::info('end ' . $url);
             }
         }
 
