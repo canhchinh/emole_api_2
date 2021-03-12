@@ -42,7 +42,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected function saveImgBase64($param, $folder)
+    protected function saveImgBase64($param, $folder, $idUser, $group = false)
     {
         list($extension, $content) = explode(';', $param);
         $tmpExtension = explode('/', $extension);
@@ -55,9 +55,13 @@ class Controller extends BaseController
         if (!$checkDirectory) {
             $storage->makeDirectory($folder);
         }
+        $newFileName = $idUser . '_' . $fileName;
 
-        $storage->put($folder . '/' . $fileName, base64_decode($content), 'public');
-        \Log::info('aaaa ' . $fileName);
-        return $fileName;
+        if ($group) {
+            $storage->put($folder . '/group/' . $newFileName, base64_decode($content), 'public');
+        } else {
+            $storage->put($folder . '/' . $newFileName, base64_decode($content), 'public');
+        }
+        return $newFileName;
     }
 }

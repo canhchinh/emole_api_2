@@ -51,13 +51,12 @@ class UserImageController extends Controller
         try {
             $user = $request->user();
             $files = $request->images;
-            foreach ($files as $k => $file) {
+            foreach ($files as $file) {
                 $extension = explode('/', mime_content_type($file))[1];
                 if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
-                    $fileName = time() + $k;
-                    $path = 'user/' . $user->id . '/' . $fileName . '.' . $extension;
-                    $this->saveImgBase64($file, $path);
-                    $url = '/storage/' . $path;
+                    $path = 'user/';
+                    $fileName = $this->saveImgBase64($file, $path, $user->id, true);
+                    $url = '/storage/' . $path . 'group/' . $fileName;
                     $this->userImageRepo->create([
                         'user_id' => $user->id,
                         'url' => $url,
@@ -97,9 +96,9 @@ class UserImageController extends Controller
             $data = [];
             $images = $this->userImageRepo->where('user_id', $user->id)
                 ->select(['id', 'url'])->get();
-            if(!empty($images)) {
+            if (!empty($images)) {
                 $images->map(function ($value) {
-                    $value->url = config('common.app_url').$value->url;
+                    $value->url = config('common.app_url') . $value->url;
                 });
             }
             return response()->json([

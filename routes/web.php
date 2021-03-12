@@ -23,6 +23,5 @@ Route::post('/reset-password', [AuthController::class, 'postResetPassword'])->na
 Route::middleware('auth')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('admin.home.index');
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.auth.logout');
-
 });
 Route::get('/list-users', [UsersController::class, 'index'])->name('admin.users.list');

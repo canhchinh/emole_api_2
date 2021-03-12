@@ -72,7 +72,6 @@ class UserController extends Controller
         $this->followRepo = $followRepo;
         $this->careerRepo = $careerRepo;
         $this->activityContentRepo = $activityContentRepo;
-
     }
 
     /**
@@ -246,16 +245,16 @@ class UserController extends Controller
         $file = $request->avatar;
         if (!empty($file)) {
             $extension = explode('/', mime_content_type($file))[1];
-            $path = 'user/' . $user->id . '_' . time() . '.' . $extension;
+            $path = 'user/';
             if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
-                $this->saveImgBase64($file, $path);
-                $url = '/storage/' . $path;
+                $fileName = $this->saveImgBase64($file, $path, $user->id);
+                $url = '/storage/' . $path . $fileName;
                 $user->avatar = $url;
             }
         }
 
         $activityBase = $this->activityBaseRepo->where('id', $data['activity_base_id'])->first();
-        if(empty($activityBase)) {
+        if (empty($activityBase)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Activity base not found',
@@ -479,7 +478,6 @@ class UserController extends Controller
                 'user' => $e->getMessage(),
             ], config('common.status_code.500'));
         }
-
     }
     /**
      * @OA\Post(
@@ -537,7 +535,7 @@ class UserController extends Controller
             $genreIds = $request->input('genre_ids');
             $tags = $request->input('tags');
             $career = $this->careerRepo->where('id', $careerId)->first();
-            if(empty($career)) {
+            if (empty($career)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Career not found'
@@ -545,7 +543,7 @@ class UserController extends Controller
             }
             $activityContent = $this->activityContentRepo->where('career_id', $careerId)
                 ->select(['id', 'key'])->get();
-            if(empty($activityContent)) {
+            if (empty($activityContent)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Some thing wrong'
@@ -555,31 +553,31 @@ class UserController extends Controller
             $jobIdsDb = [];
             $genreIdsDb = [];
             $activityContent = $activityContent->toArray();
-            foreach($activityContent as $item) {
-                if($item['key'] == config('common.activity_content.category.key')) {
+            foreach ($activityContent as $item) {
+                if ($item['key'] == config('common.activity_content.category.key')) {
                     array_push($categoryIdsDb, $item['id']);
                 }
-                if($item['key'] == config('common.activity_content.job.key')) {
+                if ($item['key'] == config('common.activity_content.job.key')) {
                     array_push($jobIdsDb, $item['id']);
                 }
-                if($item['key'] == config('common.activity_content.genre.key')) {
+                if ($item['key'] == config('common.activity_content.genre.key')) {
                     array_push($genreIdsDb, $item['id']);
                 }
             }
 
-            if(!empty(array_diff($categoryIds, $categoryIdsDb))) {
+            if (!empty(array_diff($categoryIds, $categoryIdsDb))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Category not found'
                 ], config('common.status_code.500'));
             }
-            if(!empty(array_diff($jobIds, $jobIdsDb))) {
+            if (!empty(array_diff($jobIds, $jobIdsDb))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Job not found'
                 ], config('common.status_code.500'));
             }
-            if(!empty(array_diff($genreIds, $genreIdsDb))) {
+            if (!empty(array_diff($genreIds, $genreIdsDb))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Genre not found'
@@ -647,7 +645,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $req = $request->all();
-        foreach($req['data'] as $item) {
+        foreach ($req['data'] as $item) {
             $param = [
                 'user_id' => $user->id,
                 'title' => $item['title'],
@@ -728,9 +726,9 @@ class UserController extends Controller
             $user = auth()->user();
             $req = $request->all();
             $imageUrl = [];
-            if(!empty($req['member_ids'])) {
+            if (!empty($req['member_ids'])) {
                 $userIds = $this->userRepo->whereIn('id', $req['member_ids'])->pluck('id');
-                if(empty($userIds) || (count($req['member_ids']) != count($userIds))) {
+                if (empty($userIds) || (count($req['member_ids']) != count($userIds))) {
                     return response()->json([
                         'status' => false,
                         'message' => 'Member not found'
@@ -742,16 +740,16 @@ class UserController extends Controller
                 ->where('key', config('common.activity_content.job.key'))
                 ->pluck('id');
 
-            if(empty($jobIds) || (count($req['job_ids']) != count($jobIds))) {
+            if (empty($jobIds) || (count($req['job_ids']) != count($jobIds))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Job description not found'
                 ], 500);
             }
 
-            if($request->hasFile('images')) {
+            if ($request->hasFile('images')) {
                 $files = $request->file('images');
-                foreach($files as $k=>$file) {
+                foreach ($files as $k => $file) {
                     $extension = $file->getClientOriginalExtension();
                     if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
                         $imageName = time() + $k;
@@ -762,13 +760,13 @@ class UserController extends Controller
                     }
                 }
             }
-            $startDate = $req['start_date'].'-01';
-            $endDate = $req['end_date'].'-01';
+            $startDate = $req['start_date'] . '-01';
+            $endDate = $req['end_date'] . '-01';
 
             $param = [
                 'user_id' => $user->id,
                 'title' => $req['title'],
-                'job_ids' => !empty($req['job_ids'])? json_encode($req['job_ids']): null,
+                'job_ids' => !empty($req['job_ids']) ? json_encode($req['job_ids']) : null,
                 'start_date' => \DateTime::createFromFormat('Y-m-d', $startDate)->format('Y-m-d'),
                 'end_date' => \DateTime::createFromFormat('Y-m-d', $endDate)->format('Y-m-d'),
                 'is_still_active' => $req['is_still_active'],
@@ -781,14 +779,14 @@ class UserController extends Controller
                 'video_link' => $req['video_link'],
                 'work_link' => $req['work_link'],
                 'work_description' => $req['work_description'],
-                'member_ids' => !empty($req['member_ids'])? json_encode($req['member_ids']): null
+                'member_ids' => !empty($req['member_ids']) ? json_encode($req['member_ids']) : null
             ];
 
-            if(!empty($imageUrl)) {
+            if (!empty($imageUrl)) {
                 $param['image'] = json_encode($imageUrl);
             }
             $portfolio = $this->portfolioRepo->updateOrCreate(['user_id' => $user->id], $param);
-            if(empty($portfolio)) {
+            if (empty($portfolio)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Fail'
@@ -803,7 +801,6 @@ class UserController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
-
     }
 
     /**
@@ -867,11 +864,12 @@ class UserController extends Controller
         $user = auth()->user();
         $userInfo = $this->userRepo->where('id', $user->id)->first();
         $careerIds = $this->userCareerRepo->where('user_id', $user->id)->pluck('career_id');
-        if(empty($careerIds)) {
+        if (empty($careerIds)) {
             $userInfo['careers'] = [];
         } else {
             $careerIds = $careerIds->toArray();
             $userInfo['careers'] = $this->careerRepo->whereIn('id', $careerIds)->get();
+            $userInfo->avatar = config('common.app_url') . $userInfo->avatar;
         }
         return response()->json([
             'status' => true,
@@ -1161,7 +1159,7 @@ class UserController extends Controller
             ->where('target_id', $data['target_id'])
             ->first();
 
-        if($data['status'] == 'UNFOLLOW' && !empty($record->id)) {
+        if ($data['status'] == 'UNFOLLOW' && !empty($record->id)) {
             $record->delete();
         } elseif ($data['status'] == 'FOLLOW' && empty($record->id)) {
             $this->followRepo->create([
@@ -1274,13 +1272,13 @@ class UserController extends Controller
         $page = 1;
         $filters = [];
         $limit = 10;
-        if(!empty($req['current_page'])) {
+        if (!empty($req['current_page'])) {
             $page = $req['current_page'];
         }
-        if(!empty($req['keyword'])) {
+        if (!empty($req['keyword'])) {
             $filters['keyword'] = $req['keyword'];
         }
-        if(!empty($req['limit'])) {
+        if (!empty($req['limit'])) {
             $limit = $req['limit'];
         }
 
@@ -1296,8 +1294,6 @@ class UserController extends Controller
                 'total_page'   => $user['last_page']
             ]
         ]);
-
-
     }
 
     /**
@@ -1355,21 +1351,21 @@ class UserController extends Controller
             $user = $request->user();
             $portfolio = $this->portfolioRepo->where('user_id', $user->id)
                 ->first();
-            if(empty($portfolio)) {
+            if (empty($portfolio)) {
                 return response()->json([
                     'status' => true,
                     'data' => []
                 ]);
             }
             $memberIds = json_decode($portfolio->member_ids);
-            if(!empty($memberIds)) {
+            if (!empty($memberIds)) {
                 $members = $this->userRepo->whereIn('id', $memberIds)
                     ->select(['id', 'user_name', 'given_name', 'email', 'title', 'gender', 'avatar'])
                     ->get();
                 $portfolio['members'] = $members;
             }
             $jobIds = json_decode($portfolio->job_ids);
-            if(!empty($jobIds)) {
+            if (!empty($jobIds)) {
                 $jobs = $this->activityContentRepo->whereIn('id', $jobIds)
                     ->where('key', config('common.activity_content.job.key'))
                     ->select(['id', 'title'])
