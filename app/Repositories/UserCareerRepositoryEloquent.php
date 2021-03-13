@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\UserCareerRepository;
 use App\Entities\UserCareer;
-use App\Validators\UserCareerValidator;
+use App\Repositories\UserCareerRepository;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class UserCareerRepositoryEloquent.
@@ -25,8 +24,6 @@ class UserCareerRepositoryEloquent extends BaseRepository implements UserCareerR
         return UserCareer::class;
     }
 
-    
-
     /**
      * Boot up the repository, pushing criteria
      */
@@ -34,5 +31,5 @@ class UserCareerRepositoryEloquent extends BaseRepository implements UserCareerR
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

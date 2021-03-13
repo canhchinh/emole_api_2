@@ -3,26 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\ActivityBaseRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\UserCareerRepository;
 use App\Repositories\ActivityContentRepository;
+use App\Repositories\CareerRepository;
+use App\Repositories\UserCareerRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
 {
 
-    private $activityRepo, $userRepo, $userCareerRepo, $activityContentRepo;
+    private $activityRepo, $userRepo, $userCareerRepo, $activityContentRepo, $careerRepo;
 
     public function __construct(
         ActivityBaseRepository $activityRepo,
         UserRepository $userRepo,
         UserCareerRepository $userCareerRepo,
-        ActivityContentRepository $activityContentRepo
+        ActivityContentRepository $activityContentRepo,
+        CareerRepository $careerRepo
     ) {
         $this->activityRepo = $activityRepo;
         $this->userRepo = $userRepo;
         $this->userCareerRepo = $userCareerRepo;
         $this->activityContentRepo = $activityContentRepo;
+        $this->careerRepo = $careerRepo;
     }
     /**
      * @OA\Get(
@@ -78,15 +81,17 @@ class ActivityController extends Controller
         $user = auth()->user();
         $userCareer = $this->userCareerRepo->where([
             'user_id' => $user->id,
-            'career_id' => $careerId
+            'career_id' => $careerId,
         ])
-        ->first();
-        if(empty($userCareer)) {
+            ->first();
+        $titleCareer = $this->careerRepo->where('id', $careerId)->first();
+        if (empty($userCareer)) {
             return response()->json([
                 'status' => false,
-                'message' => 'Career not found'
+                'message' => 'Career not found',
             ], 500);
         }
+        $userCareer['career_title'] = $titleCareer->title;
         $categories = $this->activityContentRepo->where('career_id', $careerId)
             ->whereIn('id', json_decode($userCareer->category_ids))->get();
         $userCareer['categories'] = $categories;
