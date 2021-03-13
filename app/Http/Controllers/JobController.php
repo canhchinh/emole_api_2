@@ -45,7 +45,7 @@ class JobController extends Controller
      */
     public function listJob(Request $request, $careerId)
     {
-        $job = $this->activityContentRepo->where('key', config('common.activity_content.job.key'))
+        $job = $this->activityContentRepo->where('key', 'job')
             ->where('career_id', $careerId)
             ->select(['id', 'career_id', 'title'])
             ->get();

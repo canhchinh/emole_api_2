@@ -553,13 +553,13 @@ class UserController extends Controller
             $genreIdsDb = [];
             $activityContent = $activityContent->toArray();
             foreach ($activityContent as $item) {
-                if ($item['key'] == config('common.activity_content.category.key')) {
+                if ($item['key'] == 'category') {
                     array_push($categoryIdsDb, $item['id']);
                 }
-                if ($item['key'] == config('common.activity_content.job.key')) {
+                if ($item['key'] == 'job') {
                     array_push($jobIdsDb, $item['id']);
                 }
-                if ($item['key'] == config('common.activity_content.genre.key')) {
+                if ($item['key'] == 'genre') {
                     array_push($genreIdsDb, $item['id']);
                 }
             }
@@ -735,7 +735,7 @@ class UserController extends Controller
             }
 
             $jobIds = $this->activityContentRepo->whereIn('id', $req['job_ids'])
-                ->where('key', config('common.activity_content.job.key'))
+                ->where('key', 'job')
                 ->pluck('id');
 
             if (empty($jobIds) || (count($req['job_ids']) != count($jobIds))) {
@@ -1365,7 +1365,7 @@ class UserController extends Controller
             $jobIds = json_decode($portfolio->job_ids);
             if (!empty($jobIds)) {
                 $jobs = $this->activityContentRepo->whereIn('id', $jobIds)
-                    ->where('key', config('common.activity_content.job.key'))
+                    ->where('key', 'job')
                     ->select(['id', 'title'])
                     ->get();
                 $portfolio['jobs'] = $jobs;
