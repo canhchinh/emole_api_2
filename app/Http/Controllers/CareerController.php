@@ -150,17 +150,8 @@ class CareerController extends Controller
     public function jobDescription(Request $request)
     {
         try {
-            $user = auth()->user();
-            $userCareers = $this->userCareerRepo->where('user_id', $user->id)->select(['job_ids'])->get();
-            $jobIds = [];
-            if(!empty($userCareers)) {
-                $userCareers = $userCareers->toArray();
-                foreach($userCareers as $item) {
-                    $jobIds = array_merge($jobIds, json_decode($item['job_ids']));
-                }
-            }
-            $activityContent = $this->activityContentRepo->whereIn('id', $jobIds)
-                ->where('key', config('common.activity_content.job.key'))
+            // list all job description
+            $activityContent = $this->activityContentRepo->where('key', 'job')
                 ->select(['id', 'career_id', 'title'])
                 ->get();
             return response()->json([

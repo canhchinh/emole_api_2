@@ -44,7 +44,7 @@ class CategoryController extends Controller
 
     public function listCategory($careerId)
     {
-        $category = $this->activityContentRepo->where('key', config('common.activity_content.category.key'))
+        $category = $this->activityContentRepo->where('key', 'category')
             ->where('career_id', $careerId)
             ->select(['id', 'career_id', 'title'])
             ->get();

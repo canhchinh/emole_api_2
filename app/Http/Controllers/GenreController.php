@@ -45,7 +45,7 @@ class GenreController extends Controller
     public function listGenre($careerId)
     {
         $genre = $this->activityContentRepo->where('career_id', $careerId)
-            ->where('key', config('common.activity_content.genre.key'))
+            ->where('key', 'genre')
             ->select(['id', 'career_id', 'title'])->get();
         return response()->json([
             'status' => true,

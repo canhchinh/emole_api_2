@@ -37,7 +37,7 @@ class SnsController extends Controller
      */
     public function listSns()
     {
-        $category = $this->activityContentRepo->where('key', config('common.activity_content.sns.key'))
+        $category = $this->activityContentRepo->where('key', 'sns')
             ->select(['id', 'title'])->get();
         return response()->json([
             'status' => true,
