@@ -151,7 +151,7 @@ class CareerController extends Controller
     {
         try {
             // list all job description
-            $activityContent = $this->activityContentRepo->where('key', config('common.activity_content.job.key'))
+            $activityContent = $this->activityContentRepo->where('key', 'job')
                 ->select(['id', 'career_id', 'title'])
                 ->get();
             return response()->json([
