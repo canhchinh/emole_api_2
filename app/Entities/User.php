@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Entities\ActivityBase;
+use App\Entities\Portfolio;
 
 /**
  * Class User.
@@ -76,5 +77,10 @@ class User extends Authenticatable implements Transformable
     public function activity_base()
     {
         return $this->hasOne(ActivityBase::class, 'id', 'activity_base_id');
+    }
+
+    public function portfolio()
+    {
+        return $this->hasOne(Portfolio::class, 'user_id', 'id');
     }
 }

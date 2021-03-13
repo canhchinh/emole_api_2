@@ -38,7 +38,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
     public function listUsers($filters = [],$page = 1, $limit=10)
     {
-        $users = User::select(['id', 'user_name', 'given_name', 'email', 'avatar']);
+        $users = User::select('*')->with(['activity_base', 'portfolio']);
         if(!empty($filters['keyword'])) {
             $users->where('user_name', 'like', '%'.$filters['keyword'].'%')
             ->orWhere('given_name', 'like', '%'.$filters['keyword'].'%');
