@@ -1335,6 +1335,15 @@ class UserController extends Controller
      *   operationId="portfolio-detail",
      *   tags={"Portfolio"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="User id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -1346,7 +1355,22 @@ class UserController extends Controller
     public function portfolioDetail(Request $request)
     {
         try {
-            $user = $request->user();
+            $req = $request->all();
+            $portfolioOwner = true;
+            if(!empty($req['id'])) {
+                $portfolioOwner = false;
+                $user = $this->userRepo->where('id', $req['id'])->first();
+            }
+            else {
+                $user = $request->user();
+            }
+            if(empty($user)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found',
+                ], 500);
+            }
+
             $portfolio = $this->portfolioRepo->where('user_id', $user->id)
                 ->first();
             if (empty($portfolio)) {
@@ -1354,6 +1378,12 @@ class UserController extends Controller
                     'status' => true,
                     'data' => [],
                 ]);
+            }
+            if(!$portfolio->is_public && !$portfolioOwner) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Permission',
+                ], 401);
             }
             $memberIds = json_decode($portfolio->member_ids);
             if (!empty($memberIds)) {
