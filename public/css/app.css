@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);
+@import url(https://fonts.googleapis.com/css?family=Noto+Sans+JP);
 @charset "UTF-8";
 /*!
  * Bootstrap v4.6.0 (https://getbootstrap.com/)
@@ -10002,6 +10003,118 @@ h3 {
     border-color: #dee2e6;
   }
 }
+.wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #FFFFFF;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  font-family: "Noto Sans JP", sans-serif;
+  padding-left: 220px;
+  padding-right: 220px;
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+@media (max-width: 991px) {
+  .wrapper {
+    box-shadow: unset;
+    border-radius: unset;
+  }
+}
+.wrapper .logo {
+  margin-top: 0px;
+  margin-bottom: 17px;
+  display: flex;
+  justify-content: center;
+}
+.wrapper .title {
+  font-size: 20px;
+  line-height: 28.96px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0px;
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 28px;
+}
+.wrapper .form .contain {
+  width: 335px;
+  margin-top: 0px;
+  margin-bottom: 12px;
+}
+@media (max-width: 321px) {
+  .wrapper .form .contain {
+    width: 300px;
+  }
+}
+.wrapper .form .contain label {
+  font-size: 12px;
+  line-height: 17.38px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0px;
+  text-align: left;
+  color: #050518;
+}
+.wrapper .form .contain input {
+  padding: 20px 0 12.5px;
+  font-size: 15px;
+  line-height: 22px;
+  color: #050518;
+  border: none;
+  outline: 0;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  transition: all 0.25s ease-in-out;
+  font-weight: 400;
+  width: 100%;
+  border-bottom: 0.5px solid #E7E7E7;
+}
+.wrapper .form .contain input::-moz-placeholder {
+  color: #E7E7E7;
+  font-weight: 400;
+}
+.wrapper .form .contain input:-ms-input-placeholder {
+  color: #E7E7E7;
+  font-weight: 400;
+}
+.wrapper .form .contain input::placeholder {
+  color: #E7E7E7;
+  font-weight: 400;
+}
+.wrapper .form .contain input:focus {
+  outline: 0;
+}
+.wrapper .form .contain input::-webkit-outer-spin-button, .wrapper .form .contain input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+.wrapper .form .footer {
+  margin-top: 36px;
+  margin-bottom: 0px;
+  text-align: center;
+}
+.wrapper .form .footer button {
+  font-size: 14px;
+  line-height: 20px;
+  height: 44px;
+  width: 152px;
+  border-radius: 40px;
+  background: #5332A5;
+  outline: 0;
+  color: #FFFFFF;
+  font-family: Noto Sans JP;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0px;
+  text-align: center;
+  border: unset;
+  cursor: pointer;
+}
+
 html, body {
   font-family: "Noto Sans JP", sans-serif;
   font-size: 12px;

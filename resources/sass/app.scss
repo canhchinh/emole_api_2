@@ -1,11 +1,20 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+JP');
 
 // Variables
 @import 'variables';
 
+//common
+@import 'mixins.scss';
+@import 'breakpoint.scss';
+
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+// pages
+@import 'login';
+
 
 
 html, body{
