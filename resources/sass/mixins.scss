@@ -1,0 +1,51 @@
+@mixin py($pt: 0, $pb: 0) {
+    padding-top: $pt + px;
+    padding-bottom: $pb + px;
+}
+
+@mixin px($pl: 0, $pr: 0) {
+    padding-left: $pl + px;
+    padding-right: $pr + px;
+}
+
+@mixin my($mt: 0, $mb: 0) {
+    margin-top: $mt + px;
+    margin-bottom: $mb + px;
+}
+
+@mixin mx($ml: 0, $mr: 0) {
+    margin-left: $ml + px;
+    margin-right: $mr + px;
+}
+
+@mixin styleText() {
+    &-left {
+        text-align: left;
+    }
+
+    &-center {
+        text-align: center;
+    }
+
+    &-right {
+        text-align: right;
+    }
+
+    &-uppercase {
+        text-transform: uppercase;
+    }
+
+    &-capitalize {
+        text-transform: capitalize;
+    }
+
+    &-lowercase {
+        text-transform: lowercase;
+    }
+}
+
+@mixin fontBase($fs: 1, $lh: 1) {
+    font-size: $fs + px;
+    line-height: $lh + px;
+}
+
