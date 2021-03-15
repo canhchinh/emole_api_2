@@ -25,6 +25,7 @@ use App\Repositories\PortfolioRepository;
 use App\Repositories\UserCareerRepository;
 use App\Repositories\UserCategoryRepository;
 use App\Repositories\UserGenreRepository;
+use App\Repositories\UserImageRepository;
 use App\Repositories\UserJobRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -33,7 +34,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Mockery\Exception;
-use App\Repositories\UserImageRepository;
 
 class UserController extends Controller
 {
@@ -1318,7 +1318,7 @@ class UserController extends Controller
     {
         try {
             $user = $request->user();
-            $data = $this->educationRepo->where('user_id', $user->id)->orderBy('id', 'DESC')
+            $data = $this->educationRepo->where('user_id', $user->id)->orderBy('start_date', 'DESC')
                 ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description'])
                 ->get();
             return response()->json([
@@ -1362,14 +1362,13 @@ class UserController extends Controller
         try {
             $req = $request->all();
             $portfolioOwner = true;
-            if(!empty($req['id'])) {
+            if (!empty($req['id'])) {
                 $portfolioOwner = false;
                 $user = $this->userRepo->where('id', $req['id'])->first();
-            }
-            else {
+            } else {
                 $user = $request->user();
             }
-            if(empty($user)) {
+            if (empty($user)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'User not found',
@@ -1384,7 +1383,7 @@ class UserController extends Controller
                     'data' => [],
                 ]);
             }
-            if(!$portfolio->is_public && !$portfolioOwner) {
+            if (!$portfolio->is_public && !$portfolioOwner) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Permission',
@@ -1477,17 +1476,16 @@ class UserController extends Controller
             $removeImageIds = $req['remove_image_ids'];
             $images = $req['images'];
             $careerIds = $req['career_ids'];
-            if(!empty($removeImageIds)) {
+            if (!empty($removeImageIds)) {
                 $imageUrls = $this->userImageRepo->whereIn('id', $removeImageIds)
                     ->where('user_id', $user->id)
                     ->get();
-                if(empty($imageUrls)) {
+                if (empty($imageUrls)) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Image not found'
+                        'message' => 'Image not found',
                     ], 500);
                 }
-
 
                 $this->userImageRepo->whereIn('id', $removeImageIds)
                     ->where('user_id', $user->id)
