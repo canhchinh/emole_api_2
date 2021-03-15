@@ -6,7 +6,9 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\FollowRepository;
 use App\Entities\Follow;
+use App\Entities\User;
 use App\Validators\FollowValidator;
+use Illuminate\Pagination\Paginator;
 
 /**
  * Class FollowRepositoryEloquent.
@@ -53,21 +55,26 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
         return $query->paginate(config('common.paging'));
     }
 
-    public function getListFollowerByUser($userId)
+    public function getListFollowerByUser($userId, $page, $limit)
     {
-        $query = $this->join('users', 'users.id', '=', 'follows.target_id')
-            ->where('follows.target_id', $userId)
-            ->selectRaw("
-                users.id,
-                users.gender,
-                users.given_name,
-                users.title,
-                users.profession,
-                users.self_introduction,
-                users.avatar,
-                users.birthday
-            ");
+        $query = $this->where('user_id', $userId)->select(['id', 'user_id', 'target_id']);
 
-        return $query->paginate(config('common.paging'));
+        if ($page >= 1) {
+            Paginator::currentPageResolver(function () use ($page) {
+                return $page;
+            });
+        }
+
+        $query = $query->paginate($limit);
+        $targetIds = [];
+        $data = $query->toArray();
+
+        foreach($data['data'] as $item) {
+            array_push($targetIds, $item['target_id']);
+        }
+        $followers = User::whereIn('id', $targetIds)->get();
+        $data['data'] = $followers;
+
+        return $data;
     }
 }

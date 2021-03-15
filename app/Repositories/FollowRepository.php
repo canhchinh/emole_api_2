@@ -11,8 +11,8 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface FollowRepository extends RepositoryInterface
 {
-    public function getListFollowByUser(int $userId);
+    public function getListFollowByUser($userId);
 
-    public function getListFollowerByUser(int $userId);
+    public function getListFollowerByUser($userId, $page, $limit);
 
 }

@@ -1210,6 +1210,22 @@ class UserController extends Controller
      *   operationId="get_list_follower_by_user",
      *   tags={"User"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="current_page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="limit",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -1218,11 +1234,20 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function getFollower()
+    public function getFollower(Request $request)
     {
         $owner = auth()->user();
+        $req = $request->all();
+        $currentPage = 1;
+        $limit  = config('common.paging');
+        if(!empty($req['current_page'])) {
+            $currentPage = $req['current_page'];
+        }
+        if(!empty($req['limit'])) {
+            $limit = $req['limit'];
+        }
 
-        $list = $this->followRepo->getListFollowerByUser($owner->id);
+        $list = $this->followRepo->getListFollowerByUser($owner->id, $currentPage, $limit);
 
         return response()->json([
             'status' => true,
