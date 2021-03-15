@@ -92,19 +92,36 @@ class ActivityController extends Controller
             ], 500);
         }
         $userCareer['career_title'] = $titleCareer->title;
-        $categories = $this->activityContentRepo->where('career_id', $careerId)
-            ->whereIn('id', json_decode($userCareer->category_ids))->get();
+
+        $categories = [];
+        $jobs = [];
+        $genres = [];
+        $tags = [];
+
+        if(!empty($userCareer->category_ids)) {
+            $categories = $this->activityContentRepo->where('career_id', $careerId)
+                ->whereIn('id', json_decode($userCareer->category_ids))->get();
+        }
+
+        if(!empty($userCareer->job_ids)) {
+            $jobs = $this->activityContentRepo->where('career_id', $careerId)
+                ->whereIn('id', json_decode($userCareer->job_ids))->get();
+        }
+
+        if(!empty($userCareer->genre_ids)) {
+            $genres = $this->activityContentRepo->where('career_id', $careerId)
+                ->whereIn('id', json_decode($userCareer->genre_ids))->get();
+        }
+
+        if(!empty($userCareer->tags)) {
+            $tags = json_decode($userCareer->tags);
+        }
+
         $userCareer['categories'] = $categories;
-
-        $jobs = $this->activityContentRepo->where('career_id', $careerId)
-            ->whereIn('id', json_decode($userCareer->job_ids))->get();
         $userCareer['jobs'] = $jobs;
-
-        $genres = $this->activityContentRepo->where('career_id', $careerId)
-            ->whereIn('id', json_decode($userCareer->genre_ids))->get();
         $userCareer['genres'] = $genres;
 
-        $userCareer['tags'] = json_decode($userCareer['tags']);
+        $userCareer['tags'] = $tags;
 
         unset($userCareer['category_ids']);
         unset($userCareer['job_ids']);

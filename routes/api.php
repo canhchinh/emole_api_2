@@ -85,7 +85,6 @@ Route::group(['prefix' => 'education', 'middleware' => 'auth:sanctum'], function
     Route::get('', [UserController::class, 'listWorkEducation']);
 });
 
-/**************** sns ****************/
 Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function() {
     Route::get('list', [SnsController::class, 'listSns']);
     Route::post('save', [SnsController::class, 'save']);
@@ -102,5 +101,7 @@ Route::group(['prefix' => 'activity-base', 'middleware' => 'auth:sanctum'], func
 Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('user-career', [CareerController::class, 'userCareer']);
     Route::get('job-description', [CareerController::class, 'jobDescription']);
+    Route::put('profile', [UserController::class, 'updateProfile']);
 });
+
 

@@ -32,6 +32,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Mockery\Exception;
+use App\Repositories\UserImageRepository;
 
 class UserController extends Controller
 {
@@ -46,6 +48,7 @@ class UserController extends Controller
     private $followRepo;
     private $careerRepo;
     private $activityContentRepo;
+    private $userImageRepo;
 
     public function __construct(
         UserRepository $userRepo,
@@ -58,7 +61,8 @@ class UserController extends Controller
         ActivityBaseRepository $activityBaseRepo,
         FollowRepository $followRepo,
         CareerRepository $careerRepo,
-        ActivityContentRepository $activityContentRepo
+        ActivityContentRepository $activityContentRepo,
+        UserImageRepository $userImageRepo
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -71,6 +75,7 @@ class UserController extends Controller
         $this->followRepo = $followRepo;
         $this->careerRepo = $careerRepo;
         $this->activityContentRepo = $activityContentRepo;
+        $this->userImageRepo = $userImageRepo;
     }
 
     /**
@@ -1408,6 +1413,87 @@ class UserController extends Controller
                 'status' => true,
                 'data' => $portfolio,
             ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'data' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Put(
+     *   path="/profile",
+     *   summary="update profile",
+     *   operationId="update_profile",
+     *   tags={"Profile"},
+     *   security={ {"token": {}} },
+     *      @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  @OA\Property(property="self_introduction", type="string", example="note update"),
+     *                  @OA\Property(
+     *                      property="remove_image_ids",
+     *                      type="array",
+     *                      example={ 1 },
+     *                  @OA\Items(
+     *                       type="integer",
+     *                      ),
+     *                  ),
+     *                  @OA\Property(
+     *                  property="images[]",
+     *                  type="array",
+     *                  @OA\Items(
+     *                       type="string",
+     *                       format="binary",
+     *                      ),
+     *                  ),
+     *                  @OA\Property(
+     *                  property="career_ids[]",
+     *                  type="array",
+     *                  example={ 1 },
+     *                  @OA\Items(
+     *                      type="integer",
+     *                    ),
+     *                 ),
+     *              )
+     *          )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function updateProfile(Request $request)
+    {
+        try {
+            $req = $request->all();
+            $user = $request->user();
+            $selfIntroduction = $req['self_introduction'];
+            $removeImageIds = $req['remove_image_ids'];
+            $images = $req['images'];
+            $careerIds = $req['career_ids'];
+            if(!empty($removeImageIds)) {
+                $imageUrls = $this->userImageRepo->whereIn('id', $removeImageIds)
+                    ->where('user_id', $user->id)
+                    ->get();
+                if(empty($imageUrls)) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Image not found'
+                    ], 500);
+                }
+
+
+                $this->userImageRepo->whereIn('id', $removeImageIds)
+                    ->where('user_id', $user->id)
+                    ->delete();
+            }
+            $user->update(['self_introduction' => $selfIntroduction]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
