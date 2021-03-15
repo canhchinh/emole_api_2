@@ -66,13 +66,13 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
         }
 
         $query = $query->paginate($limit);
-        $targetIds = [];
+        $followerIds = [];
         $data = $query->toArray();
 
         foreach($data['data'] as $item) {
-            array_push($targetIds, $item['target_id']);
+            array_push($followerIds, $item['user_id']);
         }
-        $followers = User::whereIn('id', $targetIds)->get();
+        $followers = User::whereIn('id', $followerIds)->get();
         $data['data'] = $followers;
 
         return $data;
