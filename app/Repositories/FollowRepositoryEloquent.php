@@ -57,7 +57,7 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
 
     public function getListFollowerByUser($userId, $page, $limit)
     {
-        $query = $this->where('user_id', $userId)->select(['id', 'user_id', 'target_id']);
+        $query = $this->where('target_id', $userId)->select(['id', 'user_id', 'target_id']);
 
         if ($page >= 1) {
             Paginator::currentPageResolver(function () use ($page) {
