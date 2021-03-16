@@ -1344,7 +1344,7 @@ class UserController extends Controller
         try {
             $user = $request->user();
             $data = $this->educationRepo->where('user_id', $user->id)->orderBy('start_date', 'ASC')
-                ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description'])
+                ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description', 'link'])
                 ->get();
             return response()->json([
                 'status' => true,
