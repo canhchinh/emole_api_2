@@ -31,7 +31,8 @@ class Education extends Model implements Transformable
         'start_date',
         'end_date',
         'is_still_active',
-        'description'
+        'description',
+        'link'
     ];
 
 }

@@ -22,6 +22,7 @@ class CreateEducationTable extends Migration
             $table->date('end_date')->nullable();
             $table->boolean('is_still_active')->nullable();
             $table->text('description')->nullable();
+            $table->string('link', 2000)->nullable();
             $table->timestamps();
         });
     }
