@@ -1446,7 +1446,7 @@ class UserController extends Controller
     }
 
     /**
-     * @OA\Put(
+     * @OA\Post(
      *   path="/profile",
      *   summary="update profile",
      *   operationId="update_profile",
@@ -1454,7 +1454,7 @@ class UserController extends Controller
      *   security={ {"token": {}} },
      *      @OA\RequestBody(
      *          @OA\MediaType(
-     *              mediaType="multipart/form-data",
+     *              mediaType="application/json",
      *              @OA\Schema(
      *                  @OA\Property(property="self_introduction", type="string", example="note update"),
      *                  @OA\Property(
@@ -1466,17 +1466,17 @@ class UserController extends Controller
      *                      ),
      *                  ),
      *                  @OA\Property(
-     *                  property="images[]",
+     *                  property="images",
      *                  type="array",
+     *                  example={"base64_string"},
      *                  @OA\Items(
      *                       type="string",
-     *                       format="binary",
      *                      ),
      *                  ),
      *                  @OA\Property(
-     *                  property="career_ids[]",
+     *                  property="career_ids",
      *                  type="array",
-     *                  example={ 1 },
+     *                  example={ 1,3 },
      *                  @OA\Items(
      *                      type="integer",
      *                    ),
@@ -1497,12 +1497,9 @@ class UserController extends Controller
         try {
             $req = $request->all();
             $user = $request->user();
-            $selfIntroduction = $req['self_introduction'];
-            $removeImageIds = $req['remove_image_ids'];
-            $images = $req['images'];
             $careerIds = $req['career_ids'];
-            if (!empty($removeImageIds)) {
-                $imageUrls = $this->userImageRepo->whereIn('id', $removeImageIds)
+            if (!empty($req['remove_image_ids'])) {
+                $imageUrls = $this->userImageRepo->whereIn('id', $req['remove_image_ids'])
                     ->where('user_id', $user->id)
                     ->get();
                 if (empty($imageUrls)) {
@@ -1512,16 +1509,79 @@ class UserController extends Controller
                     ], 500);
                 }
 
-                $this->userImageRepo->whereIn('id', $removeImageIds)
+                $this->userImageRepo->whereIn('id', $req['remove_image_ids'])
                     ->where('user_id', $user->id)
                     ->delete();
+
+                // todo unlink image server or delete on s3
             }
-            $user->update(['self_introduction' => $selfIntroduction]);
+
+            if(!empty($req['images'])) {
+                foreach ($req['images'] as $file) {
+                    $isBase64  = $this->is_base64($file);
+                    if (!$isBase64){
+                        return response()->json([
+                            'status' => false,
+                            'data' => 'Image invalid format',
+                        ], 500);
+                    }
+                    $extension = explode('/', mime_content_type($file))[1];
+                    if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
+                        $path = 'user/';
+                        $fileName = $this->saveImgBase64($file, $path, $user->id, true);
+                        $url = '/storage/' . $path . 'group/' . $fileName;
+                        $this->userImageRepo->create([
+                            'user_id' => $user->id,
+                            'url' => $url,
+                        ]);
+                    }
+                }
+            }
+
+            $existCareerIds = $this->userCareerRepo->where('user_id', $user->id)->pluck('career_id');
+
+            if(!empty($existCareerIds)) {
+                $existCareerIds = $existCareerIds->toArray();
+            } else {
+                $existCareerIds = [];
+            }
+            $addCareerIds = array_diff($careerIds, $existCareerIds);
+            if(!empty($addCareerIds)) {
+                foreach($addCareerIds as $addCareerId) {
+                    $param = [
+                        'user_id' => $user->id,
+                        'career_id' => $addCareerId
+                    ];
+                    $this->userCareerRepo->updateOrCreate($param, $param);
+                }
+            }
+            $removeCareerIds = array_diff($existCareerIds, $careerIds);
+
+            if(!empty($removeCareerIds)) {
+                $this->userCareerRepo->where('user_id', $user->id)
+                ->whereIn('career_id', $removeCareerIds)->delete();
+            }
+
+            $user->update(['self_introduction' => $req['self_introduction']]);
+
+            return response()->json([
+                'status' => true,
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
                 'data' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    private function is_base64($file){
+        try {
+            $extension = explode('/', mime_content_type($file))[1];
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+
     }
 }
