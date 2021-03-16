@@ -1,0 +1,41 @@
+@import "variables";
+.header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 44px;
+    background: $color-white;
+    opacity: 0.92;
+    box-shadow: 0px 4px 12px rgba(231, 231, 231, 0.5);
+    @include px(12,12);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &-item {
+        display: flex;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        align-items: center;
+        li {
+            list-style-type: none;
+            @include mx(16,0);
+            a {
+                height: 26px;
+                width: 112px;
+                border-radius: 20px;
+                background: $color-header;
+                color: $color-white;
+                outline: 0;
+                border: none;
+                padding: 4px 20px;
+                font-family: Noto Sans JP;
+                @include fontBase(12,17);
+                font-style: normal;
+                font-weight: 700;
+                letter-spacing: 0px;
+                text-align: center;
+            }
+        }
+    }
+}

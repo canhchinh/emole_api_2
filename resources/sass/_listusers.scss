@@ -1,0 +1,94 @@
+@import "variables";
+.contain-users {
+    @include my(36,0);
+    .block-filter {
+        @include displayFlexSpaceBetween();
+        .contain-sort {
+            @include displayFlexSpaceAround();
+            .contain-sort_total {
+                @include mx(0,13);
+                @include fontBase(20,29);
+                font-weight: bold;
+                text-align: left;
+                .only {
+                    color: $color-active;
+                }
+            }
+        }
+    }
+    .block-content {
+        @include my(28,0);
+        .item {
+            background: $color-white;
+            box-shadow: 0px 0px 8px 1px rgb(0 0 0 / 4%);
+            border-radius: 4px;
+            .head {
+                @include px(16,16);
+                @include py(16,17);
+                display: flex;
+                flex-wrap: wrap;
+                .avatar {
+                    flex: 1 0 6%;
+                }
+                .action {
+                    flex: 1 0 51.5%;
+                    
+                }
+                .info {
+                    border-left: 1px solid $color-gray;
+                    border-right: 1px solid $color-gray;
+                    flex: 1 0 19%;
+                    @include px(16,16);
+                    div {
+                        @include my(0,12);
+                        @include displayFlexSpaceBetween();
+                    }
+                }
+                .account {
+                    flex: 1 0 23.5%;
+                    @include px(16,0);
+                    div {
+                        @include my(0,12);
+                        @include displayFlexSpaceBetween();
+                    }
+                }
+            }
+            .hr {
+                background: #E7E7E7;
+                height: 1px;
+                @include mx(16,16);
+            }
+            .footer {
+                @include displayFlexCenter();
+                @include my(12,0);
+                @include py(0,12);
+                .item-button {
+                    @include mx(0,12); 
+                    padding: 3px 35px;
+                    @include fontBase(14,20);
+                    font-style: normal;
+                    font-weight: 500;
+                    text-align: center;
+                    border-radius: 40px;
+                    border: none;
+                }
+                .detail {
+                    border: 1px solid $color-active;
+                    box-sizing: border-box;
+                    color: $color-active;
+                }
+                .email {
+                    background: $color-active;
+                    color: $color-white;
+                    outline: 0;
+                    padding: 4px 35px;
+                }
+                .delete {
+                    color: $color-base;
+                    padding: 4px 35px;
+                    background: $color-gray;
+                }
+            }
+        }
+    }
+}
