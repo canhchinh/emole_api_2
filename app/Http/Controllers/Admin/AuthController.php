@@ -31,7 +31,7 @@ class AuthController extends Controller
         $credentials = $request->only(['username', 'password']);
         $result = $this->adminRepo->checkLogin($credentials);
         if ($result) {
-            return redirect()->route('admin.home.index');
+            return redirect()->route('admin.users.list');
         } else {
             return redirect()->back()->withErrors("Login Fail");
         }

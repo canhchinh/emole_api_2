@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\HomeController;
-use App\Http\Controllers\Admin\UsersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,7 +20,8 @@ Route::match(['get', 'post'], '/forgot-password', [AuthController::class, 'forgo
 Route::get('/reset-password/{token}', [AuthController::class, 'getResetPassword'])->name('admin.auth.get.resetPassword');
 Route::post('/reset-password', [AuthController::class, 'postResetPassword'])->name('admin.auth.post.newPassword');
 Route::middleware('auth')->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('admin.home.index');
+    Route::get('/list-users', [HomeController::class, 'listUser'])->name('admin.users.list');
+    Route::get('/list-portfolio', [HomeController::class, 'listPortfolio'])->name('admin.portfolio.list');
+    Route::get('/list-notify', [HomeController::class, 'listNotify'])->name('admin.notify.list');
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.auth.logout');
 });
-Route::get('/list-users', [UsersController::class, 'index'])->name('admin.users.list');

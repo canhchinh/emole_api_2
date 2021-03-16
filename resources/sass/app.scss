@@ -12,12 +12,18 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+
+//part
+@import 'header';
+@import 'sidebar';
+@import 'common';
 // pages
 @import 'login';
+@import 'listusers';
 
 
 
-html, body{
+html, body, input, button, select, optgroup, textarea{
     font-family: $font-default;
     font-size: 12px;
     color: $color-text;
