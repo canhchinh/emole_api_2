@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://emole.local/api",
+            "url": "https://emole-api.t4code.xyz/api",
             "description": "Emole API Server"
         }
     ],
