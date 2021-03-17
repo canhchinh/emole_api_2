@@ -10156,6 +10156,18 @@ h3 {
   text-align: right;
 }
 
+.tag {
+  border: 1px solid #050518;
+  border-radius: 14px;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 12px;
+  display: flex;
+  align-items: center;
+  color: #050518;
+  padding: 6px 8px;
+}
+
 .wrapper {
   position: fixed;
   top: 50%;
@@ -10301,6 +10313,8 @@ h3 {
   background: #FFFFFF;
   box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.04);
   border-radius: 4px;
+  margin-top: 0px;
+  margin-bottom: 26px;
 }
 .contain-users .block-content .item .head {
   padding-left: 16px;
@@ -10311,15 +10325,77 @@ h3 {
   flex-wrap: wrap;
 }
 .contain-users .block-content .item .head .avatar {
-  flex: 1 0 6%;
+  flex: 0 0 6%;
+  margin-left: 0px;
+  margin-right: 10px;
 }
 .contain-users .block-content .item .head .action {
-  flex: 1 0 51.5%;
+  flex: 0 0 45%;
+  width: auto;
+}
+.contain-users .block-content .item .head .action-info {
+  display: flex;
+  align-items: center;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+.contain-users .block-content .item .head .action-info_name {
+  font-size: 16px;
+  line-height: 23px;
+  font-weight: bold;
+  text-align: center;
+  color: #050518;
+  margin-left: 0px;
+  margin-right: 16px;
+}
+.contain-users .block-content .item .head .action-info_job {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.contain-users .block-content .item .head .action-info_job .tag {
+  margin-left: 0px;
+  margin-right: 5px;
+}
+.contain-users .block-content .item .head .action-social {
+  display: flex;
+  align-items: center;
+  margin-top: 0px;
+  margin-bottom: 7px;
+}
+.contain-users .block-content .item .head .action-social_type {
+  font-size: 10px;
+  line-height: 14px;
+  color: #828282;
+  margin-left: 0px;
+  margin-right: 20px;
+  font-weight: normal;
+  text-align: center;
+}
+.contain-users .block-content .item .head .action-social_list {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.contain-users .block-content .item .head .action-social_list-item {
+  margin-left: 0px;
+  margin-right: 11px;
+  font-size: 10px;
+  line-height: 12px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0px;
+  text-align: left;
+}
+.contain-users .block-content .item .head .action-portfolio img {
+  border-radius: 4px;
+  margin-left: 0px;
+  margin-right: 8px;
 }
 .contain-users .block-content .item .head .info {
   border-left: 1px solid #E7E7E7;
   border-right: 1px solid #E7E7E7;
-  flex: 1 0 19%;
+  flex: 0 0 22%;
   padding-left: 16px;
   padding-right: 16px;
 }
@@ -10331,7 +10407,7 @@ h3 {
   align-items: center;
 }
 .contain-users .block-content .item .head .account {
-  flex: 1 0 23.5%;
+  flex: 0 0 25%;
   padding-left: 16px;
   padding-right: 0px;
 }

@@ -22,22 +22,72 @@
             background: $color-white;
             box-shadow: 0px 0px 8px 1px rgb(0 0 0 / 4%);
             border-radius: 4px;
+            @include my(0,26);
             .head {
                 @include px(16,16);
                 @include py(16,17);
                 display: flex;
                 flex-wrap: wrap;
                 .avatar {
-                    flex: 1 0 6%;
+                    flex: 0 0 6%;
+                    @include mx(0,10);
                 }
                 .action {
-                    flex: 1 0 51.5%;
-                    
+                    flex: 0 0 45%;
+                    width: auto;
+                    &-info {
+                        display: flex;
+                        align-items: center;
+                        @include my(0,5);
+                        &_name {
+                            @include fontBase(16,23);
+                            font-weight: bold;
+                            text-align: center;
+                            color: $color-base;
+                            @include mx(0,16);
+                        }
+                        &_job {
+                            @include displayFlexSpaceAround();
+                            .tag {
+                                @include mx(0,5);
+                            }
+                        }
+                    }
+                    &-social {
+                        display: flex;
+                        align-items: center;
+                        @include my(0,7);
+                        &_type {
+                            @include fontBase(10,14);
+                            color: $color-gray-sm;
+                            @include mx(0,20);
+                            font-weight: normal;
+                            text-align: center;
+
+                        }
+                        &_list {
+                            @include displayFlexSpaceAround();
+                            &-item {
+                                @include mx(0,11);
+                                @include fontBase(10,12);
+                                font-style: normal;
+                                font-weight: 400;
+                                letter-spacing: 0px;
+                                text-align: left;
+                            }
+                        }
+                    }
+                    &-portfolio {
+                        img {
+                            border-radius: 4px;
+                            @include mx(0,8);
+                        }
+                    }
                 }
                 .info {
                     border-left: 1px solid $color-gray;
                     border-right: 1px solid $color-gray;
-                    flex: 1 0 19%;
+                    flex: 0 0 22%;
                     @include px(16,16);
                     div {
                         @include my(0,12);
@@ -45,7 +95,7 @@
                     }
                 }
                 .account {
-                    flex: 1 0 23.5%;
+                    flex: 0 0 25%;
                     @include px(16,0);
                     div {
                         @include my(0,12);
@@ -54,7 +104,7 @@
                 }
             }
             .hr {
-                background: #E7E7E7;
+                background: $color-gray;
                 height: 1px;
                 @include mx(16,16);
             }
