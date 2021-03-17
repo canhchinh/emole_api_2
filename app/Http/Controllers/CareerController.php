@@ -134,7 +134,7 @@ class CareerController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/user-career/{id}",
+     *   path="/user-career/{idUser}",
      *   summary="detail career info by id",
      *   operationId="detail-career-info",
      *   tags={"Career"},
@@ -142,7 +142,7 @@ class CareerController extends Controller
      *   @OA\Parameter(
      *         description="ID of user",
      *         in="path",
-     *         name="id",
+     *         name="idUser",
      *         required=true,
      *         @OA\Schema(
      *           type="integer",
@@ -157,9 +157,9 @@ class CareerController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function detailUserCareer($id)
+    public function detailUserCareer($idUser)
     {
-        $userInfo = $this->userRepo->where('id', $id)
+        $userInfo = $this->userRepo->where('id', $idUser)
             ->with([
                 'careers' => function ($q) {
                     $q->select(['careers.id', 'careers.title']);

@@ -93,8 +93,53 @@ class UserImageController extends Controller
     {
         try {
             $user = $request->user();
-            $data = [];
             $images = $this->userImageRepo->where('user_id', $user->id)
+                ->select(['id', 'url'])->get();
+            if (!empty($images)) {
+                $images->map(function ($value) {
+                    $value->url = config('common.app_url') . $value->url;
+                });
+            }
+            return response()->json([
+                'status' => true,
+                'data' => $images,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    /**
+     * @OA\Get(
+     *   path="/user/image/{idUser}",
+     *   summary="list image by id user",
+     *   operationId="list_image_by_user_id",
+     *   tags={"Image"},
+     *   security={ {"token": {}} },
+     *   @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="idUser",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="integer",
+     *           format="int64"
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function listImageByIdUser($idUser)
+    {
+        try {
+            $images = $this->userImageRepo->where('user_id', $idUser)
                 ->select(['id', 'url'])->get();
             if (!empty($images)) {
                 $images->map(function ($value) {

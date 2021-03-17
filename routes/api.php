@@ -47,6 +47,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
     Route::group(['prefix' => 'image'], function () {
         Route::post('', [UserImageController::class, 'imageUpload']);
         Route::get('', [UserImageController::class, 'listImage']);
+        Route::get('/{idUser}', [UserImageController::class, 'listImageByIdUser']);
     });
     Route::put('account-name', [UserController::class, 'accountName']);
     Route::put('basic-information', [UserController::class, 'basicInformation']);
@@ -100,7 +101,7 @@ Route::group(['prefix' => 'activity-base', 'middleware' => 'auth:sanctum'], func
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('user-career', [CareerController::class, 'userCareer']);
-    Route::get('user-career/{id}', [CareerController::class, 'detailUserCareer']);
+    Route::get('user-career/{idUser}', [CareerController::class, 'detailUserCareer']);
     Route::get('job-description', [CareerController::class, 'jobDescription']);
     Route::post('profile', [UserController::class, 'updateProfile']);
 });
