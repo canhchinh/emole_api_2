@@ -29,7 +29,6 @@ class Portfolio extends Model implements Transformable
         'user_id',
         'title',
         'image',
-        'job_ids',
         'start_date',
         'end_date',
         'is_still_active',

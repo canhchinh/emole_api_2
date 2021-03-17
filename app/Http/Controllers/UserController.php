@@ -28,12 +28,14 @@ use App\Repositories\UserGenreRepository;
 use App\Repositories\UserImageRepository;
 use App\Repositories\UserJobRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\PortfolioJobRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Mockery\Exception;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -49,6 +51,7 @@ class UserController extends Controller
     private $careerRepo;
     private $activityContentRepo;
     private $userImageRepo;
+    private $portfolioJobRepo;
 
     public function __construct(
         UserRepository $userRepo,
@@ -62,7 +65,8 @@ class UserController extends Controller
         FollowRepository $followRepo,
         CareerRepository $careerRepo,
         ActivityContentRepository $activityContentRepo,
-        UserImageRepository $userImageRepo
+        UserImageRepository $userImageRepo,
+        PortfolioJobRepository $portfolioJobRepo
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -76,6 +80,7 @@ class UserController extends Controller
         $this->careerRepo = $careerRepo;
         $this->activityContentRepo = $activityContentRepo;
         $this->userImageRepo = $userImageRepo;
+        $this->portfolioJobRepo = $portfolioJobRepo;
     }
 
     /**
@@ -698,7 +703,7 @@ class UserController extends Controller
      *                      type="array",
      *                      @OA\Items(
      *                         type="integer"
-     *                     )
+     *                     ),
      *                  ),
      *                  @OA\Property(property="start_date", type="string", example="2006-01"),
      *                  @OA\Property(property="end_date", type="string", example="2006-02"),
@@ -788,13 +793,21 @@ class UserController extends Controller
             if (!empty($imageUrl)) {
                 $param['image'] = json_encode($imageUrl);
             }
-            $portfolio = $this->portfolioRepo->updateOrCreate(['user_id' => $user->id], $param);
+            $portfolio = $this->portfolioRepo->create($param);
             if (empty($portfolio)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Fail',
                 ], 500);
             }
+            foreach($req['job_ids'] as $jobId) {
+                $this->portfolioJobRepo->updateOrCreate([
+                    'user_id' => $user->id,
+                    'portfolio_id' => $portfolio->id,
+                    'job_id' => $jobId
+                ]);
+            }
+
             return response()->json([
                 'status' => true,
             ]);
@@ -1583,5 +1596,49 @@ class UserController extends Controller
             return false;
         }
 
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/portfolio/list",
+     *   summary="list portfolio",
+     *   operationId="list-portfolio",
+     *   tags={"Portfolio"},
+     *   security={ {"token": {}} },
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function ListPortfolio(Request $request)
+    {
+        $req = $request->all();
+        $user = $request->user();
+        $portfolioJobs = $this->portfolioJobRepo->where('user_id', $user->id)
+            ->select(DB::raw('group_concat(portfolio_id) as portfolio_ids'), 'job_id')
+            ->groupBy('job_id')
+            ->get();
+        if(!empty($portfolioJobs)) {
+            foreach($portfolioJobs as $k=>$portfolioJob) {
+                $job = $this->activityContentRepo->where('key', 'job')
+                    ->where('id', $portfolioJob['job_id'])
+                    ->select(['id', 'title'])
+                    ->first();
+                $portfolioJobs[$k]['job'] = $job;
+                $portfolioIds = explode(",", $portfolioJob->portfolio_ids);
+                $portfolios = $this->portfolioRepo->whereIn('id', $portfolioIds)
+                    ->get();
+                $portfolioJobs[$k]['portfolios'] = $portfolios;
+                unset($portfolioJob['job_id']);
+                unset($portfolioJob['portfolio_ids']);
+            }
+        }
+        return response()->json([
+            'status' => true,
+            'data' => $portfolioJobs
+        ]);
     }
 }
