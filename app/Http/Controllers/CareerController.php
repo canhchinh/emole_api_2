@@ -89,9 +89,10 @@ class CareerController extends Controller
         ]);
         $careerIds = $request->input('career_ids');
         $user = auth()->user();
+        $this->userCareerRepo->where('user_id', $user->id)->delete();
         foreach ($careerIds as $careerId) {
             $param = ['user_id' => $user->id, 'career_id' => $careerId];
-            $this->userCareerRepo->updateOrCreate($param, $param);
+            $this->userCareerRepo->create($param);
         }
         return response()->json([
             'status' => true,
