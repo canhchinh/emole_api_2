@@ -21,7 +21,7 @@ use App\Http\Controllers\ActivityController;
 */
 
 /**************** user ****************/
-Route::group(['prefix' => 'user'], function() {
+Route::group(['prefix' => 'user'], function () {
     Route::post('register-step1', [UserController::class, 'registerStep1']);
     Route::post('login', [UserController::class, 'login']);
 });
@@ -33,7 +33,7 @@ Route::get('/forgot-password', function () {
 Route::post('/forgot-password', [UserController::class, 'forgotPassword']);
 Route::post('/reset-password', [UserController::class, 'resetPassword']);
 
-Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
+Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
     Route::get('', [UserController::class, 'userInfo']);
     Route::post('register-step2', [UserController::class, 'registerStep2']);
     Route::post('register-step3', [UserController::class, 'registerStep3']);
@@ -44,7 +44,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::get('follower', [UserController::class, 'getFollower']);
 
     Route::post('avatar', [UserController::class, 'avatar']);
-    Route::group(['prefix' => 'image'], function() {
+    Route::group(['prefix' => 'image'], function () {
         Route::post('', [UserImageController::class, 'imageUpload']);
         Route::get('', [UserImageController::class, 'listImage']);
     });
@@ -55,53 +55,52 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function() {
     Route::put('change-password', [UserController::class, 'changePassword']);
 });
 
-Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum'], function() {
+Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum'], function () {
     Route::get('list', [UserController::class, 'listUsers']);
 });
 
 
 /**************** career ****************/
-Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function() {
+Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function () {
     Route::get('list', [CareerController::class, 'listCareer']);
     Route::post('save', [CareerController::class, 'save']);
-    Route::group(['prefix' => '{career_id}'], function() {
-        Route::group(['prefix' => 'category'], function() {
+    Route::group(['prefix' => '{career_id}'], function () {
+        Route::group(['prefix' => 'category'], function () {
             Route::get('list', [CategoryController::class, 'listCategory']);
         });
-        Route::group(['prefix' => 'job'], function() {
+        Route::group(['prefix' => 'job'], function () {
             Route::get('list', [JobController::class, 'listJob']);
         });
-        Route::group(['prefix' => 'genre'], function() {
+        Route::group(['prefix' => 'genre'], function () {
             Route::get('list', [GenreController::class, 'listGenre']);
         });
         Route::get('info', [ActivityController::class, 'info']);
     });
-    Route::group(['prefix' => 'activity'], function() {
+    Route::group(['prefix' => 'activity'], function () {
         Route::post('', [UserController::class, 'activity']);
     });
 });
-Route::group(['prefix' => 'education', 'middleware' => 'auth:sanctum'], function() {
+Route::group(['prefix' => 'education', 'middleware' => 'auth:sanctum'], function () {
     Route::post('', [UserController::class, 'education']);
     Route::get('', [UserController::class, 'listWorkEducation']);
 });
 
-Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function() {
+Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function () {
     Route::get('list', [SnsController::class, 'listSns']);
     Route::post('save', [SnsController::class, 'save']);
 });
-Route::group(['prefix' => 'portfolio', 'middleware' => 'auth:sanctum'], function() {
+Route::group(['prefix' => 'portfolio', 'middleware' => 'auth:sanctum'], function () {
     Route::post('', [UserController::class, 'portfolio']);
     Route::get('', [UserController::class, 'portfolioDetail']);
     Route::post('image', [UserController::class, 'portfolioImage']);
 });
-Route::group(['prefix' => 'activity-base', 'middleware' => 'auth:sanctum'], function() {
+Route::group(['prefix' => 'activity-base', 'middleware' => 'auth:sanctum'], function () {
     Route::get('', [ActivityController::class, 'listActivityBase']);
 });
 
-Route::group(['middleware' => 'auth:sanctum'], function() {
+Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('user-career', [CareerController::class, 'userCareer']);
+    Route::get('user-career/{id}', [CareerController::class, 'detailUserCareer']);
     Route::get('job-description', [CareerController::class, 'jobDescription']);
     Route::post('profile', [UserController::class, 'updateProfile']);
 });
-
-

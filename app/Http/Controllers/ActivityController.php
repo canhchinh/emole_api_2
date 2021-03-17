@@ -98,22 +98,22 @@ class ActivityController extends Controller
         $genres = [];
         $tags = [];
 
-        if(!empty($userCareer->category_ids)) {
+        if (!empty($userCareer->category_ids)) {
             $categories = $this->activityContentRepo->where('career_id', $careerId)
                 ->whereIn('id', json_decode($userCareer->category_ids))->get();
         }
 
-        if(!empty($userCareer->job_ids)) {
+        if (!empty($userCareer->job_ids)) {
             $jobs = $this->activityContentRepo->where('career_id', $careerId)
                 ->whereIn('id', json_decode($userCareer->job_ids))->get();
         }
 
-        if(!empty($userCareer->genre_ids)) {
+        if (!empty($userCareer->genre_ids)) {
             $genres = $this->activityContentRepo->where('career_id', $careerId)
                 ->whereIn('id', json_decode($userCareer->genre_ids))->get();
         }
 
-        if(!empty($userCareer->tags)) {
+        if (!empty($userCareer->tags)) {
             $tags = json_decode($userCareer->tags);
         }
 
@@ -131,6 +131,5 @@ class ActivityController extends Controller
             'status' => true,
             'data' => $userCareer,
         ]);
-
     }
 }
