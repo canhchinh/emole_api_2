@@ -58,6 +58,14 @@ class ActivityController extends Controller
      *   operationId="info_career",
      *   tags={"Activity"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *     @OA\Parameter(
      *         description="ID of career",
      *         in="path",
@@ -79,18 +87,24 @@ class ActivityController extends Controller
     public function info(Request $request, $careerId)
     {
         $user = auth()->user();
+        $userId = $user->id;
+        $req = $request->all();
+        if(!empty($req['user_id'])) {
+            $userId = $req['user_id'];
+        }
         $userCareer = $this->userCareerRepo->where([
-            'user_id' => $user->id,
+            'user_id' => $userId,
             'career_id' => $careerId,
         ])
             ->first();
-        $titleCareer = $this->careerRepo->where('id', $careerId)->first();
+
         if (empty($userCareer)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Career not found',
             ], 500);
         }
+        $titleCareer = $this->careerRepo->where('id', $careerId)->first();
         $userCareer['career_title'] = $titleCareer->title;
 
         $categories = [];
@@ -100,6 +114,7 @@ class ActivityController extends Controller
 
         if (!empty($userCareer->category_ids)) {
             $categories = $this->activityContentRepo->where('career_id', $careerId)
+                ->where('key', 'category')
                 ->whereIn('id', json_decode($userCareer->category_ids))->get();
         }
 
@@ -118,6 +133,7 @@ class ActivityController extends Controller
         }
 
         $userCareer['categories'] = $categories;
+//        return $userCareer;
         $userCareer['jobs'] = $jobs;
         $userCareer['genres'] = $genres;
 
