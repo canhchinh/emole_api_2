@@ -86,9 +86,8 @@ class User extends Authenticatable implements Transformable
 
     public function search($username)
     {
-        $searchKey = '%'.$username.'%';
-        return $this->where('user_name', 'like', $searchKey)
-            ->orWhere('given_name', 'like', $searchKey)
+        return $this->where('user_name', $username)
+            ->orWhere('given_name', $username)
             ->first();
     }
 }
