@@ -81,6 +81,14 @@ class UserImageController extends Controller
      *   operationId="list_image",
      *   tags={"Image"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -93,7 +101,13 @@ class UserImageController extends Controller
     {
         try {
             $user = $request->user();
-            $images = $this->userImageRepo->where('user_id', $user->id)
+            $userId = $user->id;
+            $req = $request->all();
+            if(!empty($req['user_id'])) {
+                $userId = $req['user_id'];
+            }
+
+            $images = $this->userImageRepo->where('user_id', $userId)
                 ->select(['id', 'url'])->get();
             if (!empty($images)) {
                 $images->map(function ($value) {
