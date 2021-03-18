@@ -1641,7 +1641,7 @@ class UserController extends Controller
         if(!empty($portfolioJobs)) {
             foreach($portfolioJobs as $k=>$portfolioJob) {
                 $job = $this->activityContentRepo->where('key', 'job')
-                    ->where('id', $portfolioJob['job_id'])
+                    ->where('id', $portfolioJob->job_id)
                     ->select(['id', 'title'])
                     ->first();
                 $portfolioJobs[$k]['job'] = $job;
