@@ -53,15 +53,11 @@
                                 女優・アーティスト
                             </div>
                             <div class="action-social_list">
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
                                 </div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
                             </div>
                         </div>
                         <div class="action-portfolio">
@@ -72,17 +68,16 @@
                         </div>
                     </div>
                     <div class="info">
-                        <div class="info-gender">
-                            <span class="title-item">性別</span>
-                            <span class="content-item">女性</span>
-                        </div>
-                        <div class="info-bod">
-                            <span class="title-item">生年月日</span>
-                            <span class="content-item">1994年12月10日</span>
-                        </div>
-                        <div class="info-base">
-                            <span class="title-item">活動拠点</span>
-                            <span class="content-item">東京都</span>
+                        <div class="contain-notify">
+                            <div class="contain-notify_title">
+                                配信対象
+                            </div>
+                            <div class="contain-notify_job">
+                                <div class="tag">演者</div>
+                                <div class="tag">モデル</div>
+                                <div class="tag">フォトグラファー</div>
+                                <div class="tag">ビデオグ</div>
+                            </div>
                         </div>
                     </div>
                     <div class="account">
@@ -91,16 +86,12 @@
                             <span class="content-item">dsjfkd;jsahfklvfioud</span>
                         </div>
                         <div class="account-email">
-                            <span class="title-item">メールアドレス</span>
-                            <span class="content-item">aiaiaiaiai@gmail.com</span>
+                            <span class="title-item">配信日時</span>
+                            <span class="content-item">2020/03/23 13:45</span>
                         </div>
                         <div class="account-created">
-                            <span class="title-item">登録日時</span>
-                            <span class="content-item">2020/03/23 13:45</span>
-                        </div>
-                        <div class="account-updated">
-                            <span class="title-item">更新日時</span>
-                            <span class="content-item">2020/03/23 13:45</span>
+                            <span class="title-item">URL</span>
+                            <span class="content-item">https://dev.mirateo.jp/trouble-input</span>
                         </div>
                     </div>
                 </div>

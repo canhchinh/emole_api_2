@@ -63,15 +63,11 @@
                                 女優・アーティスト
                             </div>
                             <div class="action-social_list">
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
                                 </div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
                             </div>
                         </div>
                         <div class="action-portfolio">
@@ -149,15 +145,11 @@
                                 女優・アーティスト
                             </div>
                             <div class="action-social_list">
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
                                 </div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
                             </div>
                         </div>
                         <div class="action-portfolio">
@@ -235,15 +227,11 @@
                                 女優・アーティスト
                             </div>
                             <div class="action-social_list">
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
                                 </div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
                             </div>
                         </div>
                         <div class="action-portfolio">
@@ -321,15 +309,11 @@
                                 女優・アーティスト
                             </div>
                             <div class="action-social_list">
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
                                 </div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
                             </div>
                         </div>
                         <div class="action-portfolio">
@@ -407,15 +391,11 @@
                                 女優・アーティスト
                             </div>
                             <div class="action-social_list">
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
                                 </div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
                             </div>
                         </div>
                         <div class="action-portfolio">
@@ -493,15 +473,11 @@
                                 女優・アーティスト
                             </div>
                             <div class="action-social_list">
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
                                 </div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
                             </div>
                         </div>
                         <div class="action-portfolio">
@@ -579,15 +555,11 @@
                                 女優・アーティスト
                             </div>
                             <div class="action-social_list">
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
                                 </div>
-                                <div class="action-social_list-item"><img
-                                        src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
                             </div>
                         </div>
                         <div class="action-portfolio">

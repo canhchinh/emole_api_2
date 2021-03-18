@@ -10394,7 +10394,6 @@ h3 {
 }
 .contain-users .block-content .item .head .action-info {
   display: flex;
-  align-items: center;
   margin-top: 0px;
   margin-bottom: 5px;
 }
@@ -10404,17 +10403,21 @@ h3 {
   font-weight: bold;
   text-align: center;
   color: #050518;
+  white-space: nowrap;
   margin-left: 0px;
   margin-right: 16px;
 }
 .contain-users .block-content .item .head .action-info_job {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
+  flex-wrap: wrap;
 }
 .contain-users .block-content .item .head .action-info_job .tag {
   margin-left: 0px;
   margin-right: 5px;
+  margin-top: 0px;
+  margin-bottom: 5px;
 }
 .contain-users .block-content .item .head .action-social {
   display: flex;

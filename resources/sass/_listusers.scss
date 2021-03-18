@@ -80,19 +80,21 @@
                     width: auto;
                     &-info {
                         display: flex;
-                        align-items: center;
                         @include my(0,5);
                         &_name {
                             @include fontBase(16,23);
                             font-weight: bold;
                             text-align: center;
                             color: $color-base;
+                            white-space: nowrap;
                             @include mx(0,16);
                         }
                         &_job {
-                            @include displayFlexSpaceAround();
+                            @include displayFlexStart();
+                            flex-wrap: wrap;
                             .tag {
                                 @include mx(0,5);
+                                @include my(0,5);
                             }
                         }
                     }
@@ -166,7 +168,7 @@
                 @include my(12,0);
                 @include py(0,12);
                 .item-button {
-                    @include mx(0,12); 
+                    @include mx(0,12);
                     padding: 3px 35px;
                     @include fontBase(14,20);
                     font-style: normal;
