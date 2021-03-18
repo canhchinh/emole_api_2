@@ -867,6 +867,15 @@ class UserController extends Controller
      *   operationId="user_information",
      *   tags={"User"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          description="User id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -878,8 +887,19 @@ class UserController extends Controller
     public function userInfo(Request $request)
     {
         $user = auth()->user();
-        $userInfo = $this->userRepo->where('id', $user->id)->first();
-        $careerIds = $this->userCareerRepo->where('user_id', $user->id)->pluck('career_id');
+        $req = $request->all();
+        $userId = $user->id;
+        if(!empty($req['user_id'])) {
+            $userId = $req['user_id'];
+        }
+        $userInfo = $this->userRepo->where('id', $userId)->first();
+        if(empty($userInfo)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found',
+            ], 500);
+        }
+        $careerIds = $this->userCareerRepo->where('user_id', $userId)->pluck('career_id');
         if (empty($careerIds)) {
             $userInfo['careers'] = [];
         } else {
@@ -1145,7 +1165,7 @@ class UserController extends Controller
      *   path="/user/follow",
      *   summary="follow/unfollow user",
      *   operationId="follow_unfollow_user",
-     *   tags={"User"},
+     *   tags={"Follow"},
      *   security={ {"token": {}} },
      *      @OA\RequestBody(
      *          @OA\MediaType(
@@ -1194,7 +1214,7 @@ class UserController extends Controller
      *   path="/user/follow",
      *   summary="get list follow by user",
      *   operationId="get_list_follow_by_user",
-     *   tags={"User"},
+     *   tags={"Follow"},
      *   security={ {"token": {}} },
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
@@ -1221,7 +1241,7 @@ class UserController extends Controller
      *   path="/user/follower",
      *   summary="get list follower by user",
      *   operationId="get_list_follower_by_user",
-     *   tags={"User"},
+     *   tags={"Follow"},
      *   security={ {"token": {}} },
      *      @OA\Parameter(
      *          name="current_page",
