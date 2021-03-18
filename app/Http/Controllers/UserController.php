@@ -1656,6 +1656,14 @@ class UserController extends Controller
      *   operationId="list-portfolio",
      *   tags={"Portfolio"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -1668,7 +1676,11 @@ class UserController extends Controller
     {
         $req = $request->all();
         $user = $request->user();
-        $portfolioJobs = $this->portfolioJobRepo->where('user_id', $user->id)
+        $userId = $user->id;
+        if(!empty($req['user_id'])) {
+            $userId = $req['user_id'];
+        }
+        $portfolioJobs = $this->portfolioJobRepo->where('user_id', $userId)
             ->select(DB::raw('group_concat(portfolio_id) as portfolio_ids'), 'job_id')
             ->groupBy('job_id')
             ->get();

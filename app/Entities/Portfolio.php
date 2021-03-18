@@ -50,8 +50,10 @@ class Portfolio extends Model implements Transformable
     {
         if(!empty($value)) {
             $value = json_decode($value);
-            foreach($value as $k=>$item) {
-                $value[$k] = config('common.app_url'). $item;
+            if(is_array($value)) {
+                foreach($value as $k=>$item) {
+                    $value[$k] = config('common.app_url'). $item;
+                }
             }
         }
         return $value;
