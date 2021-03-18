@@ -83,3 +83,14 @@
     color: $color-base;
     padding: 6px 8px;
 }
+
+.tag-black {
+    border-radius: 14px;
+    font-weight: normal;
+    @include fontBase(10,12);
+    display: flex;
+    background: $color-base;;
+    align-items: center;
+    color: $color-white;
+    padding: 6px 8px;
+}

@@ -28,6 +28,49 @@
                 @include py(16,17);
                 display: flex;
                 flex-wrap: wrap;
+                .avatar-portfolio {
+                    flex: 0 0 15%;
+                    @include mx(0,10);
+                }
+                .action-portfolio {
+                    flex: 0 0 30%;
+                    &_title {
+                        @include fontBase(16,23);
+                        font-style: normal;
+                        font-weight: bold;
+                        color: $color-base;
+                        width: 218px;
+                        @include my(0,8);
+                    }
+                    .info-small {
+                        @include displayFlexStart();
+                        @include my(0,8);
+                        .avatar-small {
+                            img {
+                                width: 32px;
+                                height: 32px;
+                            }
+                        }
+                        .contain-name {
+                            &_title {
+                                @include fontBase(12,17);
+                                font-style: normal;
+                                font-weight: bold;
+                                color: $color-base;
+                            }
+                            &_desc {
+                                @include fontBase(10,14);
+                                font-style: normal;
+                                font-weight: normal;
+                                text-align: center;
+                                color: $color-gray-sm;
+                            }
+                        }
+                    }
+                    .portfolio-footer {
+                        display: flex;
+                    }
+                }
                 .avatar {
                     flex: 0 0 6%;
                     @include mx(0,10);
@@ -97,6 +140,16 @@
                 .account {
                     flex: 0 0 25%;
                     @include px(16,0);
+                    div {
+                        @include my(0,12);
+                        @include displayFlexSpaceBetween();
+                    }
+                }
+                .info-portfolio {
+                    border-left: 1px solid $color-gray;
+                    border-right: 1px solid $color-gray;
+                    flex: 0 0 25%;
+                    @include px(16,16);
                     div {
                         @include my(0,12);
                         @include displayFlexSpaceBetween();

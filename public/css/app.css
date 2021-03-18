@@ -10168,6 +10168,18 @@ h3 {
   padding: 6px 8px;
 }
 
+.tag-black {
+  border-radius: 14px;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 12px;
+  display: flex;
+  background: #050518;
+  align-items: center;
+  color: #FFFFFF;
+  padding: 6px 8px;
+}
+
 .wrapper {
   position: fixed;
   top: 50%;
@@ -10324,6 +10336,53 @@ h3 {
   display: flex;
   flex-wrap: wrap;
 }
+.contain-users .block-content .item .head .avatar-portfolio {
+  flex: 0 0 15%;
+  margin-left: 0px;
+  margin-right: 10px;
+}
+.contain-users .block-content .item .head .action-portfolio {
+  flex: 0 0 30%;
+}
+.contain-users .block-content .item .head .action-portfolio_title {
+  font-size: 16px;
+  line-height: 23px;
+  font-style: normal;
+  font-weight: bold;
+  color: #050518;
+  width: 218px;
+  margin-top: 0px;
+  margin-bottom: 8px;
+}
+.contain-users .block-content .item .head .action-portfolio .info-small {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 0px;
+  margin-bottom: 8px;
+}
+.contain-users .block-content .item .head .action-portfolio .info-small .avatar-small img {
+  width: 32px;
+  height: 32px;
+}
+.contain-users .block-content .item .head .action-portfolio .info-small .contain-name_title {
+  font-size: 12px;
+  line-height: 17px;
+  font-style: normal;
+  font-weight: bold;
+  color: #050518;
+}
+.contain-users .block-content .item .head .action-portfolio .info-small .contain-name_desc {
+  font-size: 10px;
+  line-height: 14px;
+  font-style: normal;
+  font-weight: normal;
+  text-align: center;
+  color: #828282;
+}
+.contain-users .block-content .item .head .action-portfolio .portfolio-footer {
+  display: flex;
+}
 .contain-users .block-content .item .head .avatar {
   flex: 0 0 6%;
   margin-left: 0px;
@@ -10412,6 +10471,20 @@ h3 {
   padding-right: 0px;
 }
 .contain-users .block-content .item .head .account div {
+  margin-top: 0px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.contain-users .block-content .item .head .info-portfolio {
+  border-left: 1px solid #E7E7E7;
+  border-right: 1px solid #E7E7E7;
+  flex: 0 0 25%;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.contain-users .block-content .item .head .info-portfolio div {
   margin-top: 0px;
   margin-bottom: 12px;
   display: flex;
