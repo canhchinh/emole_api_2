@@ -83,4 +83,11 @@ class User extends Authenticatable implements Transformable
     {
         return $this->hasOne(Portfolio::class, 'user_id', 'id');
     }
+
+    public function search($username)
+    {
+        return $this->where('user_name', $username)
+            ->orWhere('given_name', $username)
+            ->first();
+    }
 }

@@ -15,6 +15,7 @@ use App\Http\Requests\UpdateBasicInformationRequest;
 use App\Http\Requests\UpdateEmailNotificationRequest;
 use App\Http\Requests\UpdateEmailRequest;
 use App\Http\Requests\UpdatePasswordRequest;
+use App\Http\Requests\SearchUser;
 use App\Jobs\SendMailResetPassword;
 use App\Repositories\ActivityBaseRepository;
 use App\Repositories\ActivityContentRepository;
@@ -865,8 +866,17 @@ class UserController extends Controller
      *   path="/user",
      *   summary="user information",
      *   operationId="user_information",
-     *   tags={"User"},
+     *   tags={"User info"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          description="User id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -878,8 +888,19 @@ class UserController extends Controller
     public function userInfo(Request $request)
     {
         $user = auth()->user();
-        $userInfo = $this->userRepo->where('id', $user->id)->first();
-        $careerIds = $this->userCareerRepo->where('user_id', $user->id)->pluck('career_id');
+        $req = $request->all();
+        $userId = $user->id;
+        if(!empty($req['user_id'])) {
+            $userId = $req['user_id'];
+        }
+        $userInfo = $this->userRepo->where('id', $userId)->first();
+        if(empty($userInfo)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found',
+            ], 500);
+        }
+        $careerIds = $this->userCareerRepo->where('user_id', $userId)->pluck('career_id');
         if (empty($careerIds)) {
             $userInfo['careers'] = [];
         } else {
@@ -1145,7 +1166,7 @@ class UserController extends Controller
      *   path="/user/follow",
      *   summary="follow/unfollow user",
      *   operationId="follow_unfollow_user",
-     *   tags={"User"},
+     *   tags={"Follow"},
      *   security={ {"token": {}} },
      *      @OA\RequestBody(
      *          @OA\MediaType(
@@ -1194,7 +1215,7 @@ class UserController extends Controller
      *   path="/user/follow",
      *   summary="get list follow by user",
      *   operationId="get_list_follow_by_user",
-     *   tags={"User"},
+     *   tags={"Follow"},
      *   security={ {"token": {}} },
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
@@ -1221,7 +1242,7 @@ class UserController extends Controller
      *   path="/user/follower",
      *   summary="get list follower by user",
      *   operationId="get_list_follower_by_user",
-     *   tags={"User"},
+     *   tags={"Follow"},
      *   security={ {"token": {}} },
      *      @OA\Parameter(
      *          name="current_page",
@@ -1344,6 +1365,14 @@ class UserController extends Controller
      *   operationId="work-education",
      *   tags={"Work-Education"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -1356,7 +1385,12 @@ class UserController extends Controller
     {
         try {
             $user = $request->user();
-            $data = $this->educationRepo->where('user_id', $user->id)->orderBy('start_date', 'ASC')
+            $req = $request->all();
+            $userId = $user->id;
+            if(!empty($req['user_id'])) {
+                $userId = $req['user_id'];
+            }
+            $data = $this->educationRepo->where('user_id', $userId)->orderBy('start_date', 'ASC')
                 ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description', 'link'])
                 ->get();
             return response()->json([
@@ -1622,6 +1656,14 @@ class UserController extends Controller
      *   operationId="list-portfolio",
      *   tags={"Portfolio"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -1634,7 +1676,11 @@ class UserController extends Controller
     {
         $req = $request->all();
         $user = $request->user();
-        $portfolioJobs = $this->portfolioJobRepo->where('user_id', $user->id)
+        $userId = $user->id;
+        if(!empty($req['user_id'])) {
+            $userId = $req['user_id'];
+        }
+        $portfolioJobs = $this->portfolioJobRepo->where('user_id', $userId)
             ->select(DB::raw('group_concat(portfolio_id) as portfolio_ids'), 'job_id')
             ->groupBy('job_id')
             ->get();
@@ -1657,5 +1703,46 @@ class UserController extends Controller
             'status' => true,
             'data' => $portfolioJobs
         ]);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/user/search",
+     *   summary="search user",
+     *   operationId="search-user",
+     *   tags={"User info"},
+     *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="username",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function searchUser(SearchUser $request)
+    {
+        try {
+            $req = $request->all();
+            $user = $request->user();
+            $userSearch = $this->userRepo->search($req['username']);
+            return response()->json([
+                'status' => true,
+                'data' => $userSearch
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

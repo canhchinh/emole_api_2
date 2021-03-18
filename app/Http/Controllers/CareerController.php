@@ -116,6 +116,14 @@ class CareerController extends Controller
      *   operationId="career-info",
      *   tags={"Career"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -127,7 +135,12 @@ class CareerController extends Controller
     public function userCareer(Request $request)
     {
         $user = auth()->user();
-        $userInfo = $this->userRepo->where('id', $user->id)
+        $req = $request->all();
+        $userId = $user->id;
+        if(!empty($req['user_id'])) {
+            $userId = $req['user_id'];
+        }
+        $userInfo = $this->userRepo->where('id', $userId)
             ->with([
                 'careers' => function ($q) {
                     $q->select(['careers.id', 'careers.title']);
