@@ -92,7 +92,7 @@ Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function () {
 });
 Route::group(['prefix' => 'portfolio', 'middleware' => 'auth:sanctum'], function () {
     Route::post('', [UserController::class, 'portfolio']);
-    Route::get('', [UserController::class, 'portfolioDetail']);
+    Route::get('detail/{portfolio_id}', [UserController::class, 'portfolioDetail']);
     Route::post('image', [UserController::class, 'portfolioImage']);
     Route::get('list', [UserController::class, 'ListPortfolio']);
 });

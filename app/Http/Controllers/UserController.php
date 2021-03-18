@@ -1373,7 +1373,7 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/portfolio",
+     *   path="/portfolio/detail/{portfolio_id}",
      *   summary="portfolio detail",
      *   operationId="portfolio-detail",
      *   tags={"Portfolio"},
@@ -1387,6 +1387,15 @@ class UserController extends Controller
      *              type="integer"
      *          )
      *      ),
+     *      @OA\Parameter(
+     *          name="portfolio_id",
+     *          description="Portfolio id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -1395,7 +1404,7 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function portfolioDetail(Request $request)
+    public function portfolioDetail(Request $request, $portfolioId)
     {
         try {
             $req = $request->all();
@@ -1414,6 +1423,7 @@ class UserController extends Controller
             }
 
             $portfolio = $this->portfolioRepo->where('user_id', $user->id)
+                ->where('id', $portfolioId)
                 ->first();
             if (empty($portfolio)) {
                 return response()->json([
@@ -1434,7 +1444,14 @@ class UserController extends Controller
                     ->get();
                 $portfolio['members'] = $members;
             }
-            $jobIds = json_decode($portfolio->job_ids);
+            $jobIds = [];
+            $jobIds = $this->portfolioJobRepo
+                ->where('user_id', $user->id)
+                ->where('portfolio_id', $portfolio->id)
+                ->pluck('job_id');
+            if(!empty($jobIds)) {
+                $jobIds = $jobIds->toArray();
+            }
             if (!empty($jobIds)) {
                 $jobs = $this->activityContentRepo->whereIn('id', $jobIds)
                     ->where('key', 'job')
