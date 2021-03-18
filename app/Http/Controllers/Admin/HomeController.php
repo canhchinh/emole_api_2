@@ -14,7 +14,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('welcome');
+        return redirect()->route('admin.users.list');
     }
     /**
      * listUser
@@ -23,7 +23,7 @@ class HomeController extends Controller
      */
     public function listUser()
     {
-        return view('admin.pages.list_users');
+        return view('admin.pages.user.index');
     }
 
     /**
@@ -33,7 +33,7 @@ class HomeController extends Controller
      */
     public function listPortfolio()
     {
-        return view('admin.pages.list_portfolio');
+        return view('admin.pages.portfolio.index');
     }
 
     /**
@@ -43,9 +43,21 @@ class HomeController extends Controller
      */
     public function listNotify()
     {
-        return view('admin.pages.list_notify');
+        return view('admin.pages.notify.index');
     }
-
+    
+    /**
+     * createNotify
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function createNotify(Request $request) 
+    {
+        if ($request->getMethod() === "GET"){
+            return view('admin.pages.notify.create');
+        }
+    }
 
     /**
      * detailUser

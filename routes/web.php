@@ -22,8 +22,15 @@ Route::post('/reset-password', [AuthController::class, 'postResetPassword'])->na
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.auth.logout');
     Route::get('/', [HomeController::class, 'index'])->name('admin.home.index');
-    Route::get('/list-users', [HomeController::class, 'listUser'])->name('admin.users.list');
-    Route::get('/list-portfolio', [HomeController::class, 'listPortfolio'])->name('admin.portfolio.list');
-    Route::get('/list-notify', [HomeController::class, 'listNotify'])->name('admin.notify.list');
+    Route::prefix('user')->group(function () {
+        Route::get('/', [HomeController::class, 'listUser'])->name('admin.users.list');
+    });
+    Route::prefix('portfolio')->group(function () {
+        Route::get('/', [HomeController::class, 'listPortfolio'])->name('admin.portfolio.list');
+    });
+    Route::prefix('notify')->group(function () {
+        Route::get('/', [HomeController::class, 'listNotify'])->name('admin.notify.list');
+        Route::match(['get', 'post'], '/create', [HomeController::class, 'createNotify'])->name('admin.notify.create');
+    });
     Route::get('/detail/{id}', [HomeController::class, 'detailUser'])->name('admin.users.detailUser');
 });

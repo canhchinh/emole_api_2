@@ -30,80 +30,117 @@
         text-align: center;
         @include my(0, 28);
     }
+}
 
-    .form {
-        .contain {
-            width: 335px;
-            @include my(0, 12);
-            @include iphone5() {
-                width: 300px;
-            }
-            label {
-                @include fontBase(12, 17.38);
-                font-style: normal;
+.form {
+    .contain {
+        width: 335px;
+        @include my(0, 12);
+        @include iphone5() {
+            width: 300px;
+        }
+        label {
+            @include fontBase(12, 17.38);
+            font-style: normal;
+            font-weight: 400;
+            letter-spacing: 0px;
+            text-align: left;
+            color: $color-base;
+        }
+
+        input {
+            padding: 20px 0 12.5px;
+            @include fontBase(15, 22);
+            color: $color-base;
+            border: none;
+            outline: 0;
+            appearance: none;
+            transition: all .25s ease-in-out;
+            font-weight: 400;
+            width: 100%;
+            border-bottom: 0.5px solid $color-gray;
+
+            &::-webkit-input-placeholder {
+                color: $color-gray;
                 font-weight: 400;
-                letter-spacing: 0px;
-                text-align: left;
-                color: $color-base;
-            }
-
-            input {
-                padding: 20px 0 12.5px;
                 @include fontBase(15, 22);
-                color: $color-base;
-                border: none;
-                outline: 0;
-                appearance: none;
-                transition: all .25s ease-in-out;
+            }
+
+            &::-ms-input-placeholder {
+                color: $color-gray;
                 font-weight: 400;
-                width: 100%;
-                border-bottom: 0.5px solid $color-gray;
+            }
 
-                &::-webkit-input-placeholder {
-                    color: $color-gray;
-                    font-weight: 400;
-                    @include fontBase(15, 22);
-                }
+            &::placeholder {
+                color: $color-gray;
+                font-weight: 400;
+            }
 
-                &::-ms-input-placeholder {
-                    color: $color-gray;
-                    font-weight: 400;
-                }
-
-                &::placeholder {
-                    color: $color-gray;
-                    font-weight: 400;
-                }
-
-                &:focus {
-                    outline: 0;
-                }
-                &::-webkit-outer-spin-button,
-                &::-webkit-inner-spin-button {
-                    margin: 0;
-                    -webkit-appearance: none;
-                }
+            &:focus {
+                outline: 0;
+            }
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                margin: 0;
+                -webkit-appearance: none;
             }
         }
-        .footer {
-            @include my(36, 0);
-            text-align: center;
-            button {
-                @include fontBase(14, 20);
-                height: 44px;
-                width: 152px;
-                border-radius: 40px;
-                background: $color-active;
-                outline: 0;
-                color: $color-white;
-                font-family: Noto Sans JP;
-                font-style: normal;
-                font-weight: 500;
-                letter-spacing: 0px;
-                text-align: center;
-                border: unset;
-                cursor: pointer;
+        textarea {
+            padding: 20px 0 12.5px;
+            @include fontBase(15, 22);
+            color: $color-base;
+            border: none;
+            outline: 0;
+            appearance: none;
+            transition: all .25s ease-in-out;
+            font-weight: 400;
+            width: 100%;
+            border-bottom: 0.5px solid $color-gray;
+            resize: none;
+            &::-webkit-input-placeholder {
+                color: $color-active;
             }
+            
+            &:-moz-placeholder { /* Firefox 18- */
+                color: $color-active;  
+            }
+            
+            &::-moz-placeholder {  /* Firefox 19+ */
+                color: $color-active;  
+            }
+            
+            &:-ms-input-placeholder {
+                color: $color-active;  
+            }
+            
+            &::placeholder {
+                color: $color-active;  
+            }
+    }
+    }
+    .footer {
+        @include my(36, 0);
+        text-align: center;
+        button {
+            @include fontBase(14, 20);
+            height: 44px;
+            width: 152px;
+            border-radius: 45px;
+            background: $color-active;
+            outline: 0;
+            color: $color-white;
+            font-style: normal;
+            font-weight: 500;
+            letter-spacing: 0px;
+            text-align: center;
+            border: unset;
+            cursor: pointer;
+        }
+        .button-outline {
+            border: 1px solid #5332A5;
+            outline: 0;
+            background: none;
+            color: $color-active;
         }
     }
 }

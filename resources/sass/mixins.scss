@@ -73,3 +73,18 @@
     align-items: center;
 }
 
+@mixin textH2 {
+    font-weight: bold;
+    @include fontBase(12,17);
+    color: $color-base;
+}
+@mixin textH3 {
+    font-weight: bold;
+    @include fontBase(10,14);
+    color: $color-base;
+}
+@mixin textContent {
+    @include fontBase(10,14);
+    color: $color-base;
+    font-weight: normal;
+}

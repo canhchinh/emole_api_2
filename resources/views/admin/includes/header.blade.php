@@ -5,7 +5,7 @@
     @if (Request::segment(1) !== "login")
     <ul class="header-item">
         <li>
-            <a href="#">お知らせ配信</a>
+            <a href="{{route('admin.notify.create')}}">お知らせ配信</a>
         </li>
         <li>
             <img src="{{asset('/assets/images/right_logo.png')}}" alt="avatar admin">

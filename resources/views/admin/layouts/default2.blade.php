@@ -20,7 +20,7 @@
                 @include('admin.includes.sidebar')
             </div>
             @endif
-            <div class="col-10">
+            <div class="col-12">
                 @yield('content')
             </div>
         </div>

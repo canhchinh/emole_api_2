@@ -129,6 +129,46 @@
                         }
                     }
                 }
+                .action-notify {
+                    flex: 0 0 37%;
+                    .name-notify {
+                        @include textH2();
+                        @include my(0,12);
+                    }
+                    .desc-notify {
+                        @include textH3();
+                        @include my(0,8);
+                    }
+                    .content-notify {
+                        @include textContent();
+                        text-align: left;
+                        Width: 280px;
+                    }
+                }
+                .info-notify {
+                    border-left: 1px solid $color-gray;
+                    border-right: 1px solid $color-gray;
+                    flex: 0 0 30%;
+                    @include px(16,16);
+                    .contain-notify {
+                        &_title {
+                            @include fontBase(12,17);
+                            font-weight: bold;
+                            display: flex;
+                            align-items: center;
+                            color: $color-base;
+                            @include my(0,12);
+                        }
+                        &_job {
+                            flex-wrap: wrap;
+                            display: flex;
+                            .tag {
+                                @include mx(0,5);
+                                @include my(0,5);
+                            }
+                        }
+                    }
+                }
                 .info {
                     border-left: 1px solid $color-gray;
                     border-right: 1px solid $color-gray;
@@ -141,6 +181,14 @@
                 }
                 .account {
                     flex: 0 0 25%;
+                    @include px(16,0);
+                    div {
+                        @include my(0,12);
+                        @include displayFlexSpaceBetween();
+                    }
+                }
+                .account-notify {
+                    flex: 0 0 33%;
                     @include px(16,0);
                     div {
                         @include my(0,12);
