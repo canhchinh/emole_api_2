@@ -1365,6 +1365,14 @@ class UserController extends Controller
      *   operationId="work-education",
      *   tags={"Work-Education"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -1377,7 +1385,12 @@ class UserController extends Controller
     {
         try {
             $user = $request->user();
-            $data = $this->educationRepo->where('user_id', $user->id)->orderBy('start_date', 'ASC')
+            $req = $request->all();
+            $userId = $user->id;
+            if(!empty($req['user_id'])) {
+                $userId = $req['user_id'];
+            }
+            $data = $this->educationRepo->where('user_id', $userId)->orderBy('start_date', 'ASC')
                 ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description', 'link'])
                 ->get();
             return response()->json([
