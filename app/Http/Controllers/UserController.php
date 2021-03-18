@@ -15,6 +15,7 @@ use App\Http\Requests\UpdateBasicInformationRequest;
 use App\Http\Requests\UpdateEmailNotificationRequest;
 use App\Http\Requests\UpdateEmailRequest;
 use App\Http\Requests\UpdatePasswordRequest;
+use App\Http\Requests\SearchUser;
 use App\Jobs\SendMailResetPassword;
 use App\Repositories\ActivityBaseRepository;
 use App\Repositories\ActivityContentRepository;
@@ -865,7 +866,7 @@ class UserController extends Controller
      *   path="/user",
      *   summary="user information",
      *   operationId="user_information",
-     *   tags={"User"},
+     *   tags={"User info"},
      *   security={ {"token": {}} },
      *      @OA\Parameter(
      *          name="user_id",
@@ -1677,5 +1678,46 @@ class UserController extends Controller
             'status' => true,
             'data' => $portfolioJobs
         ]);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/user/search",
+     *   summary="search user",
+     *   operationId="search-user",
+     *   tags={"User info"},
+     *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="username",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function searchUser(SearchUser $request)
+    {
+        try {
+            $req = $request->all();
+            $user = $request->user();
+            $userSearch = $this->userRepo->search($req['username']);
+            return response()->json([
+                'status' => true,
+                'data' => $userSearch
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }
