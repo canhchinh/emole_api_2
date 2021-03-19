@@ -91,7 +91,7 @@ class LineNotifyController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
-            ], config('common.status_code.500'));
+            ]);
         }
     }
 
@@ -135,8 +135,8 @@ class LineNotifyController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage(),
-            ], config('common.status_code.500'));
+                'message' => $e->getMessage()
+            ]);
         }
     }
 }
