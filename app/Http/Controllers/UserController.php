@@ -1734,10 +1734,16 @@ class UserController extends Controller
             $req = $request->all();
             $user = $request->user();
             $userSearch = $this->userRepo->search($req['username']);
+            if ($userSearch) {
+                return response()->json([
+                    'status' => true,
+                    'data' => $userSearch
+                ]);
+            }
             return response()->json([
-                'status' => true,
+                'status' => false,
                 'data' => $userSearch
-            ]);
+            ],404);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
