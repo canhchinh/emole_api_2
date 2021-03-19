@@ -9,6 +9,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\SnsController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\LineNotifyController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -107,3 +108,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('job-description', [CareerController::class, 'jobDescription']);
     Route::post('profile', [UserController::class, 'updateProfile']);
 });
+
+/**************** Line Notify ****************/
+Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('get-auth-link', [LineNotifyController::class, 'getAuthLink']);
+});
+Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('get-access-token', [LineNotifyController::class, 'getAccessToken']);
+});
+Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
+    Route::post('send-notify', [LineNotifyController::class, 'sendNotify']);
+});
+
