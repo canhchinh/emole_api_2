@@ -10555,7 +10555,7 @@ h3 {
   align-items: center;
 }
 .contain-users .block-content .item .head .account {
-  flex: 0 0 25%;
+  flex: 0 0 23%;
   padding-left: 16px;
   padding-right: 0px;
 }
@@ -10567,7 +10567,7 @@ h3 {
   align-items: center;
 }
 .contain-users .block-content .item .head .account-notify {
-  flex: 0 0 33%;
+  flex: 0 0 32%;
   padding-left: 16px;
   padding-right: 0px;
 }

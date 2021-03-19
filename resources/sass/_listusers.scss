@@ -180,15 +180,18 @@
                     }
                 }
                 .account {
-                    flex: 0 0 25%;
+                    flex: 0 0 23%;
                     @include px(16,0);
                     div {
                         @include my(0,12);
                         @include displayFlexSpaceBetween();
                     }
+                    // @media (max-width: 1440px) {
+                    //     flex: 0 0 23%;
+                    // }
                 }
                 .account-notify {
-                    flex: 0 0 33%;
+                    flex: 0 0 32%;
                     @include px(16,0);
                     div {
                         @include my(0,12);
