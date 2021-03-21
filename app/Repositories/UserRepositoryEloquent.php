@@ -55,4 +55,14 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         return $users;
     }
 
+    public function is_base64($file){
+        try {
+            $extension = explode('/', mime_content_type($file))[1];
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+
+    }
+
 }

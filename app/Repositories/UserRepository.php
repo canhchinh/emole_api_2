@@ -12,4 +12,6 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface UserRepository extends RepositoryInterface
 {
     public function listUsers($filters=[], $page =1, $limit = 10);
+
+    public function is_base64($file);
 }

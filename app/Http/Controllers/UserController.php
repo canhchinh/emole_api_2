@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Mockery\Exception;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\UpdateAvatarRequest;
 
 class UserController extends Controller
 {
@@ -293,17 +294,17 @@ class UserController extends Controller
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *   path="/user/avatar",
      *   summary="avatar user",
      *   operationId="avatar",
-     *   tags={"User"},
+     *   tags={"Account setting"},
      *   security={ {"token": {}} },
      *   @OA\RequestBody(
      *      @OA\MediaType(
-     *         mediaType="multipart/form-data",
+     *         mediaType="application/json",
      *             @OA\Schema(
-     *                @OA\Property(property="avatar",type="string", format="binary")
+     *                @OA\Property(property="avatar",type="string")
      *             )
      *         )
      *     ),
@@ -315,25 +316,45 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function avatar(Request $request)
+    public function avatar(UpdateAvatarRequest $request)
     {
-        $request->all([
-            'avatar',
-        ]);
-        $user = auth()->user();
-        $file = $request->file('avatar');
-        $extension = $file->getClientOriginalExtension();
-        if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
-            $path = 'user/' . $user->id . '_' . time() . '.' . $extension;
-            Storage::disk('public')->put($path, File::get($file));
-            $url = '/storage/' . $path;
+        try {
+            $req = $request->all();
+            $user = auth()->user();
+            $file = $req['avatar'];
+            $isBase64  = $this->userRepo->is_base64($file);
+            if (!$isBase64){
+                return response()->json([
+                    'status' => false,
+                    'data' => 'Image invalid format',
+                ], 500);
+            }
+            $extension = explode('/', mime_content_type($file))[1];
+            $path = 'user/';
+            if(!in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Only support file jpg, png, jpeg, gif'
+                ]);
+            }
 
-            $user->avatar = $url;
+            $fileName = $this->saveImgBase64($file, $path, $user->id);
+            $url = '/storage/' . $path . $fileName;
+
+            // todo unlink image server or delete on s3
+            
+            $this->userRepo->where('id', $user->id)->update(['avatar' => $url]);
+
+            return response()->json([
+                'status' => true
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => true,
+                'message' => $e->getMessage()
+            ], 500);
         }
-        return response()->json([
-            'status' => true,
-            'user' => $user,
-        ]);
+
     }
 
     /**
