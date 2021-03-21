@@ -342,7 +342,7 @@ class UserController extends Controller
             $url = '/storage/' . $path . $fileName;
 
             // todo unlink image server or delete on s3
-            
+
             $this->userRepo->where('id', $user->id)->update(['avatar' => $url]);
 
             return response()->json([
@@ -953,8 +953,11 @@ class UserController extends Controller
         } else {
             $careerIds = $careerIds->toArray();
             $userInfo['careers'] = $this->careerRepo->whereIn('id', $careerIds)->get();
+        }
+        if(!empty($userInfo->avatar)) {
             $userInfo->avatar = config('common.app_url') . $userInfo->avatar;
         }
+
         return response()->json([
             'status' => true,
             'data' => $userInfo,
