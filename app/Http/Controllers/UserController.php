@@ -30,6 +30,7 @@ use App\Repositories\UserImageRepository;
 use App\Repositories\UserJobRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\PortfolioJobRepository;
+use App\Repositories\PortfolioMemberRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -53,6 +54,7 @@ class UserController extends Controller
     private $activityContentRepo;
     private $userImageRepo;
     private $portfolioJobRepo;
+    private $portfolioMemberRepo;
 
     public function __construct(
         UserRepository $userRepo,
@@ -67,7 +69,8 @@ class UserController extends Controller
         CareerRepository $careerRepo,
         ActivityContentRepository $activityContentRepo,
         UserImageRepository $userImageRepo,
-        PortfolioJobRepository $portfolioJobRepo
+        PortfolioJobRepository $portfolioJobRepo,
+        PortfolioMemberRepository $portfolioMemberRepo
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -82,6 +85,7 @@ class UserController extends Controller
         $this->activityContentRepo = $activityContentRepo;
         $this->userImageRepo = $userImageRepo;
         $this->portfolioJobRepo = $portfolioJobRepo;
+        $this->portfolioMemberRepo = $portfolioMemberRepo;
     }
 
     /**
@@ -692,11 +696,9 @@ class UserController extends Controller
      *                  ),
      *               ),
      *                  @OA\Property(
-     *                      property="member_ids[]",
-     *                      type="array",
-     *                      @OA\Items(
-     *                         type="integer"
-     *                     )
+     *                      property="members",
+     *                      type="string",
+     *                      example={{"id": 1, "role": "supervise"}, {"id": 2, "role": "member"}},
      *                  ),
      *                  @OA\Property(property="title", type="string", example="Drum advertisement"),
      *                  @OA\Property(
@@ -734,13 +736,26 @@ class UserController extends Controller
         try {
             $user = auth()->user();
             $req = $request->all();
-            $imageUrl = [];
-            if (!empty($req['member_ids'])) {
-                $userIds = $this->userRepo->whereIn('id', $req['member_ids'])->pluck('id');
-                if (empty($userIds) || (count($req['member_ids']) != count($userIds))) {
+            $members = [];
+            if(!empty($req['members'])) {
+                $members  = json_decode($req['members'], true);
+                if(!is_array($members)) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Member not found',
+                        'message' => 'Invalid format members',
+                    ], 500);
+                }
+            }
+            if(!empty($members)) {
+                $memberIds = [];
+                foreach($members as $member) {
+                    array_push($memberIds, $member['id']);
+                }
+                $userIds = $this->userRepo->whereIn('id', $memberIds)->pluck('id');
+                if (empty($userIds) || (count($memberIds) != count($userIds))) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Members not found',
                     ], 500);
                 }
             }
@@ -756,6 +771,7 @@ class UserController extends Controller
                 ], 500);
             }
 
+            $imageUrl = [];
             if ($request->hasFile('images')) {
                 $files = $request->file('images');
                 foreach ($files as $k => $file) {
@@ -788,7 +804,6 @@ class UserController extends Controller
                 'video_link' => $req['video_link'],
                 'work_link' => $req['work_link'],
                 'work_description' => $req['work_description'],
-                'member_ids' => !empty($req['member_ids']) ? json_encode($req['member_ids']) : null,
             ];
 
             if (!empty($imageUrl)) {
@@ -808,6 +823,17 @@ class UserController extends Controller
                     'job_id' => $jobId
                 ]);
             }
+
+            if(!empty($members)) {
+                foreach($members as $member) {
+                    $this->portfolioMemberRepo->updateOrCreate([
+                        'portfolio_id' => $portfolio->id,
+                        'member_id' => $member['id'],
+                        'role' => $member['role']
+                    ]);
+                }
+            }
+
 
             return response()->json([
                 'status' => true,
@@ -1471,13 +1497,20 @@ class UserController extends Controller
                     'message' => 'Permission',
                 ], 401);
             }
-            $memberIds = json_decode($portfolio->member_ids);
-            if (!empty($memberIds)) {
-                $members = $this->userRepo->whereIn('id', $memberIds)
-                    ->select(['id', 'user_name', 'given_name', 'email', 'title', 'gender', 'avatar'])
-                    ->get();
-                $portfolio['members'] = $members;
+            $memberIds = [];
+            $memberConvert = [];
+            $portfolioMembers = $this->portfolioMemberRepo
+                ->where('portfolio_id', $portfolio->id)
+                ->with(['member'])
+                ->get();
+            if(!empty($portfolioMembers)) {
+                foreach($portfolioMembers as $portfolioMember) {
+                    $member = $portfolioMember['member'];
+                    $member['role'] = $portfolioMember['role'];
+                    array_push($memberConvert, $member);
+                }
             }
+            $portfolio['members'] = $memberConvert;
             $jobIds = [];
             $jobIds = $this->portfolioJobRepo
                 ->where('user_id', $user->id)
