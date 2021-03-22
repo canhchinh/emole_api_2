@@ -53,7 +53,7 @@ class Portfolio extends Model implements Transformable
             $value = json_decode($value);
             if(is_array($value)) {
                 foreach($value as $item) {
-                    $result = [
+                    $result[] = [
                         'alt' => 'portfolio image',
                         'url' => config('common.app_url'). $item,
                     ];
