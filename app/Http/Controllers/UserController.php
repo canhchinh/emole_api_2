@@ -793,19 +793,18 @@ class UserController extends Controller
             }
 
             $imageUrl = [];
-            if ($request->hasFile('images')) {
-                $files = $request->file('images');
-                foreach ($files as $k => $file) {
-                    $extension = $file->getClientOriginalExtension();
-                    if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
-                        $imageName = time() + $k;
-                        $path = 'user/' . $user->id . '/work/' . $imageName . '.' . $extension;
-                        Storage::disk('public')->put($path, File::get($file));
-                        $url = '/storage/' . $path;
+            if(count($req['images']) > 0) {
+                foreach($req['images'] as $img) {
+                    $extension = explode('/', mime_content_type($img))[1];
+                    $path = 'user/';
+                    if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
+                        $fileName = $this->saveImgBase64($img, $path, $user->id);
+                        $url = '/storage/' . $path . $fileName;
                         array_push($imageUrl, $url);
                     }
                 }
             }
+
             $startDate = $req['start_date'] . '-01';
             $endDate = $req['end_date'] . '-01';
 
