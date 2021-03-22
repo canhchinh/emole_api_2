@@ -23,7 +23,7 @@ class OneImport implements ToModel
             $type = "genre";
         }
         return new ActivityContent([
-            "career_id" => 1,
+            "career_id" => 2,
             "key" => $type,
             "title" => $row[0]
         ]);
