@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\ActivityBaseImport;
+use App\Imports\CareerImport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HomeController extends Controller
 {
@@ -68,5 +71,22 @@ class HomeController extends Controller
     public function detailUser($id)
     {
         dd($id);
+    }
+
+    
+    /**
+     * import
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function import(Request $request)
+    {
+        if ($request->getMethod() === "GET") {
+            return view('import');
+        }
+        Excel::import(new CareerImport,request()->file('file'));
+        // Excel::import(new ActivityBaseImport,request()->file('file'));
+        return back();
     }
 }
