@@ -48,7 +48,7 @@ class Portfolio extends Model implements Transformable
 
     public function getImageAttribute($value)
     {
-        $result = [];
+        $result = null;
         if(!empty($value)) {
             $value = json_decode($value);
             if(is_array($value)) {
