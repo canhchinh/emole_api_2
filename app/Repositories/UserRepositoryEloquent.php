@@ -8,6 +8,7 @@ use App\Repositories\UserRepository;
 use App\Entities\User;
 use App\Validators\UserValidator;
 use Illuminate\Pagination\Paginator;
+use App\Entities\Follow;
 
 /**
  * Class UserRepositoryEloquent.
@@ -36,9 +37,11 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
-    public function listUsers($filters = [],$page = 1, $limit=10)
+    public function listUsers($userId, $filters = [],$page = 1, $limit=10)
     {
-        $users = User::select('*')->with(['activity_base', 'portfolio']);
+        $users = User::select('*')
+            ->where('id', '<>', $userId)
+            ->with(['activity_base', 'portfolio']);
         if(!empty($filters['keyword'])) {
             $users->where('user_name', 'like', '%'.$filters['keyword'].'%')
             ->orWhere('given_name', 'like', '%'.$filters['keyword'].'%');
@@ -49,10 +52,22 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             });
         }
 
-
-        $users = $users->paginate($limit)->toArray();
-
-        return $users;
+        $targetIds  = Follow::where('user_id', $userId)->pluck('target_id');
+        if(!empty($targetIds)) {
+            $targetIds = $targetIds->toArray();
+        } else {
+            $targetIds = [];
+        }
+        $users = $users->paginate($limit);
+        $users->getCollection()->transform(function ($user) use ($targetIds){
+            if(in_array($user->id, $targetIds)) {
+                $user->is_follow = true;
+            } else {
+                $user->is_follow = false;
+            }
+            return $user;
+        });
+        return $users->toArray();
     }
 
     public function is_base64($file){
