@@ -48,14 +48,19 @@ class Portfolio extends Model implements Transformable
 
     public function getImageAttribute($value)
     {
+        $result = [];
         if(!empty($value)) {
             $value = json_decode($value);
             if(is_array($value)) {
-                foreach($value as $k=>$item) {
-                    $value[$k] = config('common.app_url'). $item;
+                foreach($value as $item) {
+                    $result = [
+                        'alt' => 'portfolio image',
+                        'url' => config('common.app_url'). $item,
+                    ];
                 }
             }
         }
-        return $value;
+
+        return $result;
     }
 }
