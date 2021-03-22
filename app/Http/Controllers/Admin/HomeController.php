@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Imports\ActivityBaseImport;
 use App\Imports\CareerImport;
+use App\Imports\DetailCareer\OneImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -85,8 +86,9 @@ class HomeController extends Controller
         if ($request->getMethod() === "GET") {
             return view('import');
         }
-        Excel::import(new CareerImport,request()->file('file'));
+        // Excel::import(new CareerImport,request()->file('file'));
         // Excel::import(new ActivityBaseImport,request()->file('file'));
+        Excel::import(new OneImport,request()->file('file'));
         return back();
     }
 }
