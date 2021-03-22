@@ -15,15 +15,15 @@ class OneImport implements ToModel
     public function model(array $row)
     {
         $type = null;
-        if ($row[1] === 1) {
+        if ($row[2] === 1) {
             $type = "category";
-        } else if ($row[1] === 2) {
+        } else if ($row[2] === 2) {
             $type = "job";
         } else {
             $type = "genre";
         }
         return new ActivityContent([
-            "career_id" => 2,
+            "career_id" => $row[1],
             "key" => $type,
             "title" => $row[0]
         ]);
