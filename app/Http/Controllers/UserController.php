@@ -574,7 +574,7 @@ class UserController extends Controller
         $userCareer->user_id = $user->id;
         $userCareer->career_id = $data['career_id'];
         $userCareer->setting = json_encode($data['career']);
-        $userCareer->tags = json_encode($data['tags']);
+        $userCareer->tags = implode(":|||:", $data['tags']);
         $userCareer->save();
 
         return response()->json([

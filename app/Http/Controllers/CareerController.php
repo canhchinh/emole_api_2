@@ -88,7 +88,7 @@ class CareerController extends Controller
             $tags = [];
         } else {
             $list = json_decode($record->setting, true);
-            $tags = $record->tags;
+            $tags = explode(":|||:", $record->tags);
         }
 
         return response()->json([
