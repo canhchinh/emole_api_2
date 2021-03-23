@@ -527,7 +527,7 @@ class UserController extends Controller
      *              @OA\Schema(
      *                 @OA\Property(property="career_id", type="integer", example="1"),
      *                  @OA\Property(
-     *                      property="category_ids",
+     *                      property="career",
      *                      type="json",
      *                      example={1,2}
      *                  ),
@@ -562,81 +562,22 @@ class UserController extends Controller
      */
     public function activity(Request $request)
     {
-        try {
-            $user = auth()->user();
-            $careerId = $request->input('career_id');
-            $categoryIds = $request->input('category_ids');
-            $jobIds = $request->input('job_ids');
-            $genreIds = $request->input('genre_ids');
-            $tags = $request->input('tags');
-            $career = $this->careerRepo->where('id', $careerId)->first();
-            if (empty($career)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Career not found',
-                ], config('common.status_code.500'));
-            }
-            $activityContent = $this->activityContentRepo->where('career_id', $careerId)
-                ->select(['id', 'key'])->get();
-            if (empty($activityContent)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Some thing wrong',
-                ], config('common.status_code.500'));
-            }
-            $categoryIdsDb = [];
-            $jobIdsDb = [];
-            $genreIdsDb = [];
-            $activityContent = $activityContent->toArray();
-            foreach ($activityContent as $item) {
-                if ($item['key'] == 'category') {
-                    array_push($categoryIdsDb, $item['id']);
-                }
-                if ($item['key'] == 'job') {
-                    array_push($jobIdsDb, $item['id']);
-                }
-                if ($item['key'] == 'genre') {
-                    array_push($genreIdsDb, $item['id']);
-                }
-            }
+        $data = $request->all([
+            'career', 'career_id', 'tags'
+        ]);
+        $user = auth()->user();
 
-            if (!empty(array_diff($categoryIds, $categoryIdsDb))) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Category not found',
-                ], config('common.status_code.500'));
-            }
-            if (!empty(array_diff($jobIds, $jobIdsDb))) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Job not found',
-                ], config('common.status_code.500'));
-            }
-            if (!empty(array_diff($genreIds, $genreIdsDb))) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Genre not found',
-                ], config('common.status_code.500'));
-            }
-            $param = [
-                'category_ids' => json_encode($categoryIds),
-                'job_ids' => json_encode($jobIds),
-                'genre_ids' => json_encode($genreIds),
-                'tags' => $tags,
-            ];
+        $userCareer = $this->userCareerRepo->where('user_id', $user->id)
+            ->where('career_id', $data['career_id'])
+            ->firstOrCreate();
 
-            $this->userCareerRepo->where('user_id', $user->id)
-                ->where('career_id', $careerId)->update($param);
+        $userCareer->setting = json_encode($data['career']);
+        $userCareer->tags = json_encode($data['tags']);
+        $userCareer->save();
 
-            return response()->json([
-                'status' => true,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage(),
-            ], config('common.status_code.500'));
-        }
+        return response()->json([
+            'status' => true
+        ]);
     }
 
     /**
