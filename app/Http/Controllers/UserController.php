@@ -735,6 +735,7 @@ class UserController extends Controller
      *                  @OA\Property(property="start_date", type="string", example="2006-01"),
      *                  @OA\Property(property="end_date", type="string", example="2006-02"),
      *                  @OA\Property(property="is_still_active", type="boolean", example=true),
+     *                  @OA\Property(property="is_public", type="boolean", example=true),
      *                  @OA\Property(property="budget", type="string", example="¥900,000"),
      *                  @OA\Property(property="reach_number", type="string", example="285,000pv / 1ヶ月"),
      *                  @OA\Property(property="view_count", type="string", example="1,000,000回"),
@@ -816,6 +817,7 @@ class UserController extends Controller
                 'reach_number' => $req['reach_number'],
                 'view_count' => $req['view_count'],
                 'like_count' => $req['like_count'],
+                'is_public' => $req['is_public'],
                 'comment_count' => $req['comment_count'],
                 'cpa_count' => $req['cpa_count'],
                 'video_link' => $req['video_link'],
@@ -847,9 +849,9 @@ class UserController extends Controller
                 ]);
             }
 
+            $this->portfolioMemberRepo->where('portfolio_id', $portfolio->id)
+                ->delete();
             if(!empty($members)) {
-                $this->portfolioMemberRepo->where('portfolio_id', $portfolio->id)
-                    ->delete();
                 foreach($members as $member) {
                     $this->portfolioMemberRepo->create([
                         'portfolio_id' => $portfolio->id,
