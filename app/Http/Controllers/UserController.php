@@ -757,16 +757,8 @@ class UserController extends Controller
         try {
             $user = auth()->user();
             $req = $request->all();
-            $members = [];
-            if(!empty($req['members'])) {
-                $members  = json_decode($req['members'], true);
-                if(!is_array($members)) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Invalid format members',
-                    ], 500);
-                }
-            }
+            $members = $req['members'];
+
             if(!empty($members)) {
                 $memberIds = [];
                 foreach($members as $member) {
