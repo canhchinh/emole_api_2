@@ -34,7 +34,8 @@ class PortfolioRequest extends Base
             'cpa_count' => 'required',
             'video_link' => 'required',
             'work_link' => 'required',
-            'work_description' => 'required'
+            'work_description' => 'required',
+            'is_public' => 'required',
         ];
     }
 }
