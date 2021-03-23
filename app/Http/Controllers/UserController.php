@@ -829,7 +829,7 @@ class UserController extends Controller
                 'video_link' => $req['video_link'],
                 'work_link' => $req['work_link'],
                 'work_description' => $req['work_description'],
-                'tags' => !empty($req['tags']) ? json_encode($req['tags']) : null,
+                'tags' => !empty($req['tags']) ? implode(":|||:", $req['tags']) : null,
             ];
 
             if (!empty($imageUrl)) {

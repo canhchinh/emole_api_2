@@ -64,4 +64,9 @@ class Portfolio extends Model implements Transformable
 
         return $result;
     }
+
+    public function getTagsAttribute($value)
+    {
+        return explode(":|||:", $value);
+    }
 }
