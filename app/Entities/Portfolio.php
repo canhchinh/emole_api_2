@@ -43,7 +43,8 @@ class Portfolio extends Model implements Transformable
         'work_link',
         'work_description',
         'member_ids',
-        'is_public'
+        'is_public',
+        'tags'
     ];
 
     public function getImageAttribute($value)

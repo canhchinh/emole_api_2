@@ -745,7 +745,13 @@ class UserController extends Controller
      *                  @OA\Property(property="video_link", type="string", example="https://www.youtube.com"),
      *                  @OA\Property(property="work_link", type="string", example="https://camp-fire.jp/projects/view/370963?list"),
      *                  @OA\Property(property="work_description", type="string", example="CM"),
-     *                  @OA\Property(property="id", type="integer", example="0")
+     *                  @OA\Property(property="id", type="integer", example="0"),
+     *                  @OA\Property(property="tags",
+     *                      type="array",
+     *                      @OA\Items(
+     *                          type="string",
+     *                      ),
+     *                  ),
      *              )
      *          )
      *     ),
@@ -823,6 +829,7 @@ class UserController extends Controller
                 'video_link' => $req['video_link'],
                 'work_link' => $req['work_link'],
                 'work_description' => $req['work_description'],
+                'tags' => !empty($req['tags']) ? json_encode($req['tags']) : null,
             ];
 
             if (!empty($imageUrl)) {

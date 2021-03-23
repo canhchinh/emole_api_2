@@ -32,6 +32,7 @@ class CreatePortfolioTable extends Migration
             $table->text('work_description')->nullable();
             $table->string('member_ids')->nullable();
             $table->boolean('is_public')->default(true);
+            $table->text('tags')->nullable();
             $table->timestamps();
         });
     }
