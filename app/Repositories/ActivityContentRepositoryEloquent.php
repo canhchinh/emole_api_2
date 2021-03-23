@@ -48,6 +48,7 @@ class ActivityContentRepositoryEloquent extends BaseRepository implements Activi
             }
 
             $result[$item->key]['list'][] = [
+                'id' => $item->id,
                 'is_checked' => false,
                 'title' => $item->title,
                 'free_text' => false
