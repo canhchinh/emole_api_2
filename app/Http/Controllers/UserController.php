@@ -759,7 +759,9 @@ class UserController extends Controller
             $req = $request->all();
             $members = $req['members'];
 
-            var_dump($members);
+            return response()->json([
+                'status' => $members,
+            ]);
             exit();
             if(!empty($members)) {
                 $memberIds = [];
