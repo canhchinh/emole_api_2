@@ -571,6 +571,8 @@ class UserController extends Controller
             ->where('career_id', $data['career_id'])
             ->firstOrCreate();
 
+        $userCareer->user_id = $user->id;
+        $userCareer->career_id = $data['career_id'];
         $userCareer->setting = json_encode($data['career']);
         $userCareer->tags = json_encode($data['tags']);
         $userCareer->save();
