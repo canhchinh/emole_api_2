@@ -798,7 +798,7 @@ class UserController extends Controller
             }
 
             $startDate = $req['start_date'] . '-01';
-            $endDate = $req['end_date'] . '-01';
+            $endDate = empty($req['end_date']) ? null : $req['end_date'] . '-01';
 
             $param = [
                 'user_id' => $user->id,

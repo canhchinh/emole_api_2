@@ -22,11 +22,9 @@ class PortfolioRequest extends Base
     public function rules()
     {
         return [
-            'images' => 'required',
             'title' => 'required',
             'job_ids' => 'required',
             'start_date' => 'required',
-            'end_date' => 'required',
             'is_still_active' => 'required',
             'budget' => 'required',
             'reach_number' => 'required',
