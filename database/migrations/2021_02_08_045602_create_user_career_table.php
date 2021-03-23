@@ -18,9 +18,8 @@ class CreateUserCareerTable extends Migration
             $table->integer('user_id')->nullable();
             $table->integer('career_id')->nullable();
             $table->text('tags')->nullable();
-            $table->string('category_ids')->nullable();
-            $table->string('job_ids')->nullable();
-            $table->string('genre_ids')->nullable();
+            $table->text('setting')->nullable();
+            $table->timestamps();
         });
     }
 

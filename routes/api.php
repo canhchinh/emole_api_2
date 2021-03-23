@@ -66,6 +66,8 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum'], function () 
 /**************** career ****************/
 Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function () {
     Route::get('list', [CareerController::class, 'listCareer']);
+    Route::get('/detail/{id}', [CareerController::class, 'detailForUser'])->where('id', '[0-9]+');
+
     Route::post('save', [CareerController::class, 'save']);
     Route::group(['prefix' => '{career_id}'], function () {
         Route::group(['prefix' => 'category'], function () {

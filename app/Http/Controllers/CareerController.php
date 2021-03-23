@@ -27,6 +27,7 @@ class CareerController extends Controller
         $this->userRepo = $userRepo;
         $this->activityContentRepo = $activityContentRepo;
     }
+
     /**
      * @OA\Get(
      *   path="/career/list",
@@ -48,6 +49,54 @@ class CareerController extends Controller
         return response()->json([
             'status' => true,
             'data' => $careers,
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/career/detail/{id}",
+     *   summary="list career detail for user",
+     *   operationId="list_career_detail_for_user",
+     *   tags={"Career"},
+     *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *              example=1
+     *          )
+     *      ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function detailForUser($careerId)
+    {
+        $user = auth()->user();
+        $record = $this->userCareerRepo->where('user_id', $user->id)
+            ->where('career_id', $careerId)
+            ->first();
+
+        if(empty($record->id)) {
+            $list = $this->activityContentRepo->getFreshCareer($careerId);
+            $tags = [];
+        } else {
+            $list = json_decode($record->setting, true);
+            $tags = $record->tags;
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'career' => $list,
+                'tags' => $tags
+            ],
         ]);
     }
 

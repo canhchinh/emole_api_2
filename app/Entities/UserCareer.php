@@ -28,9 +28,7 @@ class UserCareer extends Model implements Transformable
         'user_id',
         'career_id',
         'tags',
-        'category_ids',
-        'job_ids',
-        'genre_ids'
+        'setting',
     ];
     protected $hidden = [
         'pivot'

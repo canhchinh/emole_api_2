@@ -17,6 +17,8 @@ class CreateActivityContentsTable extends Migration
             $table->id();
             $table->integer('career_id')->nullable();
             $table->string('key')->nullable();
+            $table->string('key_title')->nullable();
+            $table->string('key_description')->nullable();
             $table->string('title')->nullable();
             $table->timestamps();
         });

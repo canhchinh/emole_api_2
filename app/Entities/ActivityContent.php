@@ -26,6 +26,8 @@ class ActivityContent extends Model implements Transformable
         'id',
         'career_id',
         'key',
-        'title'
+        'title',
+        'key_title',
+        'key_description'
     ];
 }

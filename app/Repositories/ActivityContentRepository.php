@@ -11,5 +11,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface ActivityContentRepository extends RepositoryInterface
 {
-    //
+    public function getFreshCareer(int $careerId);
 }

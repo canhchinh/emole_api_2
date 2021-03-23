@@ -31,4 +31,29 @@ class ActivityContentRepositoryEloquent extends BaseRepository implements Activi
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    public function getFreshCareer($careerId)
+    {
+        $list = $this->where('career_id', $careerId)
+            ->get();
+
+        $result = [];
+        foreach($list as $item) {
+            if(empty($result[$item->key])) {
+                $result[$item->key] = [
+                    'key' => $item->key,
+                    'key_title' => $item->key_title,
+                    'key_description' => $item->key_description,
+                    'list' => []
+                ];
+            }
+
+            $result[$item->key]['list'][] = [
+                'is_checked' => false,
+                'title' => $item->title,
+                'free_text' => false
+            ];
+        }
+
+        return array_values($result);
+    }
 }
