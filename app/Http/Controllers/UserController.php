@@ -825,13 +825,17 @@ class UserController extends Controller
             if (!empty($imageUrl)) {
                 $param['image'] = json_encode($imageUrl);
             }
-            $portfolio = $this->portfolioRepo->create($param);
-            if (empty($portfolio)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Fail',
-                ], 500);
+
+            if(empty($req['id'])) {
+                $portfolio = $this->portfolioRepo->create($param);
+            } else {
+                $portfolio = $this->portfolioRepo->where('id', $req['id'])
+                    ->firstOrFail();
+
+                $portfolio->fill($param)
+                    ->save();
             }
+
             foreach($req['job_ids'] as $jobId) {
                 $this->portfolioJobRepo->updateOrCreate([
                     'user_id' => $user->id,
