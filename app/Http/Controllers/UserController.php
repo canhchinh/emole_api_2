@@ -759,6 +759,8 @@ class UserController extends Controller
             $req = $request->all();
             $members = $req['members'];
 
+            var_dump($members);
+            exit();
             if(!empty($members)) {
                 $memberIds = [];
                 foreach($members as $member) {
