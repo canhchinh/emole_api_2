@@ -760,7 +760,7 @@ class UserController extends Controller
             $members = $req['members'];
 
             return response()->json([
-                'status' => $members,
+                'status' => $members[0],
             ]);
             exit();
             if(!empty($members)) {
