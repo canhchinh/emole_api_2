@@ -837,8 +837,10 @@ class UserController extends Controller
                     ->save();
             }
 
+            $this->portfolioJobRepo->where('portfolio_id', $portfolio->id)
+                    ->delete();
             foreach($req['job_ids'] as $jobId) {
-                $this->portfolioJobRepo->updateOrCreate([
+                $this->portfolioJobRepo->create([
                     'user_id' => $user->id,
                     'portfolio_id' => $portfolio->id,
                     'job_id' => $jobId
@@ -846,8 +848,10 @@ class UserController extends Controller
             }
 
             if(!empty($members)) {
+                $this->portfolioMemberRepo->where('portfolio_id', $portfolio->id)
+                    ->delete();
                 foreach($members as $member) {
-                    $this->portfolioMemberRepo->updateOrCreate([
+                    $this->portfolioMemberRepo->create([
                         'portfolio_id' => $portfolio->id,
                         'member_id' => $member['id'],
                         'role' => $member['role']
