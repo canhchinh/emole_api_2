@@ -15,7 +15,6 @@ use Prettus\Repository\Traits\TransformableTrait;
 class ActivityContent extends Model implements Transformable
 {
     use TransformableTrait, HasFactory;
-    protected $table = 'activity_contents';
     /**
      * The attributes that are mass assignable.
      *

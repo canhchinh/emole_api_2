@@ -706,24 +706,27 @@ class UserController extends Controller
      *   security={ {"token": {}} },
      *      @OA\RequestBody(
      *          @OA\MediaType(
-     *              mediaType="multipart/form-data",
+     *              mediaType="application/json",
      *              @OA\Schema(
      *               @OA\Property(
-     *                  property="images[]",
-     *                  type="array",
-     *                  @OA\Items(
-     *                       type="string",
-     *                       format="binary",
+     *                  property="images",
+     *                      type="array",
+     *                      @OA\Items(
+     *                          type="string",
+     *                      ),
      *                  ),
-     *               ),
      *                  @OA\Property(
      *                      property="members",
-     *                      type="string",
-     *                      example={{"id": 1, "role": "supervise"}, {"id": 2, "role": "member"}},
+     *                      type="array",
+     *                      @OA\Items(
+     *                          type="object",
+     *                          @OA\Property(property="id", type="integer", example="1"),
+     *                          @OA\Property(property="role", type="string", example="member"),
+     *                      ),
      *                  ),
      *                  @OA\Property(property="title", type="string", example="Drum advertisement"),
      *                  @OA\Property(
-     *                      property="job_ids[]",
+     *                      property="job_ids",
      *                      type="array",
      *                      @OA\Items(
      *                         type="integer"
@@ -759,10 +762,6 @@ class UserController extends Controller
             $req = $request->all();
             $members = $req['members'];
 
-            return response()->json([
-                'status' => $members[0]['role'],
-            ]);
-            exit();
             if(!empty($members)) {
                 $memberIds = [];
                 foreach($members as $member) {
@@ -776,6 +775,7 @@ class UserController extends Controller
                     ], 500);
                 }
             }
+
 
             $jobIds = $this->activityContentRepo->whereIn('id', $req['job_ids'])
                 ->where('key', 'job')
@@ -849,7 +849,6 @@ class UserController extends Controller
                     ]);
                 }
             }
-
 
             return response()->json([
                 'status' => true,
