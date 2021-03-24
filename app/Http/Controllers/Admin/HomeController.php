@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entities\Career;
+use App\Entities\Notify;
+use App\Entities\User;
 use App\Http\Controllers\Controller;
 use App\Imports\ActivityBaseImport;
 use App\Imports\CareerImport;
 use App\Imports\DetailCareer\OneImport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class HomeController extends Controller
@@ -49,18 +54,39 @@ class HomeController extends Controller
     {
         return view('admin.pages.notify.index');
     }
-    
+
     /**
-     * createNotify
-     *
-     * @param  mixed $request
-     * @return void
+     * @param Request $request
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function createNotify(Request $request) 
+    public function createNotify(Request $request)
     {
-        if ($request->getMethod() === "GET"){
-            return view('admin.pages.notify.create');
+        $career = Career::query()
+            ->select(['id', 'title'])
+            ->get();
+
+        if ($request->isMethod('post')) {
+            $messages = [
+                'careers_id.min' => 'Please select a careers',
+            ];
+            $validator = Validator::make($request->all(), [
+                'delivery_name' => 'required|min:2',
+                'career_id' => 'required|numeric|min:1',
+                'delivery_contents' => 'required|max:160|min:2',
+                'subject' => 'required|max:100|min:2',
+                'url' => 'nullable|url',
+            ], $messages);
+
+            if ($validator->validated()) {
+                $notify = new Notify();
+                $notify->populate($request->all());
+                $notify->status = $request->get('storingSubmit') ? Notify::STATUS_ACTIVE : Notify::STATUS_DRAFT;
+                $notify->save();
+            }
         }
+
+        return view('admin.pages.notify.create', ['delivery_target' => $career])->withInput($request->all());
     }
 
     /**
@@ -74,7 +100,7 @@ class HomeController extends Controller
         dd($id);
     }
 
-    
+
     /**
      * import
      *
