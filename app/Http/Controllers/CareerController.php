@@ -87,8 +87,8 @@ class CareerController extends Controller
             $list = $this->activityContentRepo->getFreshCareer($careerId);
             $tags = [];
         } else {
-            $list = json_decode($record->setting, true);
-            $tags = explode(":|||:", $record->tags);
+            $list = $record->setting;
+            $tags = $record->tags;
         }
 
         return response()->json([

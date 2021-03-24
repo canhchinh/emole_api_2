@@ -33,4 +33,14 @@ class UserCareer extends Model implements Transformable
     protected $hidden = [
         'pivot'
     ];
+
+    public function getSettingAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
+    public function getTagsAttribute($value)
+    {
+        return explode(":|||:", $value);
+    }
 }
