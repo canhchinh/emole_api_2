@@ -83,7 +83,7 @@ class CareerController extends Controller
             ->where('career_id', $careerId)
             ->first();
 
-        if(empty($record->id)) {
+        if(empty($record->id) || empty($record->setting)) {
             $list = $this->activityContentRepo->getFreshCareer($careerId);
             $tags = [];
         } else {
