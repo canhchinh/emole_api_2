@@ -31,17 +31,19 @@
     </div>
     <div class="row block-content">
         <div class="col-md-8">
+
+            @foreach ($notifications as $notify)
             <div class="item">
                 <div class="head">
                     <div class="action-notify">
                         <div class="name-notify">
-                            配信名称：新機能リリース告知
+                            配信名称：{{ $notify->subject }}
                         </div>
                         <div class="desc-notify">
-                            ダンスのオンライン学習機能リリースのお知らせ
+                            {{ $notify->delivery_name }}
                         </div>
                         <div class="content-notify">
-                            ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。
+                            {{ $notify->delivery_contents }}
                         </div>
                     </div>
                     <div class="info-notify">
@@ -60,400 +62,36 @@
                     <div class="account-notify">
                         <div class="account-id">
                             <span class="title-item">ID</span>
-                            <span class="content-item">dsjfkd;jsahfklvfioud</span>
+                            <span class="content-item">{{ $notify->id }}</span>
                         </div>
                         <div class="account-email">
                             <span class="title-item">配信日時</span>
-                            <span class="content-item">2020/03/23 13:45</span>
+                            <span class="content-item">{{ \Illuminate\Support\Carbon::parse($notify->created_at)->format(env('FORMAT_DATE_TIME')) }}</span>
                         </div>
                         <div class="account-created">
                             <span class="title-item">URL</span>
-                            <span class="content-item">https://dev.mirateo.jp/trouble-input</span>
+                            <span class="content-item"><a href="{{ $notify->url }}"
+                                                          target="_blank">{{ $notify->url }}</a></span>
                         </div>
                     </div>
                 </div>
                 <div class="hr"></div>
                 <div class="footer">
-                    <button class="item-button detail">詳細</button>
+                    <a class="item-button detail" href="{{ route('admin.notify.view', ['id' => $notify->id]) }}">詳細</a>
                     <div class="contain-filter">
                         <select name="" id="">
                             <option>公開</option>
                             <option value="">非公開</option>
                         </select>
                     </div>
-                    <button class="item-button delete">削除</button>
+                    <a class="item-button delete js-click" data-method="DELETE" href="{{ route('admin.notify.delete', ['id' => $notify->id]) }}">削除</a>
                 </div>
             </div>
-            <div class="item">
-                <div class="head">
-                    <div class="action-notify">
-                        <div class="name-notify">
-                            配信名称：新機能リリース告知
-                        </div>
-                        <div class="desc-notify">
-                            ダンスのオンライン学習機能リリースのお知らせ
-                        </div>
-                        <div class="content-notify">
-                            ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。
-                        </div>
-                    </div>
-                    <div class="info-notify">
-                        <div class="contain-notify">
-                            <div class="contain-notify_title">
-                                配信対象
-                            </div>
-                            <div class="contain-notify_job">
-                                <div class="tag">演者</div>
-                                <div class="tag">モデル</div>
-                                <div class="tag">フォトグラファー</div>
-                                <div class="tag">ビデオグ</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="account-notify">
-                        <div class="account-id">
-                            <span class="title-item">ID</span>
-                            <span class="content-item">dsjfkd;jsahfklvfioud</span>
-                        </div>
-                        <div class="account-email">
-                            <span class="title-item">配信日時</span>
-                            <span class="content-item">2020/03/23 13:45</span>
-                        </div>
-                        <div class="account-created">
-                            <span class="title-item">URL</span>
-                            <span class="content-item">https://dev.mirateo.jp/trouble-input</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hr"></div>
-                <div class="footer">
-                    <button class="item-button detail">詳細</button>
-                    <div class="contain-filter">
-                        <select name="" id="">
-                            <option>公開</option>
-                            <option value="">非公開</option>
-                        </select>
-                    </div>
-                    <button class="item-button delete">削除</button>
-                </div>
-            </div>
-            <div class="item">
-                <div class="head">
-                    <div class="action-notify">
-                        <div class="name-notify">
-                            配信名称：新機能リリース告知
-                        </div>
-                        <div class="desc-notify">
-                            ダンスのオンライン学習機能リリースのお知らせ
-                        </div>
-                        <div class="content-notify">
-                            ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。
-                        </div>
-                    </div>
-                    <div class="info-notify">
-                        <div class="contain-notify">
-                            <div class="contain-notify_title">
-                                配信対象
-                            </div>
-                            <div class="contain-notify_job">
-                                <div class="tag">演者</div>
-                                <div class="tag">モデル</div>
-                                <div class="tag">フォトグラファー</div>
-                                <div class="tag">ビデオグ</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="account-notify">
-                        <div class="account-id">
-                            <span class="title-item">ID</span>
-                            <span class="content-item">dsjfkd;jsahfklvfioud</span>
-                        </div>
-                        <div class="account-email">
-                            <span class="title-item">配信日時</span>
-                            <span class="content-item">2020/03/23 13:45</span>
-                        </div>
-                        <div class="account-created">
-                            <span class="title-item">URL</span>
-                            <span class="content-item">https://dev.mirateo.jp/trouble-input</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hr"></div>
-                <div class="footer">
-                    <button class="item-button detail">詳細</button>
-                    <div class="contain-filter">
-                        <select name="" id="">
-                            <option>公開</option>
-                            <option value="">非公開</option>
-                        </select>
-                    </div>
-                    <button class="item-button delete">削除</button>
-                </div>
-            </div>
-            <div class="item">
-                <div class="head">
-                    <div class="action-notify">
-                        <div class="name-notify">
-                            配信名称：新機能リリース告知
-                        </div>
-                        <div class="desc-notify">
-                            ダンスのオンライン学習機能リリースのお知らせ
-                        </div>
-                        <div class="content-notify">
-                            ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。
-                        </div>
-                    </div>
-                    <div class="info-notify">
-                        <div class="contain-notify">
-                            <div class="contain-notify_title">
-                                配信対象
-                            </div>
-                            <div class="contain-notify_job">
-                                <div class="tag">演者</div>
-                                <div class="tag">モデル</div>
-                                <div class="tag">フォトグラファー</div>
-                                <div class="tag">ビデオグ</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="account-notify">
-                        <div class="account-id">
-                            <span class="title-item">ID</span>
-                            <span class="content-item">dsjfkd;jsahfklvfioud</span>
-                        </div>
-                        <div class="account-email">
-                            <span class="title-item">配信日時</span>
-                            <span class="content-item">2020/03/23 13:45</span>
-                        </div>
-                        <div class="account-created">
-                            <span class="title-item">URL</span>
-                            <span class="content-item">https://dev.mirateo.jp/trouble-input</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hr"></div>
-                <div class="footer">
-                    <button class="item-button detail">詳細</button>
-                    <div class="contain-filter">
-                        <select name="" id="">
-                            <option>公開</option>
-                            <option value="">非公開</option>
-                        </select>
-                    </div>
-                    <button class="item-button delete">削除</button>
-                </div>
-            </div>
-            <div class="item">
-                <div class="head">
-                    <div class="action-notify">
-                        <div class="name-notify">
-                            配信名称：新機能リリース告知
-                        </div>
-                        <div class="desc-notify">
-                            ダンスのオンライン学習機能リリースのお知らせ
-                        </div>
-                        <div class="content-notify">
-                            ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。
-                        </div>
-                    </div>
-                    <div class="info-notify">
-                        <div class="contain-notify">
-                            <div class="contain-notify_title">
-                                配信対象
-                            </div>
-                            <div class="contain-notify_job">
-                                <div class="tag">演者</div>
-                                <div class="tag">モデル</div>
-                                <div class="tag">フォトグラファー</div>
-                                <div class="tag">ビデオグ</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="account-notify">
-                        <div class="account-id">
-                            <span class="title-item">ID</span>
-                            <span class="content-item">dsjfkd;jsahfklvfioud</span>
-                        </div>
-                        <div class="account-email">
-                            <span class="title-item">配信日時</span>
-                            <span class="content-item">2020/03/23 13:45</span>
-                        </div>
-                        <div class="account-created">
-                            <span class="title-item">URL</span>
-                            <span class="content-item">https://dev.mirateo.jp/trouble-input</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hr"></div>
-                <div class="footer">
-                    <button class="item-button detail">詳細</button>
-                    <div class="contain-filter">
-                        <select name="" id="">
-                            <option>公開</option>
-                            <option value="">非公開</option>
-                        </select>
-                    </div>
-                    <button class="item-button delete">削除</button>
-                </div>
-            </div>
-            <div class="item">
-                <div class="head">
-                    <div class="action-notify">
-                        <div class="name-notify">
-                            配信名称：新機能リリース告知
-                        </div>
-                        <div class="desc-notify">
-                            ダンスのオンライン学習機能リリースのお知らせ
-                        </div>
-                        <div class="content-notify">
-                            ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。
-                        </div>
-                    </div>
-                    <div class="info-notify">
-                        <div class="contain-notify">
-                            <div class="contain-notify_title">
-                                配信対象
-                            </div>
-                            <div class="contain-notify_job">
-                                <div class="tag">演者</div>
-                                <div class="tag">モデル</div>
-                                <div class="tag">フォトグラファー</div>
-                                <div class="tag">ビデオグ</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="account-notify">
-                        <div class="account-id">
-                            <span class="title-item">ID</span>
-                            <span class="content-item">dsjfkd;jsahfklvfioud</span>
-                        </div>
-                        <div class="account-email">
-                            <span class="title-item">配信日時</span>
-                            <span class="content-item">2020/03/23 13:45</span>
-                        </div>
-                        <div class="account-created">
-                            <span class="title-item">URL</span>
-                            <span class="content-item">https://dev.mirateo.jp/trouble-input</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hr"></div>
-                <div class="footer">
-                    <button class="item-button detail">詳細</button>
-                    <div class="contain-filter">
-                        <select name="" id="">
-                            <option>公開</option>
-                            <option value="">非公開</option>
-                        </select>
-                    </div>
-                    <button class="item-button delete">削除</button>
-                </div>
-            </div>
-            <div class="item">
-                <div class="head">
-                    <div class="action-notify">
-                        <div class="name-notify">
-                            配信名称：新機能リリース告知
-                        </div>
-                        <div class="desc-notify">
-                            ダンスのオンライン学習機能リリースのお知らせ
-                        </div>
-                        <div class="content-notify">
-                            ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。
-                        </div>
-                    </div>
-                    <div class="info-notify">
-                        <div class="contain-notify">
-                            <div class="contain-notify_title">
-                                配信対象
-                            </div>
-                            <div class="contain-notify_job">
-                                <div class="tag">演者</div>
-                                <div class="tag">モデル</div>
-                                <div class="tag">フォトグラファー</div>
-                                <div class="tag">ビデオグ</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="account-notify">
-                        <div class="account-id">
-                            <span class="title-item">ID</span>
-                            <span class="content-item">dsjfkd;jsahfklvfioud</span>
-                        </div>
-                        <div class="account-email">
-                            <span class="title-item">配信日時</span>
-                            <span class="content-item">2020/03/23 13:45</span>
-                        </div>
-                        <div class="account-created">
-                            <span class="title-item">URL</span>
-                            <span class="content-item">https://dev.mirateo.jp/trouble-input</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hr"></div>
-                <div class="footer">
-                    <button class="item-button detail">詳細</button>
-                    <div class="contain-filter">
-                        <select name="" id="">
-                            <option>公開</option>
-                            <option value="">非公開</option>
-                        </select>
-                    </div>
-                    <button class="item-button delete">削除</button>
-                </div>
-            </div>
-            <div class="item">
-                <div class="head">
-                    <div class="action-notify">
-                        <div class="name-notify">
-                            配信名称：新機能リリース告知
-                        </div>
-                        <div class="desc-notify">
-                            ダンスのオンライン学習機能リリースのお知らせ
-                        </div>
-                        <div class="content-notify">
-                            ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。ダンスを学びたい人向けのオンライン学習機能をリリースいたしました。
-                        </div>
-                    </div>
-                    <div class="info-notify">
-                        <div class="contain-notify">
-                            <div class="contain-notify_title">
-                                配信対象
-                            </div>
-                            <div class="contain-notify_job">
-                                <div class="tag">演者</div>
-                                <div class="tag">モデル</div>
-                                <div class="tag">フォトグラファー</div>
-                                <div class="tag">ビデオグ</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="account-notify">
-                        <div class="account-id">
-                            <span class="title-item">ID</span>
-                            <span class="content-item">dsjfkd;jsahfklvfioud</span>
-                        </div>
-                        <div class="account-email">
-                            <span class="title-item">配信日時</span>
-                            <span class="content-item">2020/03/23 13:45</span>
-                        </div>
-                        <div class="account-created">
-                            <span class="title-item">URL</span>
-                            <span class="content-item">https://dev.mirateo.jp/trouble-input</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hr"></div>
-                <div class="footer">
-                    <button class="item-button detail">詳細</button>
-                    <div class="contain-filter">
-                        <select name="" id="">
-                            <option>公開</option>
-                            <option value="">非公開</option>
-                        </select>
-                    </div>
-                    <button class="item-button delete">削除</button>
-                </div>
+            @endforeach
+
+            <div class="admin-pagination">
+                {{ $notifications->links('admin.pagination.custom') }}
+                <p>{{ $notifications->total() }}件のお知らせ中1-3件</p>
             </div>
         </div>
     </div>

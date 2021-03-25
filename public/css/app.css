@@ -10180,6 +10180,35 @@ h3 {
   padding: 6px 8px;
 }
 
+.admin-pagination {
+  text-align: center;
+}
+.admin-pagination .pager {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+.admin-pagination .pager li {
+  list-style: none;
+  display: inline-block;
+}
+.admin-pagination .pager li a, .admin-pagination .pager li span {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  background: #5332A5;
+  border: 1px solid #5332A5;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  line-height: 32px;
+  font-weight: 700;
+}
+.admin-pagination .pager li.active a, .admin-pagination .pager li.active span {
+  background: transparent;
+  color: #5332A5;
+}
+
 .wrapper {
   position: fixed;
   top: 50%;

@@ -9,13 +9,17 @@ trait Base
 {
     protected $restrictedFields = ['created_at', 'updated_at'];
 
+    /**
+     * @param $data
+     * @param null $nesting
+     * @return $this
+     */
     public function populate($data, $nesting = null)
     {
         foreach ($data as $key => $value) {
             if (!$this->validate($key, $value)) continue;
             $this->{$key} = gettype($value) === "string" ? trim($value) : $value;
         }
-
 
         if (!empty($nesting)) {
             $this->populate($data[$nesting]);
@@ -24,6 +28,11 @@ trait Base
         return $this;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return bool
+     */
     protected function validate($key, $value)
     {
         if (in_array($key, $this->restrictedFields)) {

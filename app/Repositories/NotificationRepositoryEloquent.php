@@ -4,15 +4,16 @@ namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\CareerRepository;
-use App\Entities\Career;
+use App\Repositories\NotificationRepository;
+use App\Entities\Notification;
+use App\Validators\NotificationValidator;
 
 /**
- * Class CareerRepositoryEloquent.
+ * Class NotificationRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class CareerRepositoryEloquent extends BaseRepository implements CareerRepository
+class NotificationRepositoryEloquent extends BaseRepository implements NotificationRepository
 {
     /**
      * Specify Model class name
@@ -21,8 +22,10 @@ class CareerRepositoryEloquent extends BaseRepository implements CareerRepositor
      */
     public function model()
     {
-        return Career::class;
+        return Notification::class;
     }
+
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -33,19 +36,10 @@ class CareerRepositoryEloquent extends BaseRepository implements CareerRepositor
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder|mixed
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query()
     {
         return $this->getModel()->newQuery();
-    }
-
-    /**
-     * @param array $columns
-     * @return mixed
-     */
-    public function select($columns = ['id', 'title'])
-    {
-        return $this->getModel()->select($columns);
     }
 }

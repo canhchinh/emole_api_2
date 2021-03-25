@@ -11,5 +11,14 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface CareerRepository extends RepositoryInterface
 {
-    //
+    /**
+     * @return mixed
+     */
+    public function query();
+
+    /**
+     * @param $columns
+     * @return mixed
+     */
+    public function select($columns);
 }
