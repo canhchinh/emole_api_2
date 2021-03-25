@@ -35,7 +35,7 @@ class UserCareerRepositoryEloquent extends BaseRepository implements UserCareerR
     public function getListForUser($userId)
     {
         return $this->where('user_careers.user_id', $userId)
-            ->join('careers', '.id', '=', '.career_id')
+            ->join('careers', 'careers.id', '=', 'user_careers.career_id')
             ->selectRaw("
                 user_careers.tags,
                 user_careers.setting,
