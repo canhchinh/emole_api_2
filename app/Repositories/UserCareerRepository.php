@@ -11,5 +11,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface UserCareerRepository extends RepositoryInterface
 {
-    //
+    public function getListForUser(int $userId);
 }

@@ -102,7 +102,7 @@ class ActivityController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Career not found',
-            ], 500);
+            ], 400);
         }
         $titleCareer = $this->careerRepo->where('id', $careerId)->first();
         $userCareer['career_title'] = $titleCareer->title;

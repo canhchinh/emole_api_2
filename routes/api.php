@@ -85,6 +85,9 @@ Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function ()
         Route::post('', [UserController::class, 'activity']);
     });
 });
+
+Route::get('/career/user/{id}', [CareerController::class, 'listForUser'])->where('id', '[0-9]+');
+
 Route::group(['prefix' => 'education', 'middleware' => 'auth:sanctum'], function () {
     Route::post('', [UserController::class, 'education']);
     Route::get('', [UserController::class, 'listWorkEducation']);
