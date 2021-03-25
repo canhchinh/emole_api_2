@@ -1417,15 +1417,6 @@ class UserController extends Controller
      *   tags={"Portfolio"},
      *   security={ {"token": {}} },
      *      @OA\Parameter(
-     *          name="id",
-     *          description="User id",
-     *          required=false,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *      @OA\Parameter(
      *          name="portfolio_id",
      *          description="Portfolio id",
      *          required=true,
@@ -1445,37 +1436,18 @@ class UserController extends Controller
     public function portfolioDetail(Request $request, $portfolioId)
     {
         try {
-            $req = $request->all();
-            $portfolioOwner = true;
-            if (!empty($req['id'])) {
-                $portfolioOwner = false;
-                $user = $this->userRepo->where('id', $req['id'])->first();
-            } else {
-                $user = $request->user();
-            }
-            if (empty($user)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'User not found',
-                ], 500);
-            }
+            $user = auth()->user();
 
-            $portfolio = $this->portfolioRepo->where('user_id', $user->id)
-                ->where('id', $portfolioId)
-                ->first();
-            if (empty($portfolio)) {
-                return response()->json([
-                    'status' => true,
-                    'data' => [],
-                ]);
-            }
-            if (!$portfolio->is_public && !$portfolioOwner) {
+            $portfolio = $this->portfolioRepo->where('id', $portfolioId)
+                ->firstOrFail();
+
+            if (!$portfolio->is_public && $portfolio->user_id !== $user->id) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Permission',
                 ], 401);
             }
-            $memberIds = [];
+
             $memberConvert = [];
             $portfolioMembers = $this->portfolioMemberRepo
                 ->where('portfolio_id', $portfolio->id)
@@ -1489,6 +1461,7 @@ class UserController extends Controller
                 }
             }
             $portfolio['members'] = $memberConvert;
+
             $jobIds = [];
             $jobIds = $this->portfolioJobRepo
                 ->where('user_id', $user->id)
@@ -1504,9 +1477,6 @@ class UserController extends Controller
                     ->get();
                 $portfolio['jobs'] = $jobs;
             }
-
-            unset($portfolio['member_ids']);
-            unset($portfolio['job_ids']);
 
             return response()->json([
                 'status' => true,
