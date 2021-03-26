@@ -620,6 +620,8 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $req = $request->all();
+        $this->educationRepo->where('user_id', $user->id)
+            ->delete();
         foreach ($req['data'] as $item) {
             $param = [
                 'user_id' => $user->id,
