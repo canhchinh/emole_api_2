@@ -15,7 +15,6 @@ use App\Http\Requests\UpdateBasicInformationRequest;
 use App\Http\Requests\UpdateEmailNotificationRequest;
 use App\Http\Requests\UpdateEmailRequest;
 use App\Http\Requests\UpdatePasswordRequest;
-use App\Http\Requests\SearchUser;
 use App\Jobs\SendMailResetPassword;
 use App\Repositories\ActivityBaseRepository;
 use App\Repositories\ActivityContentRepository;
@@ -36,7 +35,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Mockery\Exception;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateAvatarRequest;
 
@@ -1718,7 +1716,7 @@ class UserController extends Controller
                     $q->select(['activity_base.id', 'activity_base.title']);
                 },
                 'images' => function ($q) {
-                    $q->select(['user_images.id', 'user_images.url']);
+                    $q->select(['user_images.id', 'user_images.url', 'user_images.user_id']);
                 }
             ])
             ->firstOrFail();
@@ -1750,7 +1748,7 @@ class UserController extends Controller
                     $q->select(['activity_base.id', 'activity_base.title']);
                 },
                 'images' => function ($q) {
-                    $q->select(['user_images.id', 'user_images.url']);
+                    $q->select(['user_images.id', 'user_images.url', 'user_images.user_id']);
                 }
             ])
             ->firstOrFail();

@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class UserImage extends Model implements Transformable
 {
     use TransformableTrait,HasFactory;
-    protected $table = 'user_images';
     /**
      * The attributes that are mass assignable.
      *
