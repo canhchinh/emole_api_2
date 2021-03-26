@@ -1619,15 +1619,15 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/portfolio/list",
+     *   path="/portfolio/user/{id}",
      *   summary="list portfolio",
      *   operationId="list-portfolio",
      *   tags={"Portfolio"},
      *   security={ {"token": {}} },
      *      @OA\Parameter(
-     *          name="user_id",
+     *          name="id",
      *          required=false,
-     *          in="query",
+     *          in="path",
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -1640,14 +1640,8 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function ListPortfolio(Request $request)
+    public function ListPortfolio($userId)
     {
-        $req = $request->all();
-        $user = $request->user();
-        $userId = $user->id;
-        if(!empty($req['user_id'])) {
-            $userId = $req['user_id'];
-        }
         $portfolioJobs = $this->portfolioJobRepo->where('user_id', $userId)
             ->select(DB::raw('group_concat(portfolio_id) as portfolio_ids'), 'job_id')
             ->groupBy('job_id')

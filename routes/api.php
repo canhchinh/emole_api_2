@@ -106,7 +106,7 @@ Route::group(['prefix' => 'portfolio', 'middleware' => 'auth:sanctum'], function
     Route::post('', [UserController::class, 'portfolio']);
     Route::get('detail/{portfolio_id}', [UserController::class, 'portfolioDetail']);
     Route::post('image', [UserController::class, 'portfolioImage']);
-    Route::get('list', [UserController::class, 'ListPortfolio']);
+    Route::get('user/{id}', [UserController::class, 'ListPortfolio']);
 });
 Route::group(['prefix' => 'activity-base', 'middleware' => 'auth:sanctum'], function () {
     Route::get('', [ActivityController::class, 'listActivityBase']);
