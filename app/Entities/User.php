@@ -79,6 +79,11 @@ class User extends Authenticatable implements Transformable
         return $this->hasOne(ActivityBase::class, 'id', 'activity_base_id');
     }
 
+    public function images()
+    {
+        return $this->hasMany(UserImage::class, 'user_id', 'id');
+    }
+
     public function portfolio()
     {
         return $this->hasOne(Portfolio::class, 'user_id', 'id');

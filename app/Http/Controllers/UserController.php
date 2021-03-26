@@ -1716,6 +1716,9 @@ class UserController extends Controller
             ->with([
                 'activity_base' => function ($q) {
                     $q->select(['activity_base.id', 'activity_base.title']);
+                },
+                'images' => function ($q) {
+                    $q->select(['user_images.id', 'user_images.url']);
                 }
             ])
             ->firstOrFail();
@@ -1745,6 +1748,9 @@ class UserController extends Controller
             ->with([
                 'activity_base' => function ($q) {
                     $q->select(['activity_base.id', 'activity_base.title']);
+                },
+                'images' => function ($q) {
+                    $q->select(['user_images.id', 'user_images.url']);
                 }
             ])
             ->firstOrFail();
