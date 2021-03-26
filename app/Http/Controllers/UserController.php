@@ -1713,6 +1713,11 @@ class UserController extends Controller
     {
         $owner = auth()->user();
         $userSearch = $this->userRepo->where('user_name', $username)
+            ->with([
+                'activity_base' => function ($q) {
+                    $q->select(['activity_base.id', 'activity_base.title']);
+                }
+            ])
             ->firstOrFail();
 
         if($owner->id !== $userSearch->id) {
@@ -1737,6 +1742,11 @@ class UserController extends Controller
     public function searchUserPublic($username)
     {
         $userSearch = $this->userRepo->where('user_name', $username)
+            ->with([
+                'activity_base' => function ($q) {
+                    $q->select(['activity_base.id', 'activity_base.title']);
+                }
+            ])
             ->firstOrFail();
 
         $userSearch->is_follow = false;
