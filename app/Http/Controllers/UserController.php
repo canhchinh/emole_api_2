@@ -1362,7 +1362,7 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/education",
+     *   path="/education/user/{id}",
      *   summary="work education",
      *   operationId="work-education",
      *   tags={"Work-Education"},
@@ -1370,7 +1370,7 @@ class UserController extends Controller
      *      @OA\Parameter(
      *          name="user_id",
      *          required=false,
-     *          in="query",
+     *          in="path",
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -1383,28 +1383,17 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function listWorkEducation(Request $request)
+    public function listWorkEducation($userId)
     {
-        try {
-            $user = $request->user();
-            $req = $request->all();
-            $userId = $user->id;
-            if(!empty($req['user_id'])) {
-                $userId = $req['user_id'];
-            }
-            $data = $this->educationRepo->where('user_id', $userId)->orderBy('start_date', 'ASC')
-                ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description', 'link'])
-                ->get();
-            return response()->json([
-                'status' => true,
-                'data' => $data,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'data' => $e->getMessage(),
-            ], 500);
-        }
+        $data = $this->educationRepo->where('user_id', $userId)
+            ->orderBy('start_date', 'ASC')
+            ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description', 'link'])
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ]);
     }
 
     /**

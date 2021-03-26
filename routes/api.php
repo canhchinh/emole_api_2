@@ -91,9 +91,11 @@ Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function ()
 
 Route::get('/career/user/{id}', [CareerController::class, 'listForUser'])->where('id', '[0-9]+');
 
-Route::group(['prefix' => 'education', 'middleware' => 'auth:sanctum'], function () {
-    Route::post('', [UserController::class, 'education']);
-    Route::get('', [UserController::class, 'listWorkEducation']);
+Route::group(['prefix' => 'education'], function () {
+    Route::get('/user/{id}', [UserController::class, 'listWorkEducation']);
+    Route::group(['middleware' => 'auth:sanctum'], function() {
+        Route::post('', [UserController::class, 'education']);
+    });
 });
 
 Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function () {
