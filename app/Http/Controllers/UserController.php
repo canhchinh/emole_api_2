@@ -1398,6 +1398,44 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
+     *   path="/education",
+     *   summary="my work education",
+     *   operationId="my_work-education",
+     *   tags={"Work-Education"},
+     *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          required=false,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function myEducation()
+    {
+        $user = auth()->user();
+
+        $data = $this->educationRepo->where('user_id', $user->id)
+            ->orderBy('start_date', 'ASC')
+            ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description', 'link'])
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ]);
+    }
+
+    /**
+     * @OA\Get(
      *   path="/portfolio/detail/{portfolio_id}",
      *   summary="portfolio detail",
      *   operationId="portfolio-detail",

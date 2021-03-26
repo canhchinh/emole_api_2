@@ -94,6 +94,7 @@ Route::get('/career/user/{id}', [CareerController::class, 'listForUser'])->where
 Route::group(['prefix' => 'education'], function () {
     Route::get('/user/{id}', [UserController::class, 'listWorkEducation']);
     Route::group(['middleware' => 'auth:sanctum'], function() {
+        Route::get('/', [UserController::class, 'myEducation']);
         Route::post('', [UserController::class, 'education']);
     });
 });
