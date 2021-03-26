@@ -20,7 +20,7 @@ class CreateNotifyTable extends Migration
             $table->text('delivery_contents')->nullable();
             $table->string('subject')->nullable();
             $table->string('url')->nullable();
-            $table->string('status', 30)->default(\App\Entities\Notify::STATUS_DRAFT);
+            $table->string('status', 30)->default(\App\Entities\Notification::STATUS_DRAFT);
             $table->timestamps();
         });
     }
