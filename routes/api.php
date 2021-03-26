@@ -102,12 +102,18 @@ Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function () {
     Route::get('list', [SnsController::class, 'listSns']);
     Route::post('save', [SnsController::class, 'save']);
 });
-Route::group(['prefix' => 'portfolio', 'middleware' => 'auth:sanctum'], function () {
-    Route::post('', [UserController::class, 'portfolio']);
-    Route::get('detail/{portfolio_id}', [UserController::class, 'portfolioDetail']);
-    Route::post('image', [UserController::class, 'portfolioImage']);
+
+Route::group(['prefix' => 'portfolio'], function () {
     Route::get('user/{id}', [UserController::class, 'ListPortfolio']);
+    Route::group(['middleware' => 'auth:sanctum'], function() {
+        Route::post('', [UserController::class, 'portfolio']);
+        Route::get('detail/{portfolio_id}', [UserController::class, 'portfolioDetail'])->name('portfolio.detail');
+        Route::post('image', [UserController::class, 'portfolioImage']);
+    });
 });
+
+Route::get('public/portfolio/{id}', [UserController::class, 'publicPortfolioDetail'])->name('portfolio.publicDetail');
+
 Route::group(['prefix' => 'activity-base', 'middleware' => 'auth:sanctum'], function () {
     Route::get('', [ActivityController::class, 'listActivityBase']);
 });

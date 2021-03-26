@@ -1420,61 +1420,73 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function portfolioDetail(Request $request, $portfolioId)
+    public function portfolioDetail($portfolioId)
     {
-        try {
-            $user = auth()->user();
+        $user = auth()->user();
 
-            $portfolio = $this->portfolioRepo->where('id', $portfolioId)
-                ->firstOrFail();
+        $portfolio = $this->portfolioRepo->where('id', $portfolioId)
+            ->firstOrFail();
 
-            if (!$portfolio->is_public && $portfolio->user_id !== $user->id) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Permission',
-                ], 401);
-            }
-
-            $memberConvert = [];
-            $portfolioMembers = $this->portfolioMemberRepo
-                ->where('portfolio_id', $portfolio->id)
-                ->with(['member'])
-                ->get();
-            if(!empty($portfolioMembers)) {
-                foreach($portfolioMembers as $portfolioMember) {
-                    $member = $portfolioMember['member'];
-                    $member['role'] = $portfolioMember['role'];
-                    array_push($memberConvert, $member);
-                }
-            }
-            $portfolio['members'] = $memberConvert;
-
-            $jobIds = [];
-            $jobIds = $this->portfolioJobRepo
-                ->where('user_id', $user->id)
-                ->where('portfolio_id', $portfolio->id)
-                ->pluck('job_id');
-            if(!empty($jobIds)) {
-                $jobIds = $jobIds->toArray();
-            }
-            if (!empty($jobIds)) {
-                $jobs = $this->activityContentRepo->whereIn('id', $jobIds)
-                    ->where('key', 'job')
-                    ->select(['id', 'title'])
-                    ->get();
-                $portfolio['jobs'] = $jobs;
-            }
-
-            return response()->json([
-                'status' => true,
-                'data' => $portfolio,
-            ]);
-        } catch (\Exception $e) {
+        if (!$portfolio->is_public && $portfolio->user_id !== $user->id) {
             return response()->json([
                 'status' => false,
-                'data' => $e->getMessage(),
-            ], 500);
+                'message' => 'Permission',
+            ], 401);
+        } else {
+            return $this->getPortfolioDetail($portfolio);
         }
+    }
+
+    public function publicPortfolioDetail($portfolioId)
+    {
+        $portfolio = $this->portfolioRepo->where('id', $portfolioId)
+        ->firstOrFail();
+
+        if (!$portfolio->is_public) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Permission',
+            ], 401);
+        } else {
+            return $this->getPortfolioDetail($portfolio);
+        }
+    }
+
+    private function getPortfolioDetail($portfolio)
+    {
+        $memberConvert = [];
+        $portfolioMembers = $this->portfolioMemberRepo
+            ->where('portfolio_id', $portfolio->id)
+            ->with(['member'])
+            ->get();
+        if(!empty($portfolioMembers)) {
+            foreach($portfolioMembers as $portfolioMember) {
+                $member = $portfolioMember['member'];
+                $member['role'] = $portfolioMember['role'];
+                array_push($memberConvert, $member);
+            }
+        }
+        $portfolio['members'] = $memberConvert;
+
+        $jobIds = [];
+        $jobIds = $this->portfolioJobRepo
+            ->where('portfolio_id', $portfolio->id)
+            ->pluck('job_id');
+        if(!empty($jobIds)) {
+            $jobIds = $jobIds->toArray();
+        }
+        if (!empty($jobIds)) {
+            $jobs = $this->activityContentRepo->whereIn('id', $jobIds)
+                ->where('key', 'job')
+                ->select(['id', 'title'])
+                ->get();
+            $portfolio['jobs'] = $jobs;
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $portfolio,
+        ]);
     }
 
     /**

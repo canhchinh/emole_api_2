@@ -46,6 +46,11 @@ class Handler extends ExceptionHandler
                 $username = $request->route('username');
                 return redirect(route('user.searchUserPublic', ['username' => $username]));
             }
+
+            if($routeName === 'portfolio.detail') {
+                $id = $request->route('portfolio_id');
+                return redirect(route('portfolio.publicDetail', ['id' => $id]));
+            }
         }
     }
 }
