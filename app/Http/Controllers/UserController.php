@@ -1712,6 +1712,9 @@ class UserController extends Controller
         $owner = auth()->user();
         $userSearch = $this->userRepo->where('user_name', $username)
             ->with([
+                'careers' => function ($q) {
+                    $q->select(['careers.id', 'careers.title']);
+                },
                 'activity_base' => function ($q) {
                     $q->select(['activity_base.id', 'activity_base.title']);
                 },
@@ -1744,6 +1747,9 @@ class UserController extends Controller
     {
         $userSearch = $this->userRepo->where('user_name', $username)
             ->with([
+                'careers' => function ($q) {
+                    $q->select(['careers.id', 'careers.title']);
+                },
                 'activity_base' => function ($q) {
                     $q->select(['activity_base.id', 'activity_base.title']);
                 },
