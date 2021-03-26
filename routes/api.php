@@ -55,8 +55,11 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
     Route::put('email', [UserController::class, 'email']);
     Route::put('email-notification', [UserController::class, 'emailNotification']);
     Route::put('change-password', [UserController::class, 'changePassword']);
-    Route::get('search', [UserController::class, 'searchUser']);
+    Route::get('search/{username}', [UserController::class, 'searchUser'])->name('user.searchUser');
 });
+
+Route::get('public/search/{username}', [UserController::class, 'searchUserPublic'])->name('user.searchUserPublic');
+
 
 Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum'], function () {
     Route::get('list', [UserController::class, 'listUsers']);
@@ -66,7 +69,7 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum'], function () 
 /**************** career ****************/
 Route::group(['prefix' => 'career', 'middleware' => 'auth:sanctum'], function () {
     Route::get('list', [CareerController::class, 'listCareer']);
-    Route::get('/detail/{id}', [CareerController::class, 'detailForUser'])->where('id', '[0-9]+');
+    Route::get('/detail/{id}', [CareerController::class, 'detailForUser'])->where('id', '[0-9]+')->name('career.detail');
 
     Route::post('save', [CareerController::class, 'save']);
     Route::group(['prefix' => '{career_id}'], function () {

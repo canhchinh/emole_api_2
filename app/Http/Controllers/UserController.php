@@ -1688,7 +1688,7 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/user/search",
+     *   path="/user/search/{username}",
      *   summary="search user",
      *   operationId="search-user",
      *   tags={"User info"},
@@ -1696,7 +1696,7 @@ class UserController extends Controller
      *      @OA\Parameter(
      *          name="username",
      *          required=true,
-     *          in="query",
+     *          in="path",
      *          @OA\Schema(
      *              type="string"
      *          )
@@ -1709,27 +1709,45 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function searchUser(SearchUser $request)
+    public function searchUser($username)
     {
-        try {
-            $req = $request->all();
-            $user = $request->user();
-            $userSearch = $this->userRepo->search($req['username']);
-            if ($userSearch) {
-                return response()->json([
-                    'status' => true,
-                    'data' => $userSearch
-                ]);
-            }
-            return response()->json([
-                'status' => false,
-                'data' => $userSearch
-            ],404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ], 500);
+        $owner = auth()->user();
+        $userSearch = $this->userRepo->where('user_name', $username)
+            ->firstOrFail();
+
+        if($owner->id !== $userSearch->id) {
+            $count = $this->followRepo->where('user_id', $owner->id)
+                ->where('target_id', $userSearch->id)
+                ->count();
+            $userSearch->is_follow = $count > 0;
+        } else {
+            $userSearch->is_follow = true;
         }
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'user' => $userSearch,
+                'is_logged' => true,
+                'is_owner' => $owner->user_name == $username
+            ]
+        ]);
+    }
+
+    public function searchUserPublic($username)
+    {
+        $userSearch = $this->userRepo->where('user_name', $username)
+            ->firstOrFail();
+
+        $userSearch->is_follow = false;
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'user' => $userSearch,
+                'is_logged' => false,
+                'is_owner' => false
+            ]
+        ]);
     }
 }

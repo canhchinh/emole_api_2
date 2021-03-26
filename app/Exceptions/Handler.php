@@ -37,4 +37,14 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof \Illuminate\Auth\AuthenticationException) {
+            $routeName = $request->route()->getName();
+            if($routeName === 'user.searchUser') {
+                return redirect(route('user.searchUserPublic'));
+            }
+        }
+    }
 }
