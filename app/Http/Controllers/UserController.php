@@ -628,7 +628,7 @@ class UserController extends Controller
                 'title' => $item['title'],
                 'role' => $item['role'],
                 'start_date' => \DateTime::createFromFormat('Y-m-d', $item['start_date'])->format('Y-m-d'),
-                'end_date' => \DateTime::createFromFormat('Y-m-d', $item['end_date'])->format('Y-m-d'),
+                'end_date' => $item['is_still_active'] ? null : \DateTime::createFromFormat('Y-m-d', $item['end_date'])->format('Y-m-d'),
                 'is_still_active' => $item['is_still_active'],
                 'link' => $item['link'],
                 'description' => $item['description'],
