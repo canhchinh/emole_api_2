@@ -171,6 +171,7 @@ class UserController extends Controller
             'status' => true,
             'access_token' => $tokenResult,
             'goto_username' => $gotoUsername,
+            'user_name' => $user->user_name,
             'token_type' => 'Bearer',
         ]);
     }
