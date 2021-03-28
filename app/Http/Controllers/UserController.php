@@ -946,9 +946,6 @@ class UserController extends Controller
             $careerIds = $careerIds->toArray();
             $userInfo['careers'] = $this->careerRepo->whereIn('id', $careerIds)->get();
         }
-        if(!empty($userInfo->avatar)) {
-            $userInfo->avatar = config('common.app_url') . $userInfo->avatar;
-        }
 
         return response()->json([
             'status' => true,
