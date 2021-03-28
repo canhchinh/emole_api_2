@@ -22,7 +22,7 @@ class LoginGoogle extends Base
     public function rules()
     {
         return [
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email',
             'google_id' => 'required'
         ];
     }

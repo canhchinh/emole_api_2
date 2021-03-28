@@ -143,18 +143,34 @@ class UserController extends Controller
     public function loginGoogle(LoginGoogle $request)
     {
         $data = $request->all(['email', 'given_name', 'google_id', 'avatar']);
-        $user = $this->userRepo->create([
-            'email' => $data['email'],
-            'google_id' => $data['google_id'],
-            'avatar' => $data['avatar'],
-            'given_name' => $data['given_name']
-        ]);
+
+        $user = $this->userRepo->where('email', $data['email'])->first();
+
+        if(empty($user->id)) {
+            $user = $this->userRepo->create([
+                'email' => $data['email'],
+                'google_id' => $data['google_id'],
+                'avatar' => $data['avatar'],
+                'given_name' => $data['given_name']
+            ]);
+            $gotoUsername = true;
+        } else {
+            if($user->google_id != $data['google_id']) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "please login by password",
+                ], 403);
+            } else {
+                $gotoUsername = empty($user->user_name);
+            }
+        }
 
         $tokenResult = $user->createToken('authToken')->plainTextToken;
 
         return response()->json([
             'status' => true,
             'access_token' => $tokenResult,
+            'goto_username' => $gotoUsername,
             'token_type' => 'Bearer',
         ]);
     }
