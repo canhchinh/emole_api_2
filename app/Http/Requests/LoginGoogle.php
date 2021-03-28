@@ -23,7 +23,7 @@ class LoginGoogle extends Base
     {
         return [
             'email' => 'required|email|unique:users',
-            'google_id' => 'required|email'
+            'google_id' => 'required'
         ];
     }
 }
