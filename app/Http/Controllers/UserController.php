@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Entities\PasswordReset;
 use App\Http\Requests\FollowRequest;
 use App\Http\Requests\ForgotPassword;
+use App\Http\Requests\LoginGoogle;
 use App\Http\Requests\NewPassword;
 use App\Http\Requests\PortfolioImageRequest;
 use App\Http\Requests\PortfolioRequest;
@@ -135,6 +136,42 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'access_token' => $tokenResult,
+            'token_type' => 'Bearer',
+        ]);
+    }
+
+    public function loginGoogle(LoginGoogle $request)
+    {
+        $data = $request->all(['email', 'given_name', 'google_id', 'avatar']);
+
+        $user = $this->userRepo->where('email', $data['email'])->first();
+
+        if(empty($user->id)) {
+            $user = $this->userRepo->create([
+                'email' => $data['email'],
+                'google_id' => $data['google_id'],
+                'avatar' => $data['avatar'],
+                'given_name' => $data['given_name']
+            ]);
+            $gotoUsername = true;
+        } else {
+            if($user->google_id != $data['google_id']) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "please login by password",
+                ], 403);
+            } else {
+                $gotoUsername = empty($user->user_name);
+            }
+        }
+
+        $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'status' => true,
+            'access_token' => $tokenResult,
+            'goto_username' => $gotoUsername,
+            'user_name' => $user->user_name,
             'token_type' => 'Bearer',
         ]);
     }
@@ -628,7 +665,7 @@ class UserController extends Controller
                 'title' => $item['title'],
                 'role' => $item['role'],
                 'start_date' => \DateTime::createFromFormat('Y-m-d', $item['start_date'])->format('Y-m-d'),
-                'end_date' => \DateTime::createFromFormat('Y-m-d', $item['end_date'])->format('Y-m-d'),
+                'end_date' => $item['is_still_active'] ? null : \DateTime::createFromFormat('Y-m-d', $item['end_date'])->format('Y-m-d'),
                 'is_still_active' => $item['is_still_active'],
                 'link' => $item['link'],
                 'description' => $item['description'],
@@ -908,9 +945,6 @@ class UserController extends Controller
         } else {
             $careerIds = $careerIds->toArray();
             $userInfo['careers'] = $this->careerRepo->whereIn('id', $careerIds)->get();
-        }
-        if(!empty($userInfo->avatar)) {
-            $userInfo->avatar = config('common.app_url') . $userInfo->avatar;
         }
 
         return response()->json([
