@@ -16,6 +16,7 @@ use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -93,7 +94,7 @@ class HomeController extends Controller
             ];
             $validator = Validator::make($request->all(), [
                 'delivery_name' => 'required|min:2',
-                'career_id' => 'required|numeric|min:1',
+                'career_id' => 'required',
                 'delivery_contents' => 'required|max:160|min:2',
                 'subject' => 'required|max:100|min:2',
                 'url' => 'nullable|url',
@@ -102,9 +103,22 @@ class HomeController extends Controller
             if ($validator->validated()) {
                 $notify = new Notification();
                 $notify->populate($request->all());
-                $notify->status = $request->get('storingSubmit') ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
-                if ($notify->save()) {
-                    return redirect(route('admin.notify.list'));
+                if (in_array(0, $request->get('career_id'))) {
+                    $notify->career_ids = 0;
+                } else {
+                    $notify->career_ids = implode(',', $request->get('career_id'));
+                }
+                $notify->status = $request->get('publicSubmit') ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
+
+                DB::beginTransaction();
+                try {
+                    if ($notify->save()) {
+                        DB::commit();
+                        return redirect()->route('admin.notify.list');
+                    }
+                } catch (\Exception $e) {
+                    // TODO: show error
+                    DB::rollBack();
                 }
             }
         }

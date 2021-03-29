@@ -16,8 +16,8 @@ var Admin = function () {
                     valueField: 'id',
                     labelField: 'title',
                     searchField: 'title',
-                    options: $(this).data('json'),
-                    create: true
+                    // options: $(this).data('json'),
+                    create: false
                 });
             });
         },

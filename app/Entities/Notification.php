@@ -20,6 +20,8 @@ class Notification extends Model implements Transformable
     const STATUS_DRAFT = 'draft';
     const STATUS_PUBLIC = 'public';
 
+
+
     /**
      * @var array
      */
@@ -28,4 +30,24 @@ class Notification extends Model implements Transformable
         'career_id',
         'delivery_name'
     ];
+
+    public function save(array $options = [])
+    {
+        if (!$this->exists && $this->status == self::STATUS_PUBLIC) {
+            $this->sendToUserNotification();
+        }
+
+        parent::save();
+    }
+
+    public function sendToUserNotification()
+    {
+        $userNotification = new UserNotification();
+
+    }
+
+    public function userNotification()
+    {
+        return $this->belongsTo('App\User');
+    }
 }
