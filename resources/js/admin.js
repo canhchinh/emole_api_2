@@ -16,8 +16,8 @@ var Admin = function () {
                     valueField: 'id',
                     labelField: 'title',
                     searchField: 'title',
-                    options: $(this).data('json'),
-                    create: true
+                    // options: $(this).data('json'),
+                    create: false
                 });
             });
         },
@@ -28,16 +28,23 @@ var Admin = function () {
                 }
             });
             $(document).on('click', 'a.js-click', function (e) {
-                e.preventDefault();
                 var $this = $(this);
-                $.post({
-                    type: $this.data('method'),
-                    url: $this.attr('href')
-                }).done(function (data) {
-                    if (data.hasOwnProperty('url')) {
-                        window.location.href = data.url;
-                    }
-                });
+                e.preventDefault();
+                if (confirm("この記録は復元されませんか？ 削除してもよろしいですか？")) {
+                    $.post({
+                        type: $this.data('method'),
+                        url: $this.attr('href')
+                    }).done(function (data) {
+                        if (data.hasOwnProperty('success') && data.success) {
+                            if (data.hasOwnProperty('redirectUrl') && data.redirectUrl) {
+                                window.location.href = data.redirectUrl;
+                                return;
+                            }
+                            window.location.reload();
+                        }
+                    });
+                }
+                return false;
             });
         }
     }

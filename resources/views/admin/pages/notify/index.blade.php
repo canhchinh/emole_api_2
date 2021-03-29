@@ -22,7 +22,7 @@
                     <div class="contain-sort_total">
                         <span class="only">3</span><span>件</span>
                     </div>
-                    <a href="#">
+                    <a href="{{ route('admin.notify.list') }}?sort=id&arrange=desc">
                         <img src="{{asset('/assets/images/sort.svg')}}" alt="sort">
                     </a>
                 </div>
@@ -52,10 +52,19 @@
                                 配信対象
                             </div>
                             <div class="contain-notify_job">
-                                <div class="tag">演者</div>
-                                <div class="tag">モデル</div>
-                                <div class="tag">フォトグラファー</div>
-                                <div class="tag">ビデオグ</div>
+                                @php
+                                $ids = explode(",", $notify->career_ids);
+                                @endphp
+
+                                @if (in_array(0, $ids))
+                                    <div class="tag">All user</div>
+                                @else
+                                    @foreach($careersList as $career)
+                                        @if(in_array($career->id, $ids))
+                                            <div class="tag">{{ $career->title }}</div>
+                                        @endif
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -80,8 +89,12 @@
                     <a class="item-button detail" href="{{ route('admin.notify.view', ['id' => $notify->id]) }}">詳細</a>
                     <div class="contain-filter">
                         <select name="" id="">
-                            <option>公開</option>
-                            <option value="">非公開</option>
+                            <option value="{{ \App\Entities\Notification::STATUS_PUBLIC }}"
+                            @if ($notify->status = \App\Entities\Notification::STATUS_PUBLIC) selected @endif
+                                >公開</option>
+                            <option value="{{ \App\Entities\Notification::STATUS_DRAFT }}"
+                                    @if ($notify->status = \App\Entities\Notification::STATUS_DRAFT) selected @endif
+                            >非公開</option>
                         </select>
                     </div>
                     <a class="item-button delete js-click" data-method="DELETE" href="{{ route('admin.notify.delete', ['id' => $notify->id]) }}">削除</a>
