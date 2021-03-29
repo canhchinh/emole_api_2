@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SocialLoginController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserImageController;
@@ -138,3 +139,7 @@ Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], functi
     Route::post('send-notify', [LineNotifyController::class, 'sendNotify']);
 });
 
+/**************** social login ****************/
+Route::group(['prefix' => 'social-login'], function () {
+    Route::post('login', [SocialLoginController::class, 'login']);
+});
