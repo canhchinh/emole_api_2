@@ -12,10 +12,14 @@
         <div class="col-md-8">
             <div class="block-filter">
                 <div class="contain-filter">
-                    <select name="" id="">
-                        <option>配信状況</option>
-                        <option value=""></option>
-                        <option value=""></option>
+                    <select name="" id="filter-notify-status">
+                        <option value="{{ route('admin.notify.list', ['status' => 'all']) }}">配信状況</option>
+                        <option value="{{ route('admin.notify.list', ['status' => \App\Entities\Notification::STATUS_PUBLIC]) }}"
+                                @if ($notifyStatus == \App\Entities\Notification::STATUS_PUBLIC) selected @endif
+                        >公開</option>
+                        <option value="{{ route('admin.notify.list', ['status' => \App\Entities\Notification::STATUS_DRAFT]) }}"
+                                @if ($notifyStatus == \App\Entities\Notification::STATUS_DRAFT) selected @endif
+                        >非公開</option>
                     </select>
                 </div>
                 <div class="contain-sort">
@@ -90,10 +94,10 @@
                     <div class="contain-filter">
                         <select name="" id="">
                             <option value="{{ \App\Entities\Notification::STATUS_PUBLIC }}"
-                            @if ($notify->status = \App\Entities\Notification::STATUS_PUBLIC) selected @endif
+                            @if ($notify->status == \App\Entities\Notification::STATUS_PUBLIC) selected @endif
                                 >公開</option>
                             <option value="{{ \App\Entities\Notification::STATUS_DRAFT }}"
-                                    @if ($notify->status = \App\Entities\Notification::STATUS_DRAFT) selected @endif
+                                    @if ($notify->status == \App\Entities\Notification::STATUS_DRAFT) selected @endif
                             >非公開</option>
                         </select>
                     </div>

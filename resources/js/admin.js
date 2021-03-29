@@ -6,6 +6,7 @@ var Admin = function () {
     return {
         init: function () {
             this.registerLinkWithDeleteMethod();
+            this.notificationListPage();
 
             var els = $('.selectizeSelect');
             els?.each(function () {
@@ -19,6 +20,12 @@ var Admin = function () {
                     // options: $(this).data('json'),
                     create: false
                 });
+            });
+        },
+        notificationListPage: function () {
+            $('#filter-notify-status').on('change', function () {
+                var val = $(this).val();
+                window.location.href = val;
             });
         },
         registerLinkWithDeleteMethod: function () {

@@ -75,17 +75,30 @@ class HomeController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param string $status
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function listNotify(Request $request)
+    public function listNotify(Request $request, $status = '')
     {
+        if ($status == 'all') {
+            $statusList = [Notification::STATUS_DRAFT, Notification::STATUS_PUBLIC];
+        } else {
+            $statusList = [$status];
+        }
+
         /** @var Builder $notifications */
         $notifications = $this->notificationRepository->query()
+            ->whereIn('status', $statusList)
             ->orderBy($request->input('sort', 'id'), $request->input('arrange', 'desc'))->paginate(3);
 
         $careersList = $this->careerRepository->query()->select(['id', 'title'])->get();
 
-        return view('admin.pages.notify.index', ['notifications' => $notifications, 'careersList' => $careersList]);
+        return view('admin.pages.notify.index', [
+            'notifications' => $notifications,
+            'careersList' => $careersList,
+            'notifyStatus' => $status
+        ]);
     }
 
     /**
