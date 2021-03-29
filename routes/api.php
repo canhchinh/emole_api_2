@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\SocialLoginController;
+use App\Http\Controllers\TwitterLoginController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserImageController;
@@ -140,6 +140,7 @@ Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], functi
 });
 
 /**************** social login ****************/
-Route::group(['prefix' => 'social-login'], function () {
-    Route::post('login', [SocialLoginController::class, 'login']);
+Route::group(['prefix' => 'twitter-login'], function () {
+    Route::get('get-info', [TwitterLoginController::class, 'getInfo']);
+    Route::post('login', [TwitterLoginController::class, 'login']);
 });
