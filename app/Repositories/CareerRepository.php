@@ -21,4 +21,6 @@ interface CareerRepository extends RepositoryInterface
      * @return mixed
      */
     public function select($columns);
+
+    public function sendToUser();
 }

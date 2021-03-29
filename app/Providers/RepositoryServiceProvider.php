@@ -46,6 +46,7 @@ class RepositoryServiceProvider extends ServiceProvider
 	    $this->app->bind(\App\Repositories\LineNotifyAccessTokenRepository::class, \App\Repositories\LineNotifyAccessTokenRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\PortfolioMemberRepository::class, \App\Repositories\PortfolioMemberRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\NotificationRepository::class, \App\Repositories\NotificationRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\UserNotificationRepository::class, \App\Repositories\UserNotificationRepositoryEloquent::class);
         //:end-bindings:
     }
 }

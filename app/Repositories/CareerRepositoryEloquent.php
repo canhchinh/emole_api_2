@@ -48,4 +48,9 @@ class CareerRepositoryEloquent extends BaseRepository implements CareerRepositor
     {
         return $this->getModel()->select($columns);
     }
+
+    public function sendToUser()
+    {
+
+    }
 }
