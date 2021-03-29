@@ -57,6 +57,7 @@ class Portfolio extends Model implements Transformable
                     $result[] = [
                         'alt' => 'portfolio image',
                         'url' => config('common.app_url'). $item,
+                        'path' => $item,
                     ];
                 }
             }

@@ -12,10 +12,13 @@ use App\Imports\DetailCareer\OneImport;
 use App\Repositories\CareerRepository;
 use App\Repositories\CategoryRepositoryEloquent;
 use App\Repositories\NotificationRepository;
+use App\Repositories\UserNotificationRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -25,17 +28,21 @@ class HomeController extends Controller
     protected $careerRepository;
     /** @var NotificationRepository */
     protected $notificationRepository;
+    /** @var UserNotificationRepository */
+    protected $userNotificationRepository;
 
     /**
      * HomeController constructor.
      *
      * @param CareerRepository $careerRepository
      * @param NotificationRepository $notificationRepository
+     * @param UserNotificationRepository $userNotificationRepository
      */
-    public function __construct(CareerRepository $careerRepository, NotificationRepository $notificationRepository)
+    public function __construct(CareerRepository $careerRepository, NotificationRepository $notificationRepository, UserNotificationRepository $userNotificationRepository)
     {
         $this->careerRepository = $careerRepository;
         $this->notificationRepository = $notificationRepository;
+        $this->userNotificationRepository = $userNotificationRepository;
     }
 
     /**
@@ -68,14 +75,30 @@ class HomeController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param string $status
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function listNotify()
+    public function listNotify(Request $request, $status = '')
     {
-        /** @var Builder $notifications */
-        $notifications = $this->notificationRepository->query()->paginate(3);
+        if ($status == 'all') {
+            $statusList = [Notification::STATUS_DRAFT, Notification::STATUS_PUBLIC];
+        } else {
+            $statusList = [$status];
+        }
 
-        return view('admin.pages.notify.index', ['notifications' => $notifications]);
+        /** @var Builder $notifications */
+        $notifications = $this->notificationRepository->query()
+            ->whereIn('status', $statusList)
+            ->orderBy($request->input('sort', 'id'), $request->input('arrange', 'desc'))->paginate(3);
+
+        $careersList = $this->careerRepository->query()->select(['id', 'title'])->get();
+
+        return view('admin.pages.notify.index', [
+            'notifications' => $notifications,
+            'careersList' => $careersList,
+            'notifyStatus' => $status
+        ]);
     }
 
     /**
@@ -89,22 +112,38 @@ class HomeController extends Controller
         $career = $this->careerRepository->select()->get();
         if ($request->isMethod('post')) {
             $messages = [
-                'careers_id.min' => 'Please select a careers',
+                'career_ids.required' => 'キャリアIDフィールドは必須です。',
+                'delivery_name.required' => '配達名フィールドが必要です。',
+                'delivery_contents.required' => 'コンテンツフィールドは必須です。',
+                'subject.required' => '件名フィールドは必須です。',
+                'url.required' => '転送先URLが必要です。',
+                'url.url' => '転送先のURLが正しい形式ではありません。',
             ];
+
             $validator = Validator::make($request->all(), [
                 'delivery_name' => 'required|min:2',
-                'career_id' => 'required|numeric|min:1',
+                'career_ids' => 'required',
                 'delivery_contents' => 'required|max:160|min:2',
                 'subject' => 'required|max:100|min:2',
-                'url' => 'nullable|url',
+                'url' => 'required|url',
             ], $messages);
 
             if ($validator->validated()) {
                 $notify = new Notification();
                 $notify->populate($request->all());
-                $notify->status = $request->get('storingSubmit') ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
-                if ($notify->save()) {
-                    return redirect(route('admin.notify.list'));
+                $notify->setCareerIds($request->get('career_ids'));
+                $notify->status = $request->get('publicSubmit') ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
+
+                DB::beginTransaction();
+                try {
+                    if ($notify->save() && $notify->status == Notification::STATUS_PUBLIC) {
+                        $this->userNotificationRepository->addNotification($notify);
+                    }
+                    DB::commit();
+                    return redirect()->route('admin.notify.list');
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    abort('Some thing error, please try again or contact admin. Thank very much!');
                 }
             }
         }
@@ -115,10 +154,22 @@ class HomeController extends Controller
     /**
      * @param Request $request
      * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function deleteNotify(Request $request, $id)
     {
-        // TODO:
+        if ($request->isMethod('delete')) {
+            try {
+                /** @var Builder $query */
+                $query = $this->notificationRepository->query();
+                $query->where(['id' => $id])->delete();
+
+                return response()->json(['success' => true, 'redirectUrl' => route('admin.notify.list')]);
+            } catch (\Exception $e) {
+            }
+        }
+
+        return response()->json(['success' => false, 'message' => 'No request found!']);
     }
 
     /**

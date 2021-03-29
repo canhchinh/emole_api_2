@@ -1511,6 +1511,56 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Delete(
+     *   path="/portfolio/delete",
+     *   summary="delete portfolio",
+     *   operationId="delete portfolio",
+     *   tags={"Portfolio"},
+     *   security={ {"token": {}} },
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function deletePortfolio()
+    {
+        try {
+            DB::beginTransaction();
+            $user = auth()->user();
+            $portfolios = $this->portfolioRepo->where("user_id", $user->id)->get();
+            if (count($portfolios) > 0) {
+                foreach($portfolios as $portfolio) {
+                    $this->portfolioJobRepo->where("portfolio_id", $portfolio->id)->delete();
+                    $this->portfolioMemberRepo->where("portfolio_id", $portfolio->id)->delete();
+                    $portfolio->delete();
+                    if (isset($portfolio->image)) {
+                        foreach ($portfolio->image as $item) {
+                            $portfolioImage = str_replace('/storage', '', $item["path"]);
+                            if (Storage::disk('public')->exists($portfolioImage)) {
+                                Storage::disk('public')->delete($portfolioImage);
+                            }
+                        }
+                    }
+                }
+            }
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => "Delete Successful",
+            ], 202);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 404);
+        }
+    }
+
     public function publicPortfolioDetail($portfolioId)
     {
         $portfolio = $this->portfolioRepo->where('id', $portfolioId)

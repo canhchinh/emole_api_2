@@ -52,5 +52,7 @@ class Handler extends ExceptionHandler
                 return redirect(route('portfolio.publicDetail', ['id' => $id]));
             }
         }
+
+        return parent::render($request, $e);
     }
 }
