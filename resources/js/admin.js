@@ -63,6 +63,9 @@ var Admin = function () {
                         if (data.hasOwnProperty('success') && data.success) {
                             window.location.href = $('#filter-notify-status').val();
                         }
+                        if (data.hasOwnProperty('success') && data.success == false) {
+                            alert(data.message);
+                        }
                     });
                 }
                 return false;

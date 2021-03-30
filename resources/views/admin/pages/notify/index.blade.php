@@ -4,8 +4,10 @@
 <div class="contain-users">
     <div class="row mb-2">
         <div class="col-8 search">
+            <form action="" method="get">
             <img class="search-img" src="{{asset('/assets/images/user_search_icon.png')}}" id="user_search_icon">
-            <input type="text" class="search-input" name="" placeholder="件名を入力">
+            <input type="text" class="search-input" name="search-key" placeholder="件名を入力" value="{{ $searchKey }}">
+            </form>
         </div>
     </div>
     <div class="row">
@@ -26,8 +28,14 @@
                     <div class="contain-sort_total">
                         <span class="only">3</span><span>件</span>
                     </div>
-                    <a href="{{ route('admin.notify.list') }}?sort=id&arrange=desc">
-                        <img src="{{asset('/assets/images/sort.svg')}}" alt="sort">
+                    @php
+                        $params = request()->input();
+                        $params['sort'] = 'created_at';
+                        $params['arrange'] = ($arrange == 'desc') ? 'asc' : 'desc';
+                        $pr = $params ? '?'.http_build_query($params) : '';
+                    @endphp
+                    <a href="{{ url()->current() }}{{ $pr }}">
+                        <img src="{{asset('/assets/images/sort-'.$arrange.'.png')}}" alt="sort">
                     </a>
                 </div>
             </div>
@@ -110,7 +118,19 @@
 
             <div class="admin-pagination">
                 {{ $notifications->links('admin.pagination.custom') }}
-                <p>{{ $notifications->total() }}件のお知らせ中1-3件</p>
+                @php
+                $total = $notifications->total();
+                $perPage = $notifications->perPage();
+                $currentPage = $notifications->currentPage();
+                $from = 1;
+                $to = ($perPage > $total) ? $total : $perPage;
+                if ($currentPage > 1) {
+                    $from = (($currentPage - 1) * $perPage) + 1;
+                    $calcTo = $currentPage * $perPage;
+                    $to = ($calcTo > $total) ? $total : $calcTo;
+                }
+                @endphp
+                <p>{{ $total }}件のお知らせ中{{ $from }}-{{ $to }}件</p>
             </div>
         </div>
     </div>

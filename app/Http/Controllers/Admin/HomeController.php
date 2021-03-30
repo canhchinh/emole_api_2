@@ -81,24 +81,18 @@ class HomeController extends Controller
      */
     public function listNotify(Request $request, $status = 'all')
     {
-        Log::info($status);
-        if ($status == 'all') {
-            $statusList = [Notification::STATUS_DRAFT, Notification::STATUS_PUBLIC];
-        } else {
-            $statusList = [$status];
-        }
-
-        /** @var Builder $notifications */
-        $notifications = $this->notificationRepository->query()
-            ->whereIn('status', $statusList)
-            ->orderBy($request->input('sort', 'id'), $request->input('arrange', 'desc'))->paginate(3);
+        $search = $request->input('search-key', '');
+        $arrange = $request->input('arrange', 'desc');
+        $notifications = $this->notificationRepository->paginateQuery($request, $status, $search);
 
         $careersList = $this->careerRepository->query()->select(['id', 'title'])->get();
 
         return view('admin.pages.notify.index', [
             'notifications' => $notifications,
             'careersList' => $careersList,
-            'notifyStatus' => $status
+            'notifyStatus' => $status,
+            'searchKey'    => $search,
+            'arrange' => $arrange
         ]);
     }
 
@@ -195,9 +189,13 @@ class HomeController extends Controller
             try {
                 /** @var Builder $query */
                 $query = $this->notificationRepository->query();
-                $query->where(['id' => $id])->delete();
-
-                return response()->json(['success' => true, 'redirectUrl' => route('admin.notify.list')]);
+                $notify = $query->where(['id' => $id])->first();
+                if ($notify->status == Notification::STATUS_PUBLIC) {
+                    return response()->json(['success' => false, 'message' => 'このメッセージは送信されたため、削除できません。']);
+                } else {
+                    $notify->delete();
+                    return response()->json(['success' => true, 'redirectUrl' => route('admin.notify.list')]);
+                }
             } catch (\Exception $e) {
             }
         }
