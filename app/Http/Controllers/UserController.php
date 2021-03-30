@@ -1513,11 +1513,20 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *   path="/portfolio/delete",
+     *   path="/portfolio/delete/{id}",
      *   summary="delete portfolio",
      *   operationId="delete portfolio",
      *   tags={"Portfolio"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Portfolio id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -1526,23 +1535,22 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function deletePortfolio()
+    public function deletePortfolio($id)
     {
         try {
             DB::beginTransaction();
             $user = auth()->user();
-            $portfolios = $this->portfolioRepo->where("user_id", $user->id)->get();
-            if (count($portfolios) > 0) {
-                foreach($portfolios as $portfolio) {
-                    $this->portfolioJobRepo->where("portfolio_id", $portfolio->id)->delete();
-                    $this->portfolioMemberRepo->where("portfolio_id", $portfolio->id)->delete();
-                    $portfolio->delete();
-                    if (isset($portfolio->image)) {
-                        foreach ($portfolio->image as $item) {
-                            $portfolioImage = str_replace('/storage', '', $item["path"]);
-                            if (Storage::disk('public')->exists($portfolioImage)) {
-                                Storage::disk('public')->delete($portfolioImage);
-                            }
+            $portfolio = $this->portfolioRepo->where("user_id", $user->id)->where("id", $id)->firstOrFail();
+            if (!is_null($portfolio))
+            {
+                $this->portfolioJobRepo->where("portfolio_id", $portfolio->id)->delete();
+                $this->portfolioMemberRepo->where("portfolio_id", $portfolio->id)->delete();
+                $portfolio->delete();
+                if (isset($portfolio->image)) {
+                    foreach ($portfolio->image as $item) {
+                        $portfolioImage = str_replace('/storage', '', $item["path"]);
+                        if (Storage::disk('public')->exists($portfolioImage)) {
+                            Storage::disk('public')->delete($portfolioImage);
                         }
                     }
                 }
@@ -1550,7 +1558,7 @@ class UserController extends Controller
             DB::commit();
             return response()->json([
                 'status' => true,
-                'message' => "Delete Successful",
+                'message' => "Delete SuccessFully",
             ], 202);
         } catch (\Exception $e) {
             DB::rollback();

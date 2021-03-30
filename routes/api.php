@@ -112,7 +112,7 @@ Route::group(['prefix' => 'portfolio'], function () {
         Route::post('', [UserController::class, 'portfolio']);
         Route::get('detail/{portfolio_id}', [UserController::class, 'portfolioDetail'])->name('portfolio.detail');
         Route::post('image', [UserController::class, 'portfolioImage']);
-        Route::delete('/delete', [UserController::class, 'deletePortfolio']);
+        Route::delete('/delete/{id}', [UserController::class, 'deletePortfolio']);
     });
 });
 
