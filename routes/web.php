@@ -29,9 +29,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [HomeController::class, 'listPortfolio'])->name('admin.portfolio.list');
     });
     Route::prefix('notify')->group(function () {
-        Route::get('/{status?}', [HomeController::class, 'listNotify'])->name('admin.notify.list');
+        Route::get('/', [HomeController::class, 'listNotify'])->name('admin.notify.list');
         Route::match(['get', 'post'], '/create', [HomeController::class, 'createNotify'])->name('admin.notify.create');
-        Route::match(['get', 'post'], '/view/{id}', [HomeController::class, 'createNotify'])->name('admin.notify.view');
+        Route::match(['get', 'post'], '/view/{id}', [HomeController::class, 'viewNotify'])->name('admin.notify.view');
         Route::match(['delete'], '/delete/{id}', [HomeController::class, 'deleteNotify'])->name('admin.notify.delete');
         Route::match(['put'], '/change/status/{id}', [HomeController::class, 'updateNotifyStatus'])->name('admin.notify.update.status');
     });

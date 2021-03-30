@@ -22,8 +22,18 @@ var Admin = function () {
                     create: false
                 });
             });
+
+            var els2 = $('.selectLocked');
+            els2?.each(function () {
+                $(this).[0].selectize.lock();
+            });
         },
         initCommon: function () {
+            $('.btn-href').on('click', function (e) {
+                e.preventDefault();
+                window.location.href = $(this).data('href');
+            });
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

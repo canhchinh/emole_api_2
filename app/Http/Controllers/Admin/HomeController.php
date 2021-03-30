@@ -76,15 +76,15 @@ class HomeController extends Controller
 
     /**
      * @param Request $request
-     * @param string $status
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function listNotify(Request $request, $status = 'all')
+    public function listNotify(Request $request)
     {
         $search = $request->input('search-key', '');
+        $status = $request->input('status', 'all');
         $arrange = $request->input('arrange', 'desc');
-        $notifications = $this->notificationRepository->paginateQuery($request, $status, $search);
 
+        $notifications = $this->notificationRepository->paginateQuery($request, $status, $search);
         $careersList = $this->careerRepository->query()->select(['id', 'title'])->get();
 
         return view('admin.pages.notify.index', [
@@ -98,11 +98,10 @@ class HomeController extends Controller
 
     /**
      * @param Request $request
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function createNotify(Request $request, $id = 0)
+    public function createNotify(Request $request)
     {
         $career = $this->careerRepository->select()->get();
         if ($request->isMethod('post')) {
@@ -144,6 +143,22 @@ class HomeController extends Controller
         }
 
         return view('admin.pages.notify.create', ['delivery_target' => $career])->withInput($request->all());
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     */
+    public function viewNotify(Request $request, $id)
+    {
+        $notify = $this->notificationRepository->query()->where(['id' => $id])->first();
+        $career = $this->careerRepository->select()->get();
+        return view('admin.pages.notify.view', [
+            'delivery_target' => $career,
+            'notify' => $notify,
+            'backUrl' => $request->input('back', route('admin.notify.list'))
+        ]);
     }
 
     /**

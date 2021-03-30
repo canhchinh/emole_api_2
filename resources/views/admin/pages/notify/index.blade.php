@@ -14,12 +14,16 @@
         <div class="col-md-8">
             <div class="block-filter">
                 <div class="contain-filter">
+                    @php
+                        $params = request()->input();
+                        unset($params['status']);
+                    @endphp
                     <select name="" id="filter-notify-status">
-                        <option value="{{ route('admin.notify.list', ['status' => 'all']) }}">配信状況</option>
-                        <option value="{{ route('admin.notify.list', ['status' => \App\Entities\Notification::STATUS_PUBLIC]) }}"
+                        <option value="{{ route('admin.notify.list', array_merge(['status' => 'all'], $params)) }}">配信状況</option>
+                        <option value="{{ route('admin.notify.list', array_merge(['status' => \App\Entities\Notification::STATUS_PUBLIC], $params)) }}"
                                 @if ($notifyStatus == \App\Entities\Notification::STATUS_PUBLIC) selected @endif
                         >公開</option>
-                        <option value="{{ route('admin.notify.list', ['status' => \App\Entities\Notification::STATUS_DRAFT]) }}"
+                        <option value="{{ route('admin.notify.list', array_merge(['status' => \App\Entities\Notification::STATUS_DRAFT], $params)) }}"
                                 @if ($notifyStatus == \App\Entities\Notification::STATUS_DRAFT) selected @endif
                         >非公開</option>
                     </select>
@@ -98,7 +102,7 @@
                 </div>
                 <div class="hr"></div>
                 <div class="footer">
-                    <a class="item-button detail" href="{{ route('admin.notify.view', ['id' => $notify->id]) }}">詳細</a>
+                    <a class="item-button detail" href="{{ route('admin.notify.view', ['id' => $notify->id]) }}?back={{  url()->full() }}">詳細</a>
                     <div class="contain-filter">
                         <select name="change-status-notify" class="change-status-notify" data-method="put" data-url-change-status="{{ route('admin.notify.update.status', ['id' => $notify->id]) }}">
                             <option value="{{ \App\Entities\Notification::STATUS_PUBLIC }}"
