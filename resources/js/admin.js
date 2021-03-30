@@ -5,6 +5,7 @@ $(function () {
 var Admin = function () {
     return {
         init: function () {
+            this.initCommon();
             this.registerLinkWithDeleteMethod();
             this.notificationListPage();
 
@@ -22,18 +23,35 @@ var Admin = function () {
                 });
             });
         },
-        notificationListPage: function () {
-            $('#filter-notify-status').on('change', function () {
-                var val = $(this).val();
-                window.location.href = val;
-            });
-        },
-        registerLinkWithDeleteMethod: function () {
+        initCommon: function () {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+        },
+        notificationListPage: function () {
+            $('#filter-notify-status').on('change', function () {
+                var val = $(this).val();
+                window.location.href = val;
+            });
+
+            $('.change-status-notify').on('change', function (e) {
+                var $this = $(this);
+
+                var val = $(this).val();
+                $.ajax({
+                    type: $this.data('method'),
+                    data: {status: val},
+                    url: $this.data('url-change-status')
+                }).done(function (data) {
+                    if (data.hasOwnProperty('success') && data.success) {
+                        window.location.href = $('#filter-notify-status').val();
+                    }
+                });
+            });
+        },
+        registerLinkWithDeleteMethod: function () {
             $(document).on('click', 'a.js-click', function (e) {
                 var $this = $(this);
                 e.preventDefault();
@@ -43,11 +61,7 @@ var Admin = function () {
                         url: $this.attr('href')
                     }).done(function (data) {
                         if (data.hasOwnProperty('success') && data.success) {
-                            if (data.hasOwnProperty('redirectUrl') && data.redirectUrl) {
-                                window.location.href = data.redirectUrl;
-                                return;
-                            }
-                            window.location.reload();
+                            window.location.href = $('#filter-notify-status').val();
                         }
                     });
                 }

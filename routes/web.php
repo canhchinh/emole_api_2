@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'post'], '/create', [HomeController::class, 'createNotify'])->name('admin.notify.create');
         Route::match(['get', 'post'], '/view/{id}', [HomeController::class, 'createNotify'])->name('admin.notify.view');
         Route::match(['delete'], '/delete/{id}', [HomeController::class, 'deleteNotify'])->name('admin.notify.delete');
+        Route::match(['put'], '/change/status/{id}', [HomeController::class, 'updateNotifyStatus'])->name('admin.notify.update.status');
     });
     Route::get('/detail/{id}', [HomeController::class, 'detailUser'])->name('admin.users.detailUser');
 });

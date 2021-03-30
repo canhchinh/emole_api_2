@@ -92,13 +92,15 @@
                 <div class="footer">
                     <a class="item-button detail" href="{{ route('admin.notify.view', ['id' => $notify->id]) }}">詳細</a>
                     <div class="contain-filter">
-                        <select name="" id="">
+                        <select name="change-status-notify" class="change-status-notify" data-method="put" data-url-change-status="{{ route('admin.notify.update.status', ['id' => $notify->id]) }}">
                             <option value="{{ \App\Entities\Notification::STATUS_PUBLIC }}"
                             @if ($notify->status == \App\Entities\Notification::STATUS_PUBLIC) selected @endif
                                 >公開</option>
+                            @if ($notify->status == \App\Entities\Notification::STATUS_DRAFT)
                             <option value="{{ \App\Entities\Notification::STATUS_DRAFT }}"
                                     @if ($notify->status == \App\Entities\Notification::STATUS_DRAFT) selected @endif
                             >非公開</option>
+                            @endif
                         </select>
                     </div>
                     <a class="item-button delete js-click" data-method="DELETE" href="{{ route('admin.notify.delete', ['id' => $notify->id]) }}">削除</a>

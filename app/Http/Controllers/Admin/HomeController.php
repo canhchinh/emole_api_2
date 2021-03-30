@@ -79,8 +79,9 @@ class HomeController extends Controller
      * @param string $status
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function listNotify(Request $request, $status = '')
+    public function listNotify(Request $request, $status = 'all')
     {
+        Log::info($status);
         if ($status == 'all') {
             $statusList = [Notification::STATUS_DRAFT, Notification::STATUS_PUBLIC];
         } else {
@@ -149,6 +150,38 @@ class HomeController extends Controller
         }
 
         return view('admin.pages.notify.create', ['delivery_target' => $career])->withInput($request->all());
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateNotifyStatus(Request $request, $id)
+    {
+        if ($request->isMethod('put')) {
+            DB::beginTransaction();
+            try {
+                $newStatus = trim($request->get('status'));
+                /** @var Builder $query */
+                $query = $this->notificationRepository->query();
+                $notify = $query->where(['id' => $id])->first();
+                if ($newStatus != $notify->status) {
+                    $notify->status = $newStatus;
+                    if ($notify->save() && $notify->status == Notification::STATUS_PUBLIC) {
+                        $this->userNotificationRepository->addNotification($notify);
+                    }
+                }
+
+                DB::commit();
+                return response()->json(['success' => true]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                abort('Some thing error, please try again or contact admin. Thank very much!');
+            }
+        }
+
+        return response()->json(['success' => false, 'message' => 'No request found!']);
     }
 
     /**
