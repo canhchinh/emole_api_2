@@ -47,7 +47,12 @@ class TwitterLoginController extends Controller
                 'request_oauth_token_secret' => 'required'
             ]);
             $userTwitter = $this->twitterLoginService->getUserInfo($request);
-            $user = $this->userRepo->where(['provider' => "twitter", 'provider_id' => $userTwitter->uid])->first();
+            $user = $this->userRepo->where(['provider' => "twitter", 'provider_id' => $userTwitter->uid]);
+            if (!empty($userTwitter->email)) {
+                $user = $user->orWhere('email', $userTwitter->email);
+            }
+            $user = $user->first();
+            $unregistered = true;
             if (!$user) {
                 $user = $this->userRepo->create(
                     [
@@ -59,12 +64,24 @@ class TwitterLoginController extends Controller
                         'avatar' => $userTwitter->imageUrl
                     ]
                 );
+            } else {
+                if ($user->email == $userTwitter->email) {
+                    if ($user->provider != "twitter" || $user->provider_id != $userTwitter->uid) {
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'Email already exists'
+                        ]);
+                    }
+                }
+                $unregistered = empty($user->user_name);
             }
             $tokenResult = $user->createToken('authToken')->plainTextToken;
             return response()->json([
                 'status' => true,
                 'access_token' => $tokenResult,
+                'unregistered' => $unregistered,
                 'token_type' => 'Bearer',
+                'user_name' => $user->user_name,
             ]);
         } catch (\Exception $e) {
             return response()->json([
