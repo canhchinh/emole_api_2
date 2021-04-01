@@ -31,6 +31,8 @@ use App\Repositories\UserJobRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\PortfolioJobRepository;
 use App\Repositories\PortfolioMemberRepository;
+use App\Services\GoogleService;
+use App\Services\TwitterService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -38,6 +40,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateAvatarRequest;
+use MetzWeb\Instagram\Instagram;
+use Sovit\TikTok\Api;
 
 class UserController extends Controller
 {
@@ -55,6 +59,20 @@ class UserController extends Controller
     private $userImageRepo;
     private $portfolioJobRepo;
     private $portfolioMemberRepo;
+    /**
+     * @var TwitterService
+     */
+
+    private $twitterService;
+    /**
+     * @var GoogleService
+     */
+    private $googleService;
+
+    /**
+     * @var \Sovit\TikTok\Api
+     */
+    private $tiktok;
 
     public function __construct(
         UserRepository $userRepo,
@@ -70,7 +88,10 @@ class UserController extends Controller
         ActivityContentRepository $activityContentRepo,
         UserImageRepository $userImageRepo,
         PortfolioJobRepository $portfolioJobRepo,
-        PortfolioMemberRepository $portfolioMemberRepo
+        PortfolioMemberRepository $portfolioMemberRepo,
+        TwitterService $twitterService,
+        GoogleService $googleService,
+        \Sovit\TikTok\Api $tiktok
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -86,6 +107,9 @@ class UserController extends Controller
         $this->userImageRepo = $userImageRepo;
         $this->portfolioJobRepo = $portfolioJobRepo;
         $this->portfolioMemberRepo = $portfolioMemberRepo;
+        $this->twitterService = $twitterService;
+        $this->googleService = $googleService;
+        $this->tiktok = $tiktok;
     }
 
     /**
@@ -1888,10 +1912,33 @@ class UserController extends Controller
 
         $userSearch->is_follow = false;
 
+        $snsFollowersCount = [];
+//        twitter_user
+//        tiktok_user
+//        instagram_user
+//        youtube_channel
+
+        if ($userSearch->twitter_user) {
+            $twitterInfoUser = $this->twitterService->getUsers(null, $userSearch->twitter_user);
+            if ($twitterInfoUser) {
+                $snsFollowersCount['twitter'] = $twitterInfoUser['followers_count'];
+            }
+        }
+
+        if ($userSearch->tiktok_user) {
+            $tiktokInfoUser = $this->tiktok->getUser('tiktok');
+            if ($tiktokInfoUser) {
+                $snsFollowersCount['tiktok'] = $tiktokInfoUser->stats->followerCount;
+            }
+        }
+
+//        $channelInfo = $this->googleService->getInfoChannel('ddd');
+
         return response()->json([
             'status' => true,
             'data' => [
                 'user' => $userSearch,
+                'sns_followers' => $snsFollowersCount,
                 'is_logged' => false,
                 'is_owner' => false
             ]

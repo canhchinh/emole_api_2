@@ -43,7 +43,11 @@ class User extends Authenticatable implements Transformable
         'activity_base_id',
         'is_enable_email_notification',
         'provider',
-        'provider_id'
+        'provider_id',
+        'twitter_user',
+        'tiktok_user',
+        'instagram_user',
+        'youtube_channel'
     ];
 
     /**
