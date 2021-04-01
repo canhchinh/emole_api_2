@@ -25,7 +25,7 @@ var Admin = function () {
 
             var els2 = $('.selectLocked');
             els2?.each(function () {
-                $(this).[0].selectize.lock();
+                $(this)[0].selectize.lock();
             });
         },
         initCommon: function () {

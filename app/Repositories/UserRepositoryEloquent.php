@@ -2,6 +2,9 @@
 
 namespace App\Repositories;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\UserRepository;
@@ -78,6 +81,30 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             return false;
         }
 
+    }
+
+    public function paginateQuery(Request $request, $status, $search)
+    {
+        /** @var Builder $notifications */
+        $query = $this->getModel()->query();
+        if ($status != 'all') {
+            $query->where(['status' => $status]);
+        }
+
+        if ($search) {
+            $query->where('user_name', 'LIKE', '%' . $search . '%');
+        }
+        $query->leftJoin('user_careers as uc', 'users.id', '=', 'uc.user_id');
+        $query->leftJoin('activity_base as ua', 'users.activity_base_id', '=', 'ua.id');
+        $query->select([
+            'users.*',
+            DB::raw('group_concat(uc.career_id separator ", ") AS career_ids'),
+            'ua.title as activity_base_title'
+        ]);
+        $query->groupBy('users.id');
+        $query->orderBy($request->input('sort', 'created_at'), $request->input('arrange', 'desc'));
+
+        return $query->get();
     }
 
 }

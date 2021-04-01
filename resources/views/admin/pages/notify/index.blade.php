@@ -91,7 +91,7 @@
                         </div>
                         <div class="account-email">
                             <span class="title-item">配信日時</span>
-                            <span class="content-item">{{ \Illuminate\Support\Carbon::parse($notify->created_at)->format(env('FORMAT_DATE_TIME')) }}</span>
+                            <span class="content-item">{{ \Illuminate\Support\Carbon::parse($notify->created_at)->format(\App\Helpers\Constants::FORMAT_DATE_TIME) }}</span>
                         </div>
                         <div class="account-created">
                             <span class="title-item">URL</span>
