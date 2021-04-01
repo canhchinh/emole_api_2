@@ -65,7 +65,7 @@ var Admin = function () {
             $(document).on('click', 'a.js-click', function (e) {
                 var $this = $(this);
                 e.preventDefault();
-                if (confirm("この記録は復元されませんか？ 削除してもよろしいですか？")) {
+                if (confirm("本当に削除しますか？")) {
                     $.post({
                         type: $this.data('method'),
                         url: $this.attr('href')

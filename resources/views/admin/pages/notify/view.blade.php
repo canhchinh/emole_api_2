@@ -53,7 +53,7 @@
                             <input type="text" id="url" name="url" value="{{ $notify->url }}" readonly>
                         </div>
                         <div class="footer">
-                            <button data-href="{{ $backUrl }}" class="btn-href">バック</button>
+                            <button data-href="{{ $backUrl }}" class="btn-href">一覧に戻る</button>
                         </div>
                     </form>
                 </div>

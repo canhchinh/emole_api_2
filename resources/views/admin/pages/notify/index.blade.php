@@ -30,7 +30,7 @@
                 </div>
                 <div class="contain-sort">
                     <div class="contain-sort_total">
-                        <span class="only">3</span><span>件</span>
+                        <span class="only">{{ count($notifications) }}</span><span>件</span>
                     </div>
                     @php
                         $params = request()->input();
