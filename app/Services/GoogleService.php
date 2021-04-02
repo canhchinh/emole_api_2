@@ -1,8 +1,6 @@
 <?php
 namespace App\Services;
 
-use Google\Client;
-use Illuminate\Http\Request;
 use Google_Client;
 use Google_Service_YouTube;
 use Mockery\Exception;
@@ -16,10 +14,18 @@ class GoogleService
      */
     protected $client;
 
+    /**
+     * youtube service
+     *
+     * @var Google_Service_YouTube
+     */
+    protected $youtube;
+
     public function __construct(Google_Client $client)
     {
         $this->client = $client;
-//        $this->auth();
+        $this->auth();
+        $this->youtube = new Google_Service_YouTube($this->client);
     }
 
     private function auth() : void
@@ -29,22 +35,17 @@ class GoogleService
             Google_Service_YouTube::YOUTUBE_READONLY
         ]);
         $this->client->setAuthConfig(base_path() . '/client_secret.json');
-        $authCode = '';
-        $accessToken = $this->client->fetchAccessTokenWithAuthCode($authCode);
-        $this->client->setAccessToken($accessToken);
     }
 
     public function getInfoChannel(string $channelId) : array
     {
         try {
-            $service = new Google_Service_YouTube($this->client);
-
             $queryParams = [
                 'id' => $channelId
             ];
 
-            $response = $service->channels->listChannels('statistics', $queryParams);
-            return json_decode($response);
+            $res = $this->youtube->channels->listChannels('statistics', $queryParams);
+            return (array) $res->items[0]->statistics;
         } catch (Exception $e) {
             return [];
         }
