@@ -803,13 +803,17 @@ class UserController extends Controller
             $imageUrl = [];
             if(count($req['images']) > 0) {
                 foreach($req['images'] as $img) {
-                    $extension = explode('/', mime_content_type($img))[1];
-                    $path = 'user/';
-                    if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
-                        $fileName = $this->saveImgBase64($img, $path, $user->id);
-                        $url = '/storage/' . $path . $fileName;
-                        array_push($imageUrl, $url);
+                    if(empty($img['is_old'])) {
+                        $extension = explode('/', mime_content_type($img['img']))[1];
+                        $path = 'user/';
+                        if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
+                            $fileName = $this->saveImgBase64($img['img'], $path, $user->id);
+                            $url = '/storage/' . $path . $fileName;
+                        }
+                    } else {
+                        $url = parse_url($img['img'])['path'];
                     }
+                    array_push($imageUrl, $url);
                 }
             }
 
@@ -845,7 +849,7 @@ class UserController extends Controller
             } else {
                 $portfolio = $this->portfolioRepo->where('id', $req['id'])
                     ->firstOrFail();
-
+                //todo compare image field to delete unused file
                 $portfolio->fill($param)
                     ->save();
             }
