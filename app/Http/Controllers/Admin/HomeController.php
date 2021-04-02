@@ -98,8 +98,8 @@ class HomeController extends Controller
             return view('import');
         }
         // Excel::import(new CareerImport,request()->file('file'));
-        // Excel::import(new ActivityBaseImport,request()->file('file'));
-        Excel::import(new OneImport,request()->file('file'));
+        Excel::import(new ActivityBaseImport,request()->file('file'));
+        // Excel::import(new OneImport,request()->file('file'));
         return back();
     }
 }
