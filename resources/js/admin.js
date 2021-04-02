@@ -22,8 +22,18 @@ var Admin = function () {
                     create: false
                 });
             });
+
+            var els2 = $('.selectLocked');
+            els2?.each(function () {
+                $(this)[0].selectize.lock();
+            });
         },
         initCommon: function () {
+            $('.btn-href').on('click', function (e) {
+                e.preventDefault();
+                window.location.href = $(this).data('href');
+            });
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -55,13 +65,16 @@ var Admin = function () {
             $(document).on('click', 'a.js-click', function (e) {
                 var $this = $(this);
                 e.preventDefault();
-                if (confirm("この記録は復元されませんか？ 削除してもよろしいですか？")) {
+                if (confirm("本当に削除しますか？")) {
                     $.post({
                         type: $this.data('method'),
                         url: $this.attr('href')
                     }).done(function (data) {
                         if (data.hasOwnProperty('success') && data.success) {
                             window.location.href = $('#filter-notify-status').val();
+                        }
+                        if (data.hasOwnProperty('success') && data.success == false) {
+                            alert(data.message);
                         }
                     });
                 }

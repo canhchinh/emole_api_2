@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,17 +25,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.auth.logout');
     Route::get('/', [HomeController::class, 'index'])->name('admin.home.index');
     Route::prefix('user')->group(function () {
-        Route::get('/', [HomeController::class, 'listUser'])->name('admin.users.list');
+        Route::get('/', [AdminUserController::class, 'listUser'])->name('admin.users.list');
     });
     Route::prefix('portfolio')->group(function () {
         Route::get('/', [HomeController::class, 'listPortfolio'])->name('admin.portfolio.list');
     });
     Route::prefix('notify')->group(function () {
-        Route::get('/{status?}', [HomeController::class, 'listNotify'])->name('admin.notify.list');
-        Route::match(['get', 'post'], '/create', [HomeController::class, 'createNotify'])->name('admin.notify.create');
-        Route::match(['get', 'post'], '/view/{id}', [HomeController::class, 'createNotify'])->name('admin.notify.view');
-        Route::match(['delete'], '/delete/{id}', [HomeController::class, 'deleteNotify'])->name('admin.notify.delete');
-        Route::match(['put'], '/change/status/{id}', [HomeController::class, 'updateNotifyStatus'])->name('admin.notify.update.status');
+        Route::get('/', [AdminNotificationController::class, 'listNotify'])->name('admin.notify.list');
+        Route::match(['get', 'post'], '/create', [AdminNotificationController::class, 'createNotify'])->name('admin.notify.create');
+        Route::match(['get', 'post'], '/view/{id}', [AdminNotificationController::class, 'viewNotify'])->name('admin.notify.view');
+        Route::match(['delete'], '/delete/{id}', [AdminNotificationController::class, 'deleteNotify'])->name('admin.notify.delete');
+        Route::match(['put'], '/change/status/{id}', [AdminNotificationController::class, 'updateNotifyStatus'])->name('admin.notify.update.status');
     });
     Route::get('/detail/{id}', [HomeController::class, 'detailUser'])->name('admin.users.detailUser');
 });

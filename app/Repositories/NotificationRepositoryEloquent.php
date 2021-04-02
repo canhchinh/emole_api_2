@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\NotificationRepository;
@@ -41,5 +43,27 @@ class NotificationRepositoryEloquent extends BaseRepository implements Notificat
     public function query()
     {
         return $this->getModel()->newQuery();
+    }
+
+    public function paginateQuery(Request $request, $status, $search)
+    {
+        /** @var Builder $notifications */
+        $query = $this->getModel()->query();
+        if ($status != 'all') {
+            $query->where(['status' => $status]);
+        }
+
+        if ($search) {
+            $query->where('delivery_name', 'LIKE', '%' . $search . '%');
+        }
+
+        $query->orderBy($request->input('sort', 'created_at'), $request->input('arrange', 'desc'));
+
+        return $query->paginate(3);
+    }
+
+    public function simplePaginateQuery()
+    {
+
     }
 }

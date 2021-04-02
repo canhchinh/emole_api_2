@@ -1,4 +1,10 @@
 @if ($paginator->hasPages())
+    @php
+    $params = request()->input();
+    unset($params['page']);
+    $pr = $params ? '&'.http_build_query($params) : '';
+    @endphp
+
     <ul class="pager">
 
         @if (!$paginator->onFirstPage())
@@ -18,7 +24,7 @@
                     @if ($page == $paginator->currentPage())
                         <li class="active"><span>{{ $page }}</span></li>
                     @else
-                        <li><a href="{{ $url }}">{{ $page }}</a></li>
+                        <li><a href="{{ $url . $pr }}">{{ $page }}</a></li>
                     @endif
                 @endforeach
             @endif

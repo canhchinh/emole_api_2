@@ -22,11 +22,17 @@
                             <label for="username">配信対象</label><br>
                             <select id="career_id" name="career_ids[]" class="form-control selectizeSelect"
                                     data-placeholder="配信対象を選択してください"
-                                    data-json="{{ json_encode($delivery_target) }}"
+                                    multiple
                             >
-                                <option value="0">All user</option>
+
+                                @if (is_array(old('career_ids')) && count(old('career_ids')) == 1 && old('career_ids')[0] == 0)
+                                    <option selected value="0">All user</option>
+                                @else
+                                    <option value="0">All user</option>
+                                @endif
+
                                 @foreach($delivery_target as $target)
-                                    <option @if (old('career_ids') == $target->id) selected @endif value="{{ $target->id }}">{{ $target->title }}</option>
+                                    <option @if (is_array(old('career_ids')) && in_array($target->id, old('career_ids'))) selected @endif value="{{ $target->id }}">{{ $target->title }}</option>
                                 @endforeach
                             </select>
                             @error('career_ids')

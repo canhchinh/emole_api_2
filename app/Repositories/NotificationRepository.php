@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use Illuminate\Http\Request;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
@@ -12,4 +13,6 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface NotificationRepository extends RepositoryInterface
 {
     public function query();
+    public function paginateQuery(Request $request, $status, $search);
+    public function simplePaginateQuery();
 }
