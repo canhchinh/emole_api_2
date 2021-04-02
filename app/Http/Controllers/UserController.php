@@ -1888,11 +1888,35 @@ class UserController extends Controller
             $userSearch->is_follow = true;
         }
 
+        $snsFollowersCount = [];
+
+        if ($userSearch->twitter_user) {
+            $twitterInfoUser = $this->twitterService->getUsers(null, $userSearch->twitter_user);
+            if ($twitterInfoUser) {
+                $snsFollowersCount['twitter'] = $twitterInfoUser['followers_count'];
+            }
+        }
+
+        if ($userSearch->tiktok_user) {
+            $tiktokInfoUser = $this->tiktok->getUser($userSearch->tiktok_user);
+            if ($tiktokInfoUser) {
+                $snsFollowersCount['tiktok'] = $tiktokInfoUser->stats->followerCount;
+            }
+        }
+
+        if ($userSearch->youtube_channel) {
+            $channelInfo = $this->googleService->getInfoChannel($userSearch->youtube_channel);
+            if ($channelInfo) {
+                $snsFollowersCount['youtube'] = $channelInfo['subscriberCount'];
+            }
+        }
+
         return response()->json([
             'status' => true,
             'data' => [
                 'user' => $userSearch,
                 'is_logged' => true,
+                'sns_followers' => $snsFollowersCount,
                 'is_owner' => $owner->user_name == $username
             ]
         ]);
@@ -1917,10 +1941,6 @@ class UserController extends Controller
         $userSearch->is_follow = false;
 
         $snsFollowersCount = [];
-//        twitter_user
-//        tiktok_user
-//        instagram_user
-//        youtube_channel
 
         if ($userSearch->twitter_user) {
             $twitterInfoUser = $this->twitterService->getUsers(null, $userSearch->twitter_user);
@@ -1930,13 +1950,18 @@ class UserController extends Controller
         }
 
         if ($userSearch->tiktok_user) {
-            $tiktokInfoUser = $this->tiktok->getUser('tiktok');
+            $tiktokInfoUser = $this->tiktok->getUser($userSearch->tiktok_user);
             if ($tiktokInfoUser) {
                 $snsFollowersCount['tiktok'] = $tiktokInfoUser->stats->followerCount;
             }
         }
 
-//        $channelInfo = $this->googleService->getInfoChannel('ddd');
+        if ($userSearch->youtube_channel) {
+            $channelInfo = $this->googleService->getInfoChannel($userSearch->youtube_channel);
+            if ($channelInfo) {
+                $snsFollowersCount['youtube'] = $channelInfo['subscriberCount'];
+            }
+        }
 
         return response()->json([
             'status' => true,
