@@ -104,6 +104,7 @@ Route::group(['prefix' => 'education'], function () {
 Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function () {
     Route::get('list', [SnsController::class, 'listSns']);
     Route::post('save', [SnsController::class, 'save']);
+    Route::get('followers-count', [SnsController::class, 'followersCount']);
 });
 
 Route::group(['prefix' => 'portfolio'], function () {
