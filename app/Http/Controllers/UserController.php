@@ -837,7 +837,7 @@ class UserController extends Controller
                 'video_link' => $req['video_link'],
                 'work_link' => $req['work_link'],
                 'work_description' => $req['work_description'],
-                'tags' => !empty($req['tags']) ? implode(":|||:", $req['tags']) : null,
+                'tags' => !empty($req['tags']) && count($req['tags']) > 0 ? implode(":|||:", $req['tags']) : null,
             ];
 
             if (!empty($imageUrl)) {
