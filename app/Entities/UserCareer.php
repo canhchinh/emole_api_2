@@ -41,6 +41,6 @@ class UserCareer extends Model implements Transformable
 
     public function getTagsAttribute($value)
     {
-        return explode(":|||:", $value);
+        return $value ? explode(":|||:", $value) : [];
     }
 }
