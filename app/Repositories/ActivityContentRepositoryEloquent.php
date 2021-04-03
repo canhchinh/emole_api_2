@@ -50,7 +50,7 @@ class ActivityContentRepositoryEloquent extends BaseRepository implements Activi
             $result[$item->key]['list'][] = [
                 'id' => $item->id,
                 'is_checked' => false,
-                'title' => $item->title,
+                'title' => trim($item->title) == "その他（自由入力）" ? "" : $item->title,
                 'free_text' => trim($item->title) == "その他（自由入力）"
             ];
         }
