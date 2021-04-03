@@ -1,7 +1,7 @@
 @extends('admin.layouts.default')
 
 @section('content')
-<div class="contain-users">
+<div class="contain-users" id="page-user-list">
     <div class="row mb-2">
         <div class="col-8 search">
             <img class="search-img" src="{{asset('/assets/images/user_search_icon.png')}}" id="user_search_icon">
@@ -18,6 +18,7 @@
                         <option value=""></option>
                         <option value=""></option>
                     </select>
+                    <input id="datepicker" type="text">
                     <select name="" id="">
                         <option>地域</option>
                         <option value=""></option>
@@ -32,7 +33,7 @@
                 </div>
                 <div class="contain-sort">
                     <div class="contain-sort_total">
-                        <span class="only">189</span><span>人</span>
+                        <span class="only">{{ count($users) }}</span><span>人</span>
                     </div>
                     <a href="#">
                         <img src="{{asset('/assets/images/sort.svg')}}" alt="sort">
@@ -122,17 +123,50 @@
                 <div class="hr"></div>
                 <div class="footer">
                     <button class="item-button detail">詳細</button>
-                    <button class="item-button email">メール</button>
+                    <button class="item-button email sendEmail" data-user-id="{{ $user->id }}">メール</button>
                     <div class="contain-filter">
-                        <select name="" id="">
-                            <option>公開</option>
+                        <select name="change-status" id="change-status">
+                            <option value="">公開</option>
                             <option value="">非公開</option>
                         </select>
                     </div>
-                    <button class="item-button delete">削除</button>
+                    <a href="{{ route('admin.users.delete', ['id' => $user->id]) }}" data-method="DELETE" class="item-button delete js-delete">削除</a>
                 </div>
             </div>
             @endforeach
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="email-content" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="exampleModalLabel">Send email to this user</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('admin.users.sendEmail') }}" method="POST">
+                @csrf
+                <input type="hidden" name="user-id" value="0">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="email1">Email subject</label>
+                        <input type="text" class="form-control" id="email-subject" name="email-subject" placeholder="Email subject">
+                        <small id="emailHelp" class="form-text text-muted">Your information is safe with us.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-content">Email content</label>
+                        <textarea class="form-control" id="email-content" name="email-content" placeholder="Email content" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-dark" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary send-email">Send email</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

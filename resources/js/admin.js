@@ -8,6 +8,7 @@ var Admin = function () {
             this.initCommon();
             this.registerLinkWithDeleteMethod();
             this.notificationListPage();
+            this.userListPage();
 
             var els = $('.selectizeSelect');
             els?.each(function () {
@@ -38,6 +39,10 @@ var Admin = function () {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            $('#datepicker').datepicker({
+                uiLibrary: 'bootstrap4'
             });
         },
         notificationListPage: function () {
@@ -79,6 +84,53 @@ var Admin = function () {
                     });
                 }
                 return false;
+            });
+        },
+        userListPage: function () {
+            var modalEl = $('#email-content');
+            $(document).on('click', '.sendEmail', function (e) {
+                modalEl.find('input[name="user-id"]').val($(this).data('user-id'));
+                modalEl.find('input[name="email-subject"]').val('');
+                modalEl.find('[name="email-content"]').val('');
+                modalEl.modal('show');
+            });
+            $(document).on('click', 'a.js-delete', function (e) {
+                var $this = $(this);
+                e.preventDefault();
+                if (confirm("本当に削除しますか？")) {
+                    $.post({
+                        type: $this.data('method'),
+                        url: $this.attr('href')
+                    }).done(function (data) {
+                        if (data.hasOwnProperty('success') && data.success) {
+                            // window.location.href = $('#filter-notify-status').val();
+                        }
+                        if (data.hasOwnProperty('success') && data.success == false) {
+                            alert(data.message);
+                        }
+                    });
+                }
+                return false;
+            });
+
+
+            $('#email-content').on('click', '.send-email', function (e) {
+                e.preventDefault();
+                Admin.doSendEmailToUser($(this).closest('form'));
+            });
+        },
+        doSendEmailToUser: function (form) {
+            $.post({
+                type: form.data('method'),
+                data: form.serializeArray(),
+                url: form.attr('action')
+            }).done(function (data) {
+                if (data.hasOwnProperty('success') && data.success) {
+                    // window.location.href = $('#filter-notify-status').val();
+                }
+                if (data.hasOwnProperty('success') && data.success == false) {
+                    alert(data.message);
+                }
             });
         }
     }

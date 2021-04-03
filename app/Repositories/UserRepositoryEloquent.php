@@ -5,6 +5,7 @@ namespace App\Repositories;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\UserRepository;
@@ -38,6 +39,15 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+
+        $this->deleted(function ($user) {
+            /// do something with $user->id
+            $this->unlinkAvatar($user);
+        });
+    }
+
+    public function unlinkAvatar(self $user) {
+
     }
 
     public function listUsers($userId, $filters = [],$page = 1, $limit=10)

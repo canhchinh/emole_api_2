@@ -54,9 +54,42 @@ class UserController extends Controller
         return view('admin.pages.user.index', [
             'users' => $users,
             'careersList' => $careersList,
-//            'notifyStatus' => $status,
             'searchKey'    => $search,
             'arrange' => $arrange
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteUser(Request $request, $id)
+    {
+        if ($request->isMethod('delete')) {
+            try {
+                /** @var Builder $query */
+                $query = $this->userRepository->query();
+                $user = $query->where(['id' => $id])->first();
+                if ($user->id) {
+                    DB::beginTransaction();
+                    $user->delete();
+                    DB::commit();
+
+                    return response()->json(['success' => true, 'redirectUrl' => route('admin.users.list')]);
+                } else {
+                    return response()->json(['success' => false, 'message' => 'このメッセージは送信されたため、削除できません。']);
+                }
+            } catch (\Exception $e) {
+                DB::rollBack();
+            }
+        }
+
+        return response()->json(['success' => false, 'message' => 'No request found!']);
+    }
+
+    public function sendEmailToUser()
+    {
+        // TODO: send email
     }
 }
