@@ -556,7 +556,7 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function updateSelfIntroduction(SelfIntroductionRequest $request)
+    public function updateSelfIntroduction(Request $request)
     {
         try {
             $req = $request->all();

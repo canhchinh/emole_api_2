@@ -22,7 +22,7 @@ class SelfIntroductionRequest extends Base
     public function rules()
     {
         return [
-            'introduce' => 'string'
+            'introduce' => ''
         ];
     }
 }
