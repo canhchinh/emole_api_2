@@ -62,6 +62,23 @@ class UserController extends Controller
     /**
      * @param Request $request
      * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function detailUser(Request $request, $id)
+    {
+        /** @var Builder $query */
+        $user = $this->userRepository->query()->where(['id' => $id])->first();
+        if (!$user->id) {
+            abort('Request not found!');
+        }
+        return view('admin.pages.user.detail', [
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function deleteUser(Request $request, $id)

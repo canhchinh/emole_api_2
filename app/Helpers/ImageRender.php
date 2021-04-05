@@ -42,6 +42,5 @@ class ImageRender
 
             return asset($savePathRelative);
         }
-
     }
 }
