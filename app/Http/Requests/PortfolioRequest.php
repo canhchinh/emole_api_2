@@ -24,18 +24,9 @@ class PortfolioRequest extends Base
         return [
             'title' => 'required',
             'job_ids' => 'required',
-            'start_date' => 'required',
-            'is_still_active' => 'required',
-            'budget' => 'required',
-            'reach_number' => 'required',
-            'view_count' => 'required',
-            'like_count' => 'required',
-            'comment_count' => 'required',
-            'cpa_count' => 'required',
-            'video_link' => 'required',
-            'work_link' => 'required',
             'work_description' => 'required',
             'is_public' => 'required',
+            'images' => 'required'
         ];
     }
 }

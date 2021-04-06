@@ -817,7 +817,7 @@ class UserController extends Controller
                 }
             }
 
-            $startDate = $req['start_date'] . '-01';
+            $startDate = empty($req['end_date']) ? null : $req['start_date'] . '-01';
             $endDate = empty($req['end_date']) ? null : $req['end_date'] . '-01';
 
             $param = [
@@ -827,15 +827,15 @@ class UserController extends Controller
                 'start_date' => \DateTime::createFromFormat('Y-m-d', $startDate)->format('Y-m-d'),
                 'end_date' => empty($req['is_still_active']) ? \DateTime::createFromFormat('Y-m-d', $endDate)->format('Y-m-d') : date('Y-m-d'),
                 'is_still_active' => $req['is_still_active'],
-                'budget' => $req['budget'],
-                'reach_number' => $req['reach_number'],
-                'view_count' => $req['view_count'],
-                'like_count' => $req['like_count'],
-                'is_public' => $req['is_public'],
-                'comment_count' => $req['comment_count'],
-                'cpa_count' => $req['cpa_count'],
-                'video_link' => $req['video_link'],
-                'work_link' => $req['work_link'],
+                'budget' => isset($req['budget']) ? $req['budget'] : null,
+                'reach_number' => isset($req['reach_number']) ? $req['budget'] : null,
+                'view_count' => isset($req['view_count']) ? $req['budget'] : null,
+                'like_count' => isset($req['like_count']) ? $req['budget'] : null,
+                'is_public' => isset($req['is_public']) ? $req['budget'] : null,
+                'comment_count' => isset($req['comment_count']) ? $req['budget'] : null,
+                'cpa_count' => isset($req['cpa_count']) ? $req['budget'] : null,
+                'video_link' => isset($req['video_link']) ? $req['budget'] : null,
+                'work_link' => isset($req['work_link']) ? $req['budget'] : null,
                 'work_description' => $req['work_description'],
                 'tags' => !empty($req['tags']) ? implode(":|||:", $req['tags']) : null,
             ];
