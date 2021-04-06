@@ -817,15 +817,15 @@ class UserController extends Controller
                 }
             }
 
-            $startDate = empty($req['end_date']) ? null : $req['start_date'] . '-01';
+            $startDate = empty($req['start_date']) ? null : $req['start_date'] . '-01';
             $endDate = empty($req['end_date']) ? null : $req['end_date'] . '-01';
 
             $param = [
                 'user_id' => $user->id,
                 'title' => $req['title'],
                 'job_ids' => !empty($req['job_ids']) ? json_encode($req['job_ids']) : null,
-                'start_date' => $startDate ? \DateTime::createFromFormat('Y-m-d', $startDate)->format('Y-m-d') : null,
-                'end_date' => empty($req['is_still_active']) ? ($endDate ? \DateTime::createFromFormat('Y-m-d', $endDate)->format('Y-m-d') : null) : date('Y-m-d'),
+                'start_date' => $startDate,
+                'end_date' => empty($req['is_still_active']) ? $endDate : date('Y-m-d'),
                 'is_still_active' => $req['is_still_active'],
                 'budget' => isset($req['budget']) ? $req['budget'] : null,
                 'reach_number' => isset($req['reach_number']) ? $req['budget'] : null,
