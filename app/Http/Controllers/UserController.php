@@ -688,8 +688,8 @@ class UserController extends Controller
                 'user_id' => $user->id,
                 'title' => $item['title'],
                 'role' => $item['role'],
-                'start_date' => \DateTime::createFromFormat('Y-m-d', $item['start_date'])->format('Y-m-d'),
-                'end_date' => $item['is_still_active'] ? null : \DateTime::createFromFormat('Y-m-d', $item['end_date'])->format('Y-m-d'),
+                'start_date' => $this->validateDate($request->start_date) ? \DateTime::createFromFormat('Y-m-d', $item['start_date'])->format('Y-m-d') : null,
+                'end_date' => $this->checkValidateEndDate($item['is_still_active'], $request->end_date),
                 'is_still_active' => $item['is_still_active'],
                 'link' => $item['link'],
                 'description' => $item['description'],
@@ -699,6 +699,24 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
         ]);
+    }
+
+    // $item['is_still_active'] && !$this->validateDate($request->start_date) ? null : \DateTime::createFromFormat('Y-m-d', $item['end_date'])->format('Y-m-d')
+
+    private function checkValidateEndDate($isStillActive, $date) {
+        if ($isStillActive) {
+            return null;
+        }
+        if ($this->validateDate($date)) {
+            return \DateTime::createFromFormat('Y-m-d', $date)->format('Y-m-d');
+        }
+        return null;
+    }
+
+    private function validateDate($date, $format = 'Y-m-d')
+    {
+        $d = \DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
     }
 
     /**
