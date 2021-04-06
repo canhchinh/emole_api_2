@@ -689,7 +689,7 @@ class UserController extends Controller
                 'user_id' => $user->id,
                 'title' => $item['title'],
                 'role' => $item['role'],
-                'start_date' => $this->checkIsAValidDate($item['start_date']) ? \DateTime::createFromFormat('Y-m-d', $item['start_date'])->format('Y-m-d') : null,
+                'start_date' => $this->validateDate($item['start_date']) ? \DateTime::createFromFormat('Y-m-d', $item['start_date'])->format('Y-m-d') : null,
                 'end_date' => $this->checkValidateEndDate($item['is_still_active'], $item['end_date']),
                 'is_still_active' => $item['is_still_active'],
                 'link' => $item['link'],
@@ -702,21 +702,22 @@ class UserController extends Controller
         ]);
     }
 
-    // $item['is_still_active'] && !$this->validateDate($request->start_date) ? null : \DateTime::createFromFormat('Y-m-d', $item['end_date'])->format('Y-m-d')
-
     private function checkValidateEndDate($isStillActive, $date) {
         if ($isStillActive) {
             return null;
         }
-        if ($this->checkIsAValidDate($date)) {
+        if ($this->validateDate($date)) {
             return \DateTime::createFromFormat('Y-m-d', $date)->format('Y-m-d');
         }
         return null;
     }
 
-    private function checkIsAValidDate($myDateString){
-        return (bool)strtotime($myDateString);
+    private function validateDate($date, $format = 'Y-m-d')
+    {
+        $d = \DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
     }
+
     /**
      * @OA\Post(
      *   path="/portfolio",
