@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\UserRepository;
@@ -43,12 +44,21 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $this->deleted(function ($user) {
             /// do something with $user->id
             $this->unlinkAvatar($user);
+            $this->deleteUserCareers($user);
+            $this->deleteUserCategories($user);
+            $this->deleteUserImages($user);
+            $this->deleteUserNotifications($user);
         });
     }
 
     public function unlinkAvatar(self $user) {
 
     }
+
+    public function deleteUserNotifications(self $user){}
+    public function deleteUserCategories(self $user){}
+    public function deleteUserImages(self $user){}
+    public function deleteUserCareers(self $user){}
 
     public function listUsers($userId, $filters = [],$page = 1, $limit=10)
     {
@@ -93,6 +103,12 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
     }
 
+    /**
+     * @param Request $request
+     * @param $status
+     * @param $search
+     * @return Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
     public function paginateQuery(Request $request, $status, $search)
     {
         /** @var Builder $notifications */
@@ -101,11 +117,30 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             $query->where(['status' => $status]);
         }
 
-        if ($search) {
-            $query->where('user_name', 'LIKE', '%' . $search . '%');
-        }
         $query->leftJoin('user_careers as uc', 'users.id', '=', 'uc.user_id');
         $query->leftJoin('activity_base as ua', 'users.activity_base_id', '=', 'ua.id');
+
+        if ($search) {
+            $query->where(function($query) use ($search) {
+                $query
+                    ->orWhere('user_name', 'LIKE', "%{$search}%")
+                    ->orWhere('given_name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
+
+        if ($request->input('career_id')) {
+            $query->where(['uc.career_id' => $request->input('career_id')]);
+        }
+
+        if ($request->input('birthday')) {
+            $query->where(['users.birthday' => $request->input('birthday')]);
+        }
+
+        if ($request->input('area')) {
+//            $query->where(['uc.career_id' => $request->input('area')]);
+        }
+
         $query->select([
             'users.*',
             DB::raw('group_concat(uc.career_id separator ", ") AS career_ids'),

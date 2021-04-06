@@ -835,25 +835,25 @@ class UserController extends Controller
                 }
             }
 
-            $startDate = $req['start_date'] . '-01';
+            $startDate = empty($req['start_date']) ? null : $req['start_date'] . '-01';
             $endDate = empty($req['end_date']) ? null : $req['end_date'] . '-01';
 
             $param = [
                 'user_id' => $user->id,
                 'title' => $req['title'],
                 'job_ids' => !empty($req['job_ids']) ? json_encode($req['job_ids']) : null,
-                'start_date' => \DateTime::createFromFormat('Y-m-d', $startDate)->format('Y-m-d'),
-                'end_date' => empty($req['is_still_active']) ? \DateTime::createFromFormat('Y-m-d', $endDate)->format('Y-m-d') : date('Y-m-d'),
+                'start_date' => $startDate,
+                'end_date' => empty($req['is_still_active']) ? $endDate : date('Y-m-d'),
                 'is_still_active' => $req['is_still_active'],
-                'budget' => $req['budget'],
-                'reach_number' => $req['reach_number'],
-                'view_count' => $req['view_count'],
-                'like_count' => $req['like_count'],
-                'is_public' => $req['is_public'],
-                'comment_count' => $req['comment_count'],
-                'cpa_count' => $req['cpa_count'],
-                'video_link' => $req['video_link'],
-                'work_link' => $req['work_link'],
+                'budget' => isset($req['budget']) ? $req['budget'] : null,
+                'reach_number' => isset($req['reach_number']) ? $req['reach_number'] : null,
+                'view_count' => isset($req['view_count']) ? $req['view_count'] : null,
+                'like_count' => isset($req['like_count']) ? $req['like_count'] : null,
+                'is_public' => isset($req['is_public']) ? $req['is_public'] : null,
+                'comment_count' => isset($req['comment_count']) ? $req['comment_count'] : null,
+                'cpa_count' => isset($req['cpa_count']) ? $req['cpa_count'] : null,
+                'video_link' => isset($req['video_link']) ? $req['video_link'] : null,
+                'work_link' => isset($req['work_link']) ? $req['work_link'] : null,
                 'work_description' => $req['work_description'],
                 'tags' => !empty($req['tags']) ? implode(":|||:", $req['tags']) : null,
             ];

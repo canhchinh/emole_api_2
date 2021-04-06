@@ -4,8 +4,10 @@
 <div class="contain-users" id="page-user-list">
     <div class="row mb-2">
         <div class="col-8 search">
-            <img class="search-img" src="{{asset('/assets/images/user_search_icon.png')}}" id="user_search_icon">
-            <input type="text" class="search-input" name="" placeholder="名前などを入力">
+            <form method="GET" action="{{ \App\Helpers\Params::buildUrl(false, 'search-key') }}">
+                <img class="search-img" src="{{asset('/assets/images/user_search_icon.png')}}" id="user_search_icon">
+                <input type="text" class="search-input" name="search-key" placeholder="名前などを入力" value="{{ $searchKey }}">
+            </form>
         </div>
     </div>
 
@@ -13,21 +15,23 @@
         <div class="col-md-8">
             <div class="block-filter">
                 <div class="contain-filter">
-                    <select name="" id="">
-                        <option>生年月日</option>
-                        <option value=""></option>
-                        <option value=""></option>
-                    </select>
-                    <input id="datepicker" type="text">
+                    <input id="datepicker-birthday" class="js-datepicker" type="text" style="width: 0; padding: 0; opacity: 0; position: relative; left: 30px; top: 5px" data-url="{{ \App\Helpers\Params::buildUrl('birthdayValue', 'birthday') }}"
+                           data-current-value="{{ request()->input('birthday') }}"
+                            value="{{ request()->input('birthday') }}">
+                    <span data-focus-to="#datepicker-birthday">
+                        <select name="" id="" disabled>
+                            <option>生年月日</option>
+                        </select>
+                    </span>
                     <select name="" id="">
                         <option>地域</option>
                         <option value=""></option>
                         <option value=""></option>
                     </select>
                     <select name="careersList-filter" id="careersList">
-                        <option value="all">活動内容</option>
+                        <option value="{{ \App\Helpers\Params::buildUrl(false, 'career_id') }}">活動内容</option>
                         @foreach($careersList as $career)
-                        <option value="{{ $career->title }}">{{ $career->title }}</option>
+                        <option {{ \App\Helpers\Params::setSelected('career_id', $career->id) }} value="{{ \App\Helpers\Params::buildUrl($career->id, 'career_id') }}">{{ $career->title }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -35,8 +39,8 @@
                     <div class="contain-sort_total">
                         <span class="only">{{ count($users) }}</span><span>人</span>
                     </div>
-                    <a href="#">
-                        <img src="{{asset('/assets/images/sort.svg')}}" alt="sort">
+                    <a href="{{ \App\Helpers\Params::buildSortDescAsc(($arrange == 'desc') ? 'asc' : 'desc')  }}">
+                        <img src="{{asset('/assets/images/sort-'.$arrange.'.png')}}" alt="sort">
                     </a>
                 </div>
             </div>
@@ -122,7 +126,7 @@
                 </div>
                 <div class="hr"></div>
                 <div class="footer">
-                    <button class="item-button detail">詳細</button>
+                    <a href="{{ route('admin.users.detail', ['id' => $user->id]) }}" class="item-button detail">詳細</a>
                     <button class="item-button email sendEmail" data-user-id="{{ $user->id }}">メール</button>
                     <div class="contain-filter">
                         <select name="change-status" id="change-status">
@@ -143,7 +147,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header border-bottom-0">
-                <h5 class="modal-title" id="exampleModalLabel">Send email to this user</h5>
+                <h5 class="modal-title" id="exampleModalLabel">このユーザーにメールを送信する</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -153,18 +157,18 @@
                 <input type="hidden" name="user-id" value="0">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="email1">Email subject</label>
-                        <input type="text" class="form-control" id="email-subject" name="email-subject" placeholder="Email subject">
+                        <label for="email1">メールの件名</label>
+                        <input type="text" class="form-control" id="email-subject" name="email-subject" placeholder="メールの件名">
                         <small id="emailHelp" class="form-text text-muted">Your information is safe with us.</small>
                     </div>
                     <div class="form-group">
-                        <label for="email-content">Email content</label>
-                        <textarea class="form-control" id="email-content" name="email-content" placeholder="Email content" rows="5"></textarea>
+                        <label for="email-content">メールの内容</label>
+                        <textarea class="form-control" id="email-content" name="email-content" placeholder="メールの内容" rows="5"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-dark" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary send-email">Send email</button>
+                    <button type="submit" class="btn btn-dark" data-dismiss="modal">キャンセル</button>
+                    <button type="submit" class="btn btn-primary send-email">送信</button>
                 </div>
             </form>
         </div>

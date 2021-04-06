@@ -41,8 +41,18 @@ var Admin = function () {
                 }
             });
 
-            $('#datepicker').datepicker({
-                uiLibrary: 'bootstrap4'
+            var focusEls = $('[data-focus-to]');
+            focusEls.on('click', function (e) {
+                $('body').find($(this).data('focus-to')).focus();
+            });
+
+            // https://bootstrap-datepicker.readthedocs.io/en/latest/index.html#
+            $('.js-datepicker').datepicker({
+                language: 'ja',
+                format: 'yyyy-mm-dd',
+                clearBtn: true,
+                startDate: '-180d',
+                endDate: 'today'
             });
         },
         notificationListPage: function () {
@@ -117,6 +127,21 @@ var Admin = function () {
             $('#email-content').on('click', '.send-email', function (e) {
                 e.preventDefault();
                 Admin.doSendEmailToUser($(this).closest('form'));
+            });
+
+            $('#careersList').on('change', function () {
+                var val = $(this).val();
+                window.location.href = val;
+            });
+
+            $('#datepicker-birthday').on('change', function () {
+                var val = $(this).val();
+                console.log(val);
+                if (val != $(this).data('current-value')) {
+                    var url = $(this).data('url');
+                    var newUrl = url.replace('birthdayValue', val);
+                    window.location.href = newUrl;
+                }
             });
         },
         doSendEmailToUser: function (form) {

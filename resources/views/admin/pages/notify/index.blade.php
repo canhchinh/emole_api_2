@@ -17,6 +17,7 @@
                     @php
                         $params = request()->input();
                         unset($params['status']);
+                        unset($params['page']);
                     @endphp
                     <select name="" id="filter-notify-status">
                         <option value="{{ route('admin.notify.list', array_merge(['status' => 'all'], $params)) }}">配信状況</option>
@@ -32,13 +33,7 @@
                     <div class="contain-sort_total">
                         <span class="only">{{ count($notifications) }}</span><span>件</span>
                     </div>
-                    @php
-                        $params = request()->input();
-                        $params['sort'] = 'created_at';
-                        $params['arrange'] = ($arrange == 'desc') ? 'asc' : 'desc';
-                        $pr = $params ? '?'.http_build_query($params) : '';
-                    @endphp
-                    <a href="{{ url()->current() }}{{ $pr }}">
+                    <a href="{{ \App\Helpers\Params::buildSortDescAsc(($arrange == 'desc') ? 'asc' : 'desc')  }}">
                         <img src="{{asset('/assets/images/sort-'.$arrange.'.png')}}" alt="sort">
                     </a>
                 </div>

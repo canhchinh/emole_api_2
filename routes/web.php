@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('admin.home.index');
     Route::prefix('user')->group(function () {
         Route::get('/', [AdminUserController::class, 'listUser'])->name('admin.users.list');
+        Route::get('/view/{id}', [AdminUserController::class, 'detailUser'])->name('admin.users.detail');
         Route::delete('/delete/{id}', [AdminUserController::class, 'deleteUser'])->name('admin.users.delete');
         Route::post('/send-email-to-user', [AdminUserController::class, 'sendEmailToUser'])->name('admin.users.sendEmail');
     });
