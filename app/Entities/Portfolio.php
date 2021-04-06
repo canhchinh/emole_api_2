@@ -16,6 +16,10 @@ use App\Entities\User;
 class Portfolio extends Model implements Transformable
 {
     use TransformableTrait,HasFactory;
+
+    const PUBLIC_YES = 1;
+    const PUBLIC_NO = 0;
+
     protected $table = 'portfolios';
     /**
      * The attributes that are mass assignable.

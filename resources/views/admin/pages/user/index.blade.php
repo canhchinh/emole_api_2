@@ -5,6 +5,7 @@
     <div class="row mb-2">
         <div class="col-8 search">
             <form method="GET" action="{{ \App\Helpers\Params::buildUrl(false, 'search-key') }}">
+                {!! \App\Helpers\Params::buildHiddenFields(['search-key']) !!}
                 <img class="search-img" src="{{asset('/assets/images/user_search_icon.png')}}" id="user_search_icon">
                 <input type="text" class="search-input" name="search-key" placeholder="名前などを入力" value="{{ $searchKey }}">
             </form>
@@ -37,7 +38,7 @@
                 </div>
                 <div class="contain-sort">
                     <div class="contain-sort_total">
-                        <span class="only">{{ count($users) }}</span><span>人</span>
+                        <span class="only">{{ \App\Helpers\Format::numberFormat(count($users)) }}</span><span>人</span>
                     </div>
                     <a href="{{ \App\Helpers\Params::buildSortDescAsc(($arrange == 'desc') ? 'asc' : 'desc')  }}">
                         <img src="{{asset('/assets/images/sort-'.$arrange.'.png')}}" alt="sort">
@@ -126,7 +127,7 @@
                 </div>
                 <div class="hr"></div>
                 <div class="footer">
-                    <a href="{{ route('admin.users.detail', ['id' => $user->id]) }}" class="item-button detail">詳細</a>
+                    <a href="/{{ $user->user_name }}" class="item-button detail">詳細</a>
                     <button class="item-button email sendEmail" data-user-id="{{ $user->id }}">メール</button>
                     <div class="contain-filter">
                         <select name="change-status" id="change-status">
@@ -138,6 +139,10 @@
                 </div>
             </div>
             @endforeach
+
+            @if(count($users) == 0)
+                    <h4 class="text-center py-5 alert-secondary">データなし</h4>
+            @endif
         </div>
     </div>
 </div>

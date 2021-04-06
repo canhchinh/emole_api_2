@@ -71,7 +71,7 @@ class HomeController extends Controller
      */
     public function listPortfolio()
     {
-        return view('admin.pages.portfolio.index');
+
     }
 
     /**

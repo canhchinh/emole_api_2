@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\PortfolioController as AdminPortfolioController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,8 +31,11 @@ Route::middleware('auth')->group(function () {
         Route::delete('/delete/{id}', [AdminUserController::class, 'deleteUser'])->name('admin.users.delete');
         Route::post('/send-email-to-user', [AdminUserController::class, 'sendEmailToUser'])->name('admin.users.sendEmail');
     });
+
     Route::prefix('portfolio')->group(function () {
-        Route::get('/', [HomeController::class, 'listPortfolio'])->name('admin.portfolio.list');
+        Route::get('/', [AdminPortfolioController::class, 'listPortfolio'])->name('admin.portfolio.list');
+        Route::delete('/delete/{id}', [AdminPortfolioController::class, 'deletePortfolio'])->name('admin.portfolio.delete');
+        Route::match(['put'], '/change/status/{id}', [AdminPortfolioController::class, 'updatePortfolioStatus'])->name('admin.portfolio.update.status');
     });
     Route::prefix('notify')->group(function () {
         Route::get('/', [AdminNotificationController::class, 'listNotify'])->name('admin.notify.list');

@@ -9,6 +9,7 @@ var Admin = function () {
             this.registerLinkWithDeleteMethod();
             this.notificationListPage();
             this.userListPage();
+            this.userPortfolioPage();
 
             var els = $('.selectizeSelect');
             els?.each(function () {
@@ -30,15 +31,15 @@ var Admin = function () {
             });
         },
         initCommon: function () {
-            $('.btn-href').on('click', function (e) {
-                e.preventDefault();
-                window.location.href = $(this).data('href');
-            });
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            $('.btn-href').on('click', function (e) {
+                e.preventDefault();
+                window.location.href = $(this).data('href');
             });
 
             var focusEls = $('[data-focus-to]');
@@ -113,7 +114,7 @@ var Admin = function () {
                         url: $this.attr('href')
                     }).done(function (data) {
                         if (data.hasOwnProperty('success') && data.success) {
-                            // window.location.href = $('#filter-notify-status').val();
+                            window.location.href = data.redirectUrl;
                         }
                         if (data.hasOwnProperty('success') && data.success == false) {
                             alert(data.message);
@@ -156,6 +157,46 @@ var Admin = function () {
                 if (data.hasOwnProperty('success') && data.success == false) {
                     alert(data.message);
                 }
+            });
+        },
+        userPortfolioPage: function () {
+            $('#filter-portfolio-careers').on('change', function () {
+                var val = $(this).val();
+                window.location.href = val;
+            });
+
+            $(document).on('click', 'a.js-delete-portfolio', function (e) {
+                var $this = $(this);
+                e.preventDefault();
+                if (confirm("本当に削除しますか？")) {
+                    $.post({
+                        type: $this.data('method'),
+                        url: $this.attr('href')
+                    }).done(function (data) {
+                        if (data.hasOwnProperty('success') && data.success) {
+                            window.location.href = data.redirectUrl;
+                        }
+                        if (data.hasOwnProperty('success') && data.success == false) {
+                            alert(data.message);
+                        }
+                    });
+                }
+                return false;
+            });
+
+            $('.change-status-portfolio').on('change', function (e) {
+                var $this = $(this);
+
+                var val = $(this).val();
+                $.ajax({
+                    type: $this.data('method'),
+                    data: {status: val},
+                    url: $this.data('url-change-status')
+                }).done(function (data) {
+                    if (data.hasOwnProperty('success') && data.success) {
+                        window.location.reload();
+                    }
+                });
             });
         }
     }

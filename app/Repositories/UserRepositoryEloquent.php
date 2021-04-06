@@ -111,7 +111,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
      */
     public function paginateQuery(Request $request, $status, $search)
     {
-        /** @var Builder $notifications */
+        /** @var Builder $query */
         $query = $this->getModel()->query();
         if ($status != 'all') {
             $query->where(['status' => $status]);
