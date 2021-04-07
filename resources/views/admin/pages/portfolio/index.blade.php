@@ -45,13 +45,13 @@
                     <div class="item">
                         <div class="head">
                             <div class="avatar-portfolio">
-                                <img src="{{asset('/assets/images/detail-portfolio.svg')}}" alt="detail-portfolio.svg">
+                                <img src="{{ asset($portfolio->image[0]['path'])}}" alt="{{$portfolio->image[0]['alt']}}" width="100%">
                             </div>
                             <div class="action-portfolio">
                                 <div class="action-portfolio_title">{{ $portfolio->title }}</div>
                                 <div class="info-small">
                                     <div class="avatar-small">
-                                        <img src="{{asset('/assets/images/avatar.svg')}}" alt="avatar">
+                                        <img src="{{asset($portfolio->u_avatar)}}" alt="avatar">
                                     </div>
                                     <div class="contain-name">
                                         <div class="contain-name_title">

@@ -54,7 +54,7 @@
             <div class="item">
                 <div class="head">
                     <div class="avatar">
-                        <img src="{{ \App\Helpers\ImageRender::userAvatar($user->avatar) }}" alt="avatar" class="rounded-circle">
+                        <img src="{{ \App\Helpers\ImageRender::userAvatar($user->avatar) }}" alt="avatar" class="rounded-circle" width="100%">
                     </div>
                     <div class="action">
                         <div class="action-info">

@@ -52,7 +52,7 @@ var Admin = function () {
                 language: 'ja',
                 format: 'yyyy-mm-dd',
                 clearBtn: true,
-                startDate: '-180d',
+                startDate: '-120Y',
                 endDate: 'today'
             });
         },

@@ -9,7 +9,7 @@ use \Illuminate\Support\Facades\File;
 class ImageRender
 {
 
-    const NO_AVATAR = '/storage/users/none/avatar.png';
+    const NO_AVATAR = '/storage/no-image/no-avatar.png';
 
     /**
      * @param $path
@@ -20,27 +20,29 @@ class ImageRender
     public static function userAvatar($path, $w = 44, $h = 44)
     {
         if (!$path) {
-            $path = ImageRender::NO_AVATAR;
+            $path = self::NO_AVATAR;
         }
 
-        $path = str_replace('/storage/', '', $path);
-        $fullPath = storage_path($path);
+        $publicPath = public_path($path);
+        $storagePathResize = public_path('storage/resize');
 
-        if (file_exists($fullPath)) {
-            $image_resize = Image::make($fullPath);
-            $image_resize->extension;
+        if (File::exists($publicPath)) {
+            $image_resize = Image::make($publicPath);
+            $fileName = $image_resize->filename . '.' . $image_resize->extension;
+
             $image_resize->resize($w, $h);
+            $savePathRelative = $storagePathResize . $path;
+            $dir = str_replace($fileName, '', $savePathRelative);
 
-            $savePathRelative = 'assets/images/resize/' . $path;
-            $savePath = public_path($savePathRelative);
-            $excludeExt = str_replace($image_resize->filename . '.' . $image_resize->extension, '', $savePath);
-
-            if (!File::isDirectory($excludeExt)) {
-                File::makeDirectory($excludeExt, 777, true, true);
+            if (!File::isDirectory($dir)) {
+                File::makeDirectory($dir, 777, true, true);
             }
-            $image_resize->save($savePath);
+
+            $image_resize->save($savePathRelative);
 
             return asset($savePathRelative);
+        } else {
+            return asset(self::NO_AVATAR);
         }
     }
 }
