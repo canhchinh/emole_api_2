@@ -1316,8 +1316,12 @@ class UserController extends Controller
 
         $lists = $this->followRepo->getListFollowByUser($owner->id);
         foreach($lists as $list) {
-            $listPortfolio = Portfolio::where('user_id', $list->id)->select("image")->get();
-            $list->portfolio = $listPortfolio;
+            $listPortfolio = Portfolio::where('user_id', $list->id)->get();
+            $arrayPortfolio = [];
+            foreach($listPortfolio as $image) {
+                array_push($arrayPortfolio, $image->image[0]);
+            }
+            $list->portfolio = $arrayPortfolio;
         }
         return response()->json([
             'status' => true,
