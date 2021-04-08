@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Entities\PasswordReset;
+use App\Entities\Portfolio;
 use App\Http\Requests\FollowRequest;
 use App\Http\Requests\ForgotPassword;
 use App\Http\Requests\LoginGoogle;
@@ -1313,10 +1314,14 @@ class UserController extends Controller
     {
         $owner = auth()->user();
 
-        $list = $this->followRepo->getListFollowByUser($owner->id);
+        $lists = $this->followRepo->getListFollowByUser($owner->id);
+        foreach($lists as $list) {
+            $listPortfolio = Portfolio::where('user_id', $list->id)->select("image")->get();
+            $list->portfolio = $listPortfolio;
+        }
         return response()->json([
             'status' => true,
-            'data' => $list,
+            'data' => $lists,
         ]);
     }
 

@@ -26,9 +26,4 @@ class Follow extends Model implements Transformable
         'user_id', 'target_id'
     ];
 
-    public function portfolio()
-    {
-        return $this->hasOne(Portfolio::class, 'user_id', 'user_id');
-    }
-
 }
