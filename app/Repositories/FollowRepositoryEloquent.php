@@ -41,17 +41,19 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
     {
         $query = $this->join('users', 'users.id', '=', 'follows.target_id')
             ->where('follows.user_id', $userId)
+            ->join('portfolios', 'users.id', '=', 'portfolios.user_id')
             ->selectRaw("
                 users.id,
                 users.gender,
+                users.user_name,
                 users.given_name,
                 users.title,
                 users.profession,
                 users.self_introduction,
                 users.avatar,
-                users.birthday
+                users.birthday,
+                portfolios.image
             ");
-
         return $query->paginate(config('common.paging'));
     }
 
