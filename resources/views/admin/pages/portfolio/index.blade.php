@@ -45,13 +45,13 @@
                     <div class="item">
                         <div class="head">
                             <div class="avatar-portfolio">
-                                <img src="{{ asset($portfolio->image[0]['path'])}}" alt="{{$portfolio->image[0]['alt']}}" width="100%">
+                                <img src="{{ \App\Helpers\ImageRender::portfolioAvatar($portfolio->image[0]['path']) }}" alt="{{$portfolio->image[0]['alt']}}" width="100%" style="border-radius: 4px">
                             </div>
                             <div class="action-portfolio">
                                 <div class="action-portfolio_title">{{ $portfolio->title }}</div>
                                 <div class="info-small">
                                     <div class="avatar-small">
-                                        <img src="{{asset($portfolio->u_avatar)}}" alt="avatar">
+                                        <img src="{{ \App\Helpers\ImageRender::userAvatar($portfolio->u_avatar) }}" alt="avatar">
                                     </div>
                                     <div class="contain-name">
                                         <div class="contain-name_title">

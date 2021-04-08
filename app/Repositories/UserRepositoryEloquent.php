@@ -119,6 +119,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
         $query->leftJoin('user_careers as uc', 'users.id', '=', 'uc.user_id');
         $query->leftJoin('activity_base as ua', 'users.activity_base_id', '=', 'ua.id');
+        $query->leftJoin('portfolios', 'users.id', '=', 'portfolios.user_id');
 
         if ($search) {
             $query->where(function($query) use ($search) {
@@ -143,7 +144,10 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
         $query->select([
             'users.*',
-            DB::raw('group_concat(uc.career_id separator ", ") AS career_ids'),
+            DB::raw('group_concat(DISTINCT uc.career_id separator ", ") AS career_ids'),
+            DB::raw('group_concat(DISTINCT portfolios.image separator ";=;") AS portfolios_image'),
+            DB::raw('group_concat(DISTINCT portfolios.id separator ",") AS portfolios_ids'),
+
             'ua.title as activity_base_title'
         ]);
         $query->groupBy('users.id');

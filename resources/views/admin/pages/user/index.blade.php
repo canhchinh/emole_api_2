@@ -54,12 +54,12 @@
             <div class="item">
                 <div class="head">
                     <div class="avatar">
-                        <img src="{{ \App\Helpers\ImageRender::userAvatar($user->avatar) }}" alt="avatar" class="rounded-circle" width="100%">
+                        <img src="{{ \App\Helpers\ImageRender::userAvatar($user->avatar) }}" alt="avatar" class="rounded-circle" width="47" height="47" style="border-radius: 50%">
                     </div>
                     <div class="action">
                         <div class="action-info">
                             <div class="action-info_name">
-                                {{ $user->given_name }}
+                                {{ $user->given_name ?: '--' }}
                             </div>
                             <div class="action-info_job">
                                 @php
@@ -86,10 +86,14 @@
                             </div>
                         </div>
                         <div class="action-portfolio">
-                            <img src="{{asset('/assets/images/1.svg')}}" alt="">
-                            <img src="{{asset('/assets/images/2.svg')}}" alt="">
-                            <img src="{{asset('/assets/images/3.svg')}}" alt="">
-                            <img src="{{asset('/assets/images/4.svg')}}" alt="">
+
+                            @php
+                            $images = \App\Helpers\ImageRender::parserPortfolioList($user->portfolios_image);
+                            @endphp
+
+                            @foreach($images as $img)
+                            <img src="{{ \App\Helpers\ImageRender::portfolioAvatar($img) }}" alt="" style="border-radius: 4px" width="60" height="47">
+                            @endforeach
                         </div>
                     </div>
                     <div class="info">
