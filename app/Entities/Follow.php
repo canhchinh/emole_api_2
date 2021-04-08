@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\User;
+use App\Entities\Portfolio;
 
 /**
  * Class Follow.
@@ -24,5 +25,10 @@ class Follow extends Model implements Transformable
     protected $fillable = [
         'user_id', 'target_id'
     ];
+
+    public function portfolio()
+    {
+        return $this->hasOne(Portfolio::class, 'user_id', 'user_id');
+    }
 
 }
