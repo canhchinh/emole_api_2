@@ -36,13 +36,13 @@ class PortfolioRepositoryEloquent extends BaseRepository implements PortfolioRep
         $this->pushCriteria(app(RequestCriteria::class));
 
         $this->deleted(function ($portfolio) {
-            $this->unlinkAvatar($portfolio);
+//            $this->unlinkAvatar($portfolio);
         });
     }
 
-    public function unlinkAvatar(self $portfolio) {
-
-    }
+//    public function unlinkAvatar(self $portfolio) {
+//
+//    }
 
     /**
      * @param Request $request
