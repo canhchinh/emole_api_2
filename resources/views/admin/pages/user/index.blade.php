@@ -131,7 +131,7 @@
                 </div>
                 <div class="hr"></div>
                 <div class="footer">
-                    <a href="/{{ $user->user_name }}" class="item-button detail">詳細</a>
+                    <a href="{{ config('common.frontend_url') }}{{ $user->user_name }}" class="item-button detail">詳細</a>
                     <button class="item-button email sendEmail" data-user-id="{{ $user->id }}">メール</button>
                     <div class="contain-filter">
                         <select name="change-status" id="change-status">
