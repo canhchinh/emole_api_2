@@ -6,10 +6,12 @@ use App\Entities\UserCareer;
 use App\Entities\UserCategory;
 use App\Entities\UserImage;
 use App\Entities\UserNotification;
+use App\Helpers\Helper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use League\CommonMark\Inline\Renderer\ImageRenderer;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\User;
@@ -42,17 +44,15 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
         $this->deleted(function ($user) {
             $this->unlinkAvatar($user);
-            $this->deleteUserCareers($user);
-            $this->deleteUserCategories($user);
             $this->deleteUserImages($user);
-            $this->deleteUserNotifications($user);
+            $this->deleteRelationship($user);
         });
     }
 
     /**
-     * @param UserRepositoryEloquent $user
+     * @param User $user
      */
-    public function unlinkAvatar(self $user)
+    public function unlinkAvatar(User $user)
     {
         if (File::exists(public_path($user->avatar))) {
             @File::delete(public_path($user->avatar));
@@ -60,25 +60,9 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     }
 
     /**
-     * @param UserRepositoryEloquent $user
+     * @param User $user
      */
-    public function deleteUserNotifications(self $user)
-    {
-        UserNotification::query()->where(['user_id' => $user->id])->delete();
-    }
-
-    /**
-     * @param UserRepositoryEloquent $user
-     */
-    public function deleteUserCategories(self $user)
-    {
-        UserCategory::query()->where(['user_id' => $user->id])->delete();
-    }
-
-    /**
-     * @param UserRepositoryEloquent $user
-     */
-    public function deleteUserImages(self $user)
+    public function deleteUserImages(User $user)
     {
         $userImgs = UserImage::query()->where(['user_id' => $user->id])->get();
         foreach ($userImgs as $img) {
@@ -88,10 +72,12 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     }
 
     /**
-     * @param UserRepositoryEloquent $user
+     * @param User $user
      */
-    public function deleteUserCareers(self $user)
+    public function deleteRelationship(User $user)
     {
+        UserNotification::query()->where(['user_id' => $user->id])->delete();
+        UserCategory::query()->where(['user_id' => $user->id])->delete();
         UserCareer::query()->where(['user_id' => $user->id])->delete();
     }
 

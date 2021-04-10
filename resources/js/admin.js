@@ -118,7 +118,7 @@ var Admin = function () {
                         url: $this.attr('href')
                     }).done(function (data) {
                         if (data.hasOwnProperty('success') && data.success) {
-                            window.location.href = data.redirectUrl;
+                            window.location.href = $this.data('redirect');
                         }
                         if (data.hasOwnProperty('success') && data.success == false) {
                             alert(data.message);
@@ -179,7 +179,7 @@ var Admin = function () {
                         url: $this.attr('href')
                     }).done(function (data) {
                         if (data.hasOwnProperty('success') && data.success) {
-                            window.location.href = data.redirectUrl;
+                            window.location.href = $this.data('redirect');
                         }
                         if (data.hasOwnProperty('success') && data.success == false) {
                             alert(data.message);

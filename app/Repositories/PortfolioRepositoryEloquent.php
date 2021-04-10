@@ -2,9 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Entities\PortfolioJob;
+use App\Entities\PortfolioMember;
+use App\Helpers\Helper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\PortfolioRepository;
@@ -36,13 +40,31 @@ class PortfolioRepositoryEloquent extends BaseRepository implements PortfolioRep
         $this->pushCriteria(app(RequestCriteria::class));
 
         $this->deleted(function ($portfolio) {
-//            $this->unlinkAvatar($portfolio);
+            $this->unlinkAvatar($portfolio);
+            $this->deleteRelationship($portfolio);
         });
     }
 
-//    public function unlinkAvatar(self $portfolio) {
-//
-//    }
+    /**
+     * @param Portfolio $portfolio
+     */
+    public function unlinkAvatar(Portfolio $portfolio)
+    {
+        foreach ($portfolio->image as $img) {
+            if (File::exists(public_path($img['path']))) {
+                @File::delete(public_path($img['path']));
+            }
+        }
+    }
+
+    /**
+     * @param Portfolio $portfolio
+     */
+    public function deleteRelationship(Portfolio $portfolio)
+    {
+        PortfolioJob::query()->where(['portfolio_id' => $portfolio->id])->delete();
+        PortfolioMember::query()->where(['portfolio_id' => $portfolio->id])->delete();
+    }
 
     /**
      * @param Request $request

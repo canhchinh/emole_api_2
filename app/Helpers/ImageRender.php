@@ -7,9 +7,8 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use \Illuminate\Support\Facades\File;
 
-class ImageRender
+class ImageRender extends Helper
 {
-
     const NO_AVATAR = '/assets/no-image/no-avatar.png';
     const NO_IMAGE = '/assets/no-image/no-image.jpg';
 
@@ -17,13 +16,13 @@ class ImageRender
      * @param $string
      * @return bool
      */
-    public static function isUrl($string) {
-        if (filter_var($string, FILTER_VALIDATE_URL)) {
-            return true;
-        }
-
-        return false;
-    }
+//    public static function isUrl($string) {
+//        if (filter_var($string, FILTER_VALIDATE_URL)) {
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
     /**
      * @param $path
@@ -37,7 +36,7 @@ class ImageRender
             return self::NO_AVATAR;
         }
 
-        if (self::isUrl($path)) {
+        if (self::getInstance()->isUrl($path)) {
             return $path;
         }
 
@@ -88,7 +87,7 @@ class ImageRender
             return self::NO_IMAGE;
         }
 
-        if (self::isUrl($path)) {
+        if (self::getInstance()->isUrl($path)) {
             return $path;
         }
 

@@ -138,6 +138,7 @@
                                 </select>
                             </div>
                             <a href="{{ route('admin.portfolio.delete', ['id' => $portfolio->id]) }}"
+                               data-redirect="{{ \App\Helpers\Params::buildUrl(false, 'page') }}"
                                data-method="DELETE" class="item-button delete js-delete-portfolio">削除</a>
                         </div>
                     </div>

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Intervention\Image\Facades\Image;
 use \Illuminate\Support\Facades\File;
 
-class Params
+class Params extends Helper
 {
     /**
      * @param string $fieldName

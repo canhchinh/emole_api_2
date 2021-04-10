@@ -142,7 +142,11 @@
                             <option value="">非公開</option>
                         </select>
                     </div>
-                    <a href="{{ route('admin.users.delete', ['id' => $user->id]) }}" data-method="DELETE" class="item-button delete js-delete">削除</a>
+                    <a
+                        href="{{ route('admin.users.delete', ['id' => $user->id]) }}"
+                        data-redirect="{{ \App\Helpers\Params::buildUrl(false, 'page') }}"
+                       data-method="DELETE"
+                       class="item-button delete js-delete">削除</a>
                 </div>
             </div>
             @endforeach
