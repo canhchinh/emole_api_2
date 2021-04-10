@@ -52,7 +52,7 @@ class NotificationController extends Controller
             'notifications' => $notifications,
             'careersList' => $careersList,
             'notifyStatus' => $status,
-            'searchKey'    => $search,
+            'searchKey' => $search,
             'arrange' => $arrange
         ]);
     }

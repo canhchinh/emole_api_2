@@ -10,7 +10,7 @@ use \Illuminate\Support\Facades\File;
 class ImageRender extends Helper
 {
     const NO_AVATAR = '/assets/no-image/no-avatar.png';
-    const NO_IMAGE = '/assets/no-image/no-image.jpg';
+    const NO_IMAGE = '/assets/no-image/no-img.png';
 
     /**
      * @param $string

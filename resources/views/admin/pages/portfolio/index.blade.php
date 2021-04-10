@@ -147,6 +147,10 @@
                         </div>
                     </div>
                 @endforeach
+
+                @if(count($portfolios) == 0)
+                    <h4 class="text-center py-5 alert-secondary">データなし</h4>
+                @endif
             </div>
         </div>
     </div>

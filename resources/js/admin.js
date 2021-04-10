@@ -59,6 +59,14 @@ var Admin = function () {
             $('select.js-href-value').on('change', function () {
                 window.location.href = $(this).val();
             });
+
+            // Prevent double click form submit
+            $('.once-click-disabled').on('click', function () {
+                if (!$(this).is(":disabled")) {
+                    $(this).attr('disabled', true);
+                    $(this).closest('form').submit();
+                }
+            });
         },
         notificationListPage: function () {
             Admin.registerLinkWithDeleteMethod();
@@ -156,6 +164,8 @@ var Admin = function () {
             });
         },
         doSendEmailToUser: function (form) {
+            var btnSubmit = form.find('[type="submit"]');
+            btnSubmit.attr('disabled', true);
             $.post({
                 type: form.data('method'),
                 data: form.serializeArray(),
@@ -163,19 +173,17 @@ var Admin = function () {
             }).done(function (data) {
                 form.find('.ajax-response').hide();
                 if (data.hasOwnProperty('success') && data.success) {
+                    form.find('input[type="text"]').val('');
+                    form.find('[name="email_content"]').val('');
                     form.find('.ajax-response.text-success').html(data.message).show();
                 }
                 if (data.hasOwnProperty('success') && data.success == false) {
                     form.find('.ajax-response.text-danger').html(data.message).show();
                 }
+                btnSubmit.attr('disabled', false);
             });
         },
         userPortfolioPage: function () {
-            $('#filter-portfolio-careers').on('change', function () {
-                // var val = $(this).val();
-                // window.location.href = val;
-            });
-
             $(document).on('click', 'a.js-delete-portfolio', function (e) {
                 var $this = $(this);
                 e.preventDefault();

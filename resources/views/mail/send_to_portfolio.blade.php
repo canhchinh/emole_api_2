@@ -3,6 +3,6 @@
 
     </head>
     <body>
-        Hi there, this is content from Emole {{ $content }}
+        {{ $content }}
     </body>
 </html>

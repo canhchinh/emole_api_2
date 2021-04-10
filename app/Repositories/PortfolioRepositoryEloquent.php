@@ -42,7 +42,7 @@ class PortfolioRepositoryEloquent extends BaseRepository implements PortfolioRep
 
         $this->deleted(function ($portfolio) {
             $this->unlinkAvatar($portfolio);
-            $this->deleteRelationship($portfolio);
+            $this->handleRelationship($portfolio);
         });
     }
 
@@ -61,7 +61,7 @@ class PortfolioRepositoryEloquent extends BaseRepository implements PortfolioRep
     /**
      * @param Portfolio $portfolio
      */
-    public function deleteRelationship(Portfolio $portfolio)
+    public function handleRelationship(Portfolio $portfolio)
     {
         PortfolioJob::query()->where(['portfolio_id' => $portfolio->id])->delete();
         PortfolioMember::query()->where(['portfolio_id' => $portfolio->id])->delete();
@@ -96,7 +96,7 @@ class PortfolioRepositoryEloquent extends BaseRepository implements PortfolioRep
         }
 
         if ($search) {
-            $query->where(function($query) use ($search) {
+            $query->where(function ($query) use ($search) {
                 $query
                     ->orWhere('portfolios.title', 'LIKE', "%{$search}%")
                     ->orWhere('portfolios.tags', 'LIKE', "%{$search}%");

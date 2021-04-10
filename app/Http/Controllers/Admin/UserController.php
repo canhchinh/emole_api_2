@@ -54,7 +54,7 @@ class UserController extends Controller
             'users' => $users,
             'careersList' => $careersList,
             'area' => $area,
-            'searchKey'    => $search,
+            'searchKey' => $search,
             'arrange' => $arrange
         ]);
     }

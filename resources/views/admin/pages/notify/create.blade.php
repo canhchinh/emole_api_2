@@ -62,8 +62,8 @@
                             @enderror
                         </div>
                         <div class="footer">
-                            <button name="draftSubmit" value="on" class="button-outline mr-2" type="submit">下書き保存</button>
-                            <button name="storingSubmit" value="on" type="submit">配信</button>
+                            <button name="draftSubmit" value="on" class="button-outline mr-2 once-click-disabled" type="submit">下書き保存</button>
+                            <button name="storingSubmit" value="on" class="once-click-disabled" type="submit">配信</button>
                         </div>
                     </form>
                 </div>

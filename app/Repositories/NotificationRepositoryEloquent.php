@@ -6,9 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\NotificationRepository;
 use App\Entities\Notification;
-use App\Validators\NotificationValidator;
 
 /**
  * Class NotificationRepositoryEloquent.
@@ -45,6 +43,12 @@ class NotificationRepositoryEloquent extends BaseRepository implements Notificat
         return $this->getModel()->newQuery();
     }
 
+    /**
+     * @param Request $request
+     * @param $status
+     * @param $search
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
     public function paginateQuery(Request $request, $status, $search)
     {
         /** @var Builder $notifications */

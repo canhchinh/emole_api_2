@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\SendMailToPortfolio;
-use App\Repositories\ActivityBaseRepository;
 use App\Repositories\ActivityContentRepository;
 use App\Repositories\CareerRepository;
 use App\Repositories\PortfolioRepository;

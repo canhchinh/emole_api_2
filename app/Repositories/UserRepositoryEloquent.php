@@ -45,7 +45,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $this->deleted(function ($user) {
             $this->unlinkAvatar($user);
             $this->deleteUserImages($user);
-            $this->deleteRelationship($user);
+            $this->handleRelationship($user);
         });
     }
 
@@ -74,7 +74,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     /**
      * @param User $user
      */
-    public function deleteRelationship(User $user)
+    public function handleRelationship(User $user)
     {
         UserNotification::query()->where(['user_id' => $user->id])->delete();
         UserCategory::query()->where(['user_id' => $user->id])->delete();
@@ -168,7 +168,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             DB::raw('group_concat(DISTINCT uc.career_id separator ", ") AS career_ids'),
             DB::raw('group_concat(DISTINCT portfolios.image separator ";=;") AS portfolios_image'),
             DB::raw('group_concat(DISTINCT portfolios.id separator ",") AS portfolios_ids'),
-
             'ua.title as activity_base_title'
         ]);
         $query->groupBy('users.id');
