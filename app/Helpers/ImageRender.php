@@ -121,10 +121,6 @@ class ImageRender extends Helper
             }
         }
 
-        if (!$imgs) {
-            return [self::NO_IMAGE];
-        }
-
         return $imgs;
     }
 }
