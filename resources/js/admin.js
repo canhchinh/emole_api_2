@@ -6,7 +6,7 @@ var Admin = function () {
     return {
         init: function () {
             this.initCommon();
-            this.registerLinkWithDeleteMethod();
+
             this.notificationListPage();
             this.userListPage();
             this.userPortfolioPage();
@@ -57,6 +57,8 @@ var Admin = function () {
             });
         },
         notificationListPage: function () {
+            Admin.registerLinkWithDeleteMethod();
+
             $('#filter-notify-status').on('change', function () {
                 var val = $(this).val();
                 window.location.href = val;
@@ -87,7 +89,7 @@ var Admin = function () {
                         url: $this.attr('href')
                     }).done(function (data) {
                         if (data.hasOwnProperty('success') && data.success) {
-                            window.location.href = $('#filter-notify-status').val();
+                            window.location.href = $this.data('redirect');
                         }
                         if (data.hasOwnProperty('success') && data.success == false) {
                             alert(data.message);

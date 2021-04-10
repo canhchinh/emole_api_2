@@ -110,7 +110,10 @@
                             @endif
                         </select>
                     </div>
-                    <a class="item-button delete js-click" data-method="DELETE" href="{{ route('admin.notify.delete', ['id' => $notify->id]) }}">削除</a>
+                    <a class="item-button delete js-click"
+                       data-method="DELETE"
+                       data-redirect="{{ \App\Helpers\Params::buildUrl(false, 'page') }}"
+                       href="{{ route('admin.notify.delete', ['id' => $notify->id]) }}">削除</a>
                 </div>
             </div>
             @endforeach
