@@ -87,7 +87,7 @@ class NotificationController extends Controller
                 $notify = new Notification();
                 $notify->populate($request->all());
                 $notify->setCareerIds($request->get('career_ids'));
-                $notify->status = $request->get('publicSubmit') ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
+                $notify->status = $request->get('storingSubmit') ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
 
                 DB::beginTransaction();
                 try {
