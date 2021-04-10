@@ -186,6 +186,18 @@
                         @include my(0,12);
                         @include displayFlexSpaceBetween();
                     }
+
+                    .account-email {
+                        .title-item {
+                            flex: 40%;
+                        }
+
+                        .content-item {
+                            flex: 60%;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+                    }
                     // @media (max-width: 1440px) {
                     //     flex: 0 0 23%;
                     // }

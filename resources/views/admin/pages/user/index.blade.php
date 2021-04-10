@@ -115,7 +115,7 @@
                             <span class="title-item">ID</span>
                             <span class="content-item">{{ $user->id }}</span>
                         </div>
-                        <div class="account-email">
+                        <div class="account-email" title="{{ $user->email ?: '' }}">
                             <span class="title-item">メールアドレス</span>
                             <span class="content-item">{{ $user->email ?: '--' }}</span>
                         </div>

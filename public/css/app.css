@@ -11079,6 +11079,14 @@ form label.error {
   justify-content: space-between;
   align-items: center;
 }
+.contain-users .block-content .item .head .account .account-email .title-item {
+  flex: 40%;
+}
+.contain-users .block-content .item .head .account .account-email .content-item {
+  flex: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .contain-users .block-content .item .head .account-notify {
   flex: 0 0 32%;
   padding-left: 16px;
