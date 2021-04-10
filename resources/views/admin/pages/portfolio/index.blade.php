@@ -67,7 +67,7 @@
                                             {{ $portfolio->u_given_name }}
                                         </div>
                                         <div class="contain-name_desc">
-                                            女優・アーティスト
+                                            {{ $portfolio->u_title ?: '--' }}
                                         </div>
                                     </div>
                                 </div>

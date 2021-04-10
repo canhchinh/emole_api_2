@@ -48,10 +48,12 @@ class UserController extends Controller
 
         $users = $this->userRepository->paginateQuery($request, $status, $search);
         $careersList = $this->careerRepository->query()->select(['id', 'title'])->get();
+        $area = $this->activityBaseRepository->query()->select(['id', 'title'])->get();
 
         return view('admin.pages.user.index', [
             'users' => $users,
             'careersList' => $careersList,
+            'area' => $area,
             'searchKey'    => $search,
             'arrange' => $arrange
         ]);

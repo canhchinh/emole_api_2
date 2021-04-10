@@ -24,15 +24,20 @@
                             <option>生年月日</option>
                         </select>
                     </span>
-                    <select name="" id="">
-                        <option>地域</option>
-                        <option value=""></option>
-                        <option value=""></option>
+                    <select name="area" id="area" class="js-href-value">
+                        <option value="{{ \App\Helpers\Params::buildUrl(false, 'area') }}">地域</option>
+                        @foreach($area as $ar)
+                        <option
+                            {{ \App\Helpers\Params::setSelected('area', $ar->id) }}
+                            value="{{ \App\Helpers\Params::buildUrl($ar->id, 'area') }}">{{ $ar->title }}</option>
+                        @endforeach
                     </select>
                     <select name="careersList-filter" id="careersList">
                         <option value="{{ \App\Helpers\Params::buildUrl(false, 'career_id') }}">活動内容</option>
                         @foreach($careersList as $career)
-                        <option {{ \App\Helpers\Params::setSelected('career_id', $career->id) }} value="{{ \App\Helpers\Params::buildUrl($career->id, 'career_id') }}">{{ $career->title }}</option>
+                        <option
+                            {{ \App\Helpers\Params::setSelected('career_id', $career->id) }}
+                                value="{{ \App\Helpers\Params::buildUrl($career->id, 'career_id') }}">{{ $career->title }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -75,7 +80,7 @@
                         </div>
                         <div class="action-social">
                             <div class="action-social_type">
-                                女優・アーティスト
+                                {{ $user->title ?: '--' }}
                             </div>
                             <div class="action-social_list">
                                 <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>

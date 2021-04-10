@@ -160,7 +160,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         }
 
         if ($request->input('area')) {
-//            $query->where(['uc.career_id' => $request->input('area')]);
+            $query->where(['users.activity_base_id' => $request->input('area')]);
         }
 
         $query->select([
