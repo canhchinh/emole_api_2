@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Entities\Notification;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendMailToUser;
 use App\Repositories\ActivityBaseRepository;
 use App\Repositories\CareerRepository;
-use App\Repositories\NotificationRepository;
-use App\Repositories\UserNotificationRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -105,8 +103,29 @@ class UserController extends Controller
         return response()->json(['success' => false, 'message' => 'No request found!']);
     }
 
-    public function sendEmailToUser()
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendEmailToUser(Request $request)
     {
-        // TODO: send email
+        if ($request->isXmlHttpRequest()) {
+            try {
+                $query = $this->userRepository->query();
+                $user = $query->where(['id' => $request->get('user_id')])->first();
+                $data = [
+                    'subject' => $request->get('email_subject'),
+                    'content' => $request->get('email_content')
+                ];
+                SendMailToUser::dispatch($user->email, $data)->onQueue('processing');
+
+                return response()->json(['success' => true, 'message' => 'リクエストが送信されました']);
+            } catch (\Exception $e) {
+                Log::error('Can not send email to user, error message: ' . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'このリクエストを実行できません。後でしてください。']);
+            }
+        }
+
+        abort(404);
     }
 }

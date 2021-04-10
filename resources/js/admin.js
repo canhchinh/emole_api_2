@@ -100,11 +100,15 @@ var Admin = function () {
         userListPage: function () {
             var modalEl = $('#email-content');
             $(document).on('click', '.sendEmail', function (e) {
-                modalEl.find('input[name="user-id"]').val($(this).data('user-id'));
-                modalEl.find('input[name="email-subject"]').val('');
-                modalEl.find('[name="email-content"]').val('');
+                modalEl.find('.username').html($(this).data('user-name'));
+                modalEl.find('input[name="user_id"]').val($(this).data('user-id'));
+                modalEl.find('input[name="email_subject"]').val('');
+                modalEl.find('[name="email_content"]').val('');
+                modalEl.find('label.error').remove();
+                modalEl.find('.ajax-response').hide();
                 modalEl.modal('show');
             });
+
             $(document).on('click', 'a.js-delete', function (e) {
                 var $this = $(this);
                 e.preventDefault();
@@ -124,10 +128,10 @@ var Admin = function () {
                 return false;
             });
 
-
-            $('#email-content').on('click', '.send-email', function (e) {
-                e.preventDefault();
-                Admin.doSendEmailToUser($(this).closest('form'));
+            $("#sendEmailToUserForm").validate({
+                submitHandler: function() {
+                    Admin.doSendEmailToUser($('#sendEmailToUserForm'));
+                }
             });
 
             $('#careersList').on('change', function () {
@@ -151,11 +155,12 @@ var Admin = function () {
                 data: form.serializeArray(),
                 url: form.attr('action')
             }).done(function (data) {
+                form.find('.ajax-response').hide();
                 if (data.hasOwnProperty('success') && data.success) {
-                    // window.location.href = $('#filter-notify-status').val();
+                    form.find('.ajax-response.text-success').html(data.message).show();
                 }
                 if (data.hasOwnProperty('success') && data.success == false) {
-                    alert(data.message);
+                    form.find('.ajax-response.text-danger').html(data.message).show();
                 }
             });
         },
@@ -197,6 +202,22 @@ var Admin = function () {
                         window.location.reload();
                     }
                 });
+            });
+
+            $("#sendEmailToPortfolioForm").validate({
+                submitHandler: function() {
+                    Admin.doSendEmailToUser($('#sendEmailToPortfolioForm'));
+                }
+            });
+            var modalEl = $('#email-content-portfolio');
+            $(document).on('click', '.sendEmailPortfolio', function (e) {
+                modalEl.find('.username').html($(this).data('user-name'));
+                modalEl.find('input[name="user_id"]').val($(this).data('user-id'));
+                modalEl.find('input[name="email_subject"]').val('');
+                modalEl.find('[name="email_content"]').val('');
+                modalEl.find('label.error').remove();
+                modalEl.find('.ajax-response').hide();
+                modalEl.modal('show');
             });
         }
     }

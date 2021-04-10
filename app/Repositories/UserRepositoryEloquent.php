@@ -2,16 +2,17 @@
 
 namespace App\Repositories;
 
+use App\Entities\UserCareer;
+use App\Entities\UserCategory;
+use App\Entities\UserImage;
+use App\Entities\UserNotification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\UserRepository;
 use App\Entities\User;
-use App\Validators\UserValidator;
 use Illuminate\Pagination\Paginator;
 use App\Entities\Follow;
 
@@ -32,8 +33,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         return User::class;
     }
 
-
-
     /**
      * Boot up the repository, pushing criteria
      */
@@ -42,7 +41,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $this->pushCriteria(app(RequestCriteria::class));
 
         $this->deleted(function ($user) {
-            /// do something with $user->id
             $this->unlinkAvatar($user);
             $this->deleteUserCareers($user);
             $this->deleteUserCategories($user);
@@ -51,14 +49,51 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         });
     }
 
-    public function unlinkAvatar(self $user) {
-
+    /**
+     * @param UserRepositoryEloquent $user
+     */
+    public function unlinkAvatar(self $user)
+    {
+        if (File::exists(public_path($user->avatar))) {
+            @File::delete(public_path($user->avatar));
+        }
     }
 
-    public function deleteUserNotifications(self $user){}
-    public function deleteUserCategories(self $user){}
-    public function deleteUserImages(self $user){}
-    public function deleteUserCareers(self $user){}
+    /**
+     * @param UserRepositoryEloquent $user
+     */
+    public function deleteUserNotifications(self $user)
+    {
+        UserNotification::query()->where(['user_id' => $user->id])->delete();
+    }
+
+    /**
+     * @param UserRepositoryEloquent $user
+     */
+    public function deleteUserCategories(self $user)
+    {
+        UserCategory::query()->where(['user_id' => $user->id])->delete();
+    }
+
+    /**
+     * @param UserRepositoryEloquent $user
+     */
+    public function deleteUserImages(self $user)
+    {
+        $userImgs = UserImage::query()->where(['user_id' => $user->id])->get();
+        foreach ($userImgs as $img) {
+            File::delete(public_path($img->url));
+            $img->delete();
+        }
+    }
+
+    /**
+     * @param UserRepositoryEloquent $user
+     */
+    public function deleteUserCareers(self $user)
+    {
+        UserCareer::query()->where(['user_id' => $user->id])->delete();
+    }
 
     public function listUsers($userId, $filters = [],$page = 1, $limit=10)
     {

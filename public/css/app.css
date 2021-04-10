@@ -10689,6 +10689,10 @@ h3 {
   color: #5332A5;
 }
 
+form label.error {
+  color: #dc3545;
+}
+
 .wrapper {
   position: fixed;
   top: 50%;

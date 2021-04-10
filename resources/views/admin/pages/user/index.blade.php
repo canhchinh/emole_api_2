@@ -132,7 +132,10 @@
                 <div class="hr"></div>
                 <div class="footer">
                     <a href="{{ config('common.frontend_url') }}{{ $user->user_name }}" class="item-button detail">詳細</a>
-                    <button class="item-button email sendEmail" data-user-id="{{ $user->id }}">メール</button>
+                    <button class="item-button email sendEmail"
+                            data-user-id="{{ $user->id }}"
+                            data-user-name="{{ $user->given_name ?: $user->username }}"
+                    >メール</button>
                     <div class="contain-filter">
                         <select name="change-status" id="change-status">
                             <option value="">公開</option>
@@ -152,32 +155,33 @@
 </div>
 
 <!-- Modal -->
-<div class="modal" id="email-content" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal" id="email-content" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header border-bottom-0">
-                <h5 class="modal-title" id="exampleModalLabel">このユーザーにメールを送信する</h5>
+                <h5 class="modal-title" id="exampleModalLabel">に電子メールを送信： <span class="username"></span></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('admin.users.sendEmail') }}" method="POST">
+            <form action="{{ route('admin.users.sendEmail') }}" method="POST" id="sendEmailToUserForm">
                 @csrf
-                <input type="hidden" name="user-id" value="0">
+                <input type="hidden" name="user_id" value="0">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="email1">メールの件名</label>
-                        <input type="text" class="form-control" id="email-subject" name="email-subject" placeholder="メールの件名">
-                        <small id="emailHelp" class="form-text text-muted">Your information is safe with us.</small>
+                        <input type="text" class="form-control" id="email_subject" name="email_subject" placeholder="メールの件名" required minlength="2">
                     </div>
                     <div class="form-group">
                         <label for="email-content">メールの内容</label>
-                        <textarea class="form-control" id="email-content" name="email-content" placeholder="メールの内容" rows="5"></textarea>
+                        <textarea class="form-control" id="email_content" name="email_content" placeholder="メールの内容" rows="5" required minlength="10"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 d-flex justify-content-center">
+                    <div class="w-100 ajax-response text-success text-center"></div>
+                    <div class="w-100 ajax-response text-danger text-center"></div>
                     <button type="submit" class="btn btn-dark" data-dismiss="modal">キャンセル</button>
-                    <button type="submit" class="btn btn-primary send-email">送信</button>
+                    <input class="btn btn-primary" type="submit" value="送信">
                 </div>
             </form>
         </div>

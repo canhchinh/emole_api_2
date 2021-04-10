@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Entities\Notification;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendMailToPortfolio;
 use App\Repositories\ActivityBaseRepository;
 use App\Repositories\CareerRepository;
-use App\Repositories\NotificationRepository;
 use App\Repositories\PortfolioRepository;
-use App\Repositories\UserNotificationRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class PortfolioController extends Controller
 {
@@ -26,17 +24,21 @@ class PortfolioController extends Controller
     /** @var ActivityBaseRepository */
     protected $activityBaseRepository;
 
+    /** @var UserRepository */
+    protected $userRepository;
+
     /**
-     * UserController constructor.
+     * PortfolioController constructor.
      * @param CareerRepository $careerRepository
+     * @param PortfolioRepository $portfolioRepository
      * @param UserRepository $userRepository
      * @param ActivityBaseRepository $activityBaseRepository
      */
-    public function __construct(CareerRepository $careerRepository, PortfolioRepository $portfolioRepository, ActivityBaseRepository $activityBaseRepository)
+    public function __construct(CareerRepository $careerRepository, PortfolioRepository $portfolioRepository, UserRepository $userRepository, ActivityBaseRepository $activityBaseRepository)
     {
         $this->careerRepository = $careerRepository;
         $this->portfolioRepository = $portfolioRepository;
-
+        $this->userRepository = $userRepository;
         $this->activityBaseRepository = $activityBaseRepository;
     }
 
@@ -137,8 +139,29 @@ class PortfolioController extends Controller
         return response()->json(['success' => false, 'message' => 'No request found!']);
     }
 
-    public function sendEmailToUser()
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendEmailToPortfolio(Request $request)
     {
-        // TODO: send email
+        if ($request->isXmlHttpRequest()) {
+            try {
+                $query = $this->userRepository->query();
+                $user = $query->where(['id' => $request->get('user_id')])->first();
+                $data = [
+                    'subject' => $request->get('email_subject'),
+                    'content' => $request->get('email_content')
+                ];
+                SendMailToPortfolio::dispatch($user->email, $data)->onQueue('processing');
+
+                return response()->json(['success' => true, 'message' => 'リクエストが送信されました']);
+            } catch (\Exception $e) {
+                Log::error('Can not send email to user, error message: ' . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'このリクエストを実行できません。後でしてください。']);
+            }
+        }
+
+        abort(404);
     }
 }
