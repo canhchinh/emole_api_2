@@ -57,4 +57,12 @@ class ActivityContentRepositoryEloquent extends BaseRepository implements Activi
 
         return array_values($result);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function query()
+    {
+        return $this->getModel()->newQuery();
+    }
 }

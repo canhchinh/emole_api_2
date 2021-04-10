@@ -32,13 +32,11 @@ class ActivityBaseRepositoryEloquent extends BaseRepository implements ActivityB
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function query()
     {
         return $this->getModel()->newQuery();
-    }
-
-    public function select($columns = ['id', 'title'])
-    {
-        return $this->getModel()->select($columns);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\ActivityContent;
 use App\Entities\PortfolioJob;
 use App\Entities\PortfolioMember;
 use App\Helpers\Helper;
@@ -70,18 +71,29 @@ class PortfolioRepositoryEloquent extends BaseRepository implements PortfolioRep
      * @param Request $request
      * @param $status
      * @param $search
+     * @param array $categories
      * @return Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function paginateQuery(Request $request, $status, $search)
+    public function paginateQuery(Request $request, $status, $search, $categories = [])
     {
         /** @var Builder $query */
         $query = $this->getModel()->query();
-        if ($status != 'all') {
-//            $query->where(['portfolios.status' => $status]);
-        }
-
         $query->leftJoin('users as u', 'portfolios.user_id', '=', 'u.id');
-//        $query->leftJoin('activity_base as ua', 'users.activity_base_id', '=', 'ua.id');
+
+        if ($request->input('career_id')) {
+            $query->join('portfolio_job as pj', 'portfolios.id', '=', 'pj.portfolio_id');
+            if ($request->input('category_id')) {
+                $query->where(['pj.job_id' => $request->input('category_id')]);
+            } else {
+                $jobIds = [];
+                foreach ($categories as $category) {
+                    $jobIds[] = $category->id;
+                }
+                if ($jobIds) {
+                    $query->whereIn('pj.job_id', $jobIds);
+                }
+            }
+        }
 
         if ($search) {
             $query->where(function($query) use ($search) {
@@ -91,26 +103,12 @@ class PortfolioRepositoryEloquent extends BaseRepository implements PortfolioRep
             });
         }
 
-        if ($request->input('career_id')) {
-//            $query->where(['uc.career_id' => $request->input('career_id')]);
-        }
-
-        if ($request->input('birthday')) {
-//            $query->where(['users.birthday' => $request->input('birthday')]);
-        }
-
-        if ($request->input('area')) {
-//            $query->where(['uc.career_id' => $request->input('area')]);
-        }
-
         $query->select([
             'portfolios.*',
             'u.given_name as u_given_name',
-            'u.avatar as u_avatar',
-//            DB::raw('group_concat(uc.career_id separator ", ") AS career_ids'),
-//            'ua.title as activity_base_title'
+            'u.avatar as u_avatar'
         ]);
-//        $query->groupBy('users.id');
+        $query->groupBy('portfolios.id');
         $query->orderBy($request->input('sort', 'created_at'), $request->input('arrange', 'desc'));
 
         return $query->get();

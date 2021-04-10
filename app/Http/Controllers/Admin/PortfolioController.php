@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendMailToPortfolio;
 use App\Repositories\ActivityBaseRepository;
+use App\Repositories\ActivityContentRepository;
 use App\Repositories\CareerRepository;
 use App\Repositories\PortfolioRepository;
 use App\Repositories\UserRepository;
@@ -21,8 +22,8 @@ class PortfolioController extends Controller
     /** @var PortfolioRepository */
     protected $portfolioRepository;
 
-    /** @var ActivityBaseRepository */
-    protected $activityBaseRepository;
+    /** @var ActivityContentRepository */
+    protected $activityContentRepository;
 
     /** @var UserRepository */
     protected $userRepository;
@@ -32,14 +33,14 @@ class PortfolioController extends Controller
      * @param CareerRepository $careerRepository
      * @param PortfolioRepository $portfolioRepository
      * @param UserRepository $userRepository
-     * @param ActivityBaseRepository $activityBaseRepository
+     * @param ActivityContentRepository $activityContentRepository
      */
-    public function __construct(CareerRepository $careerRepository, PortfolioRepository $portfolioRepository, UserRepository $userRepository, ActivityBaseRepository $activityBaseRepository)
+    public function __construct(CareerRepository $careerRepository, PortfolioRepository $portfolioRepository, UserRepository $userRepository, ActivityContentRepository $activityContentRepository)
     {
         $this->careerRepository = $careerRepository;
         $this->portfolioRepository = $portfolioRepository;
         $this->userRepository = $userRepository;
-        $this->activityBaseRepository = $activityBaseRepository;
+        $this->activityContentRepository = $activityContentRepository;
     }
 
     /**
@@ -52,12 +53,17 @@ class PortfolioController extends Controller
         $status = $request->input('status', 'all');
         $arrange = $request->input('arrange', 'desc');
 
-        $portfolios = $this->portfolioRepository->paginateQuery($request, $status, $search);
+        $categories = $this->activityContentRepository->query()
+            ->where(['key' => 'job'])
+            ->where(['career_id' => $request->input('career_id', 0)])
+            ->select(['id', 'title'])->get();
+        $portfolios = $this->portfolioRepository->paginateQuery($request, $status, $search, $categories);
         $careersList = $this->careerRepository->query()->select(['id', 'title'])->get();
 
         return view('admin.pages.portfolio.index', [
             'portfolios' => $portfolios,
             'careersList' => $careersList,
+            'categories' => $categories,
             'searchKey' => $search,
             'arrange' => $arrange
         ]);

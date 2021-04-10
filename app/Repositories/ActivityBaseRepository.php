@@ -12,5 +12,4 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface ActivityBaseRepository extends RepositoryInterface
 {
     public function query();
-    public function select($columns);
 }

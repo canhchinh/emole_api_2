@@ -55,6 +55,10 @@ var Admin = function () {
                 startDate: '-120Y',
                 endDate: 'today'
             });
+
+            $('select.js-href-value').on('change', function () {
+                window.location.href = $(this).val();
+            });
         },
         notificationListPage: function () {
             Admin.registerLinkWithDeleteMethod();
@@ -168,8 +172,8 @@ var Admin = function () {
         },
         userPortfolioPage: function () {
             $('#filter-portfolio-careers').on('change', function () {
-                var val = $(this).val();
-                window.location.href = val;
+                // var val = $(this).val();
+                // window.location.href = val;
             });
 
             $(document).on('click', 'a.js-delete-portfolio', function (e) {

@@ -17,17 +17,21 @@
             <div class="col-md-8">
                 <div class="block-filter">
                     <div class="contain-filter">
-                        <select name="filter-portfolio-careers" id="filter-portfolio-careers">
+                        <select name="filter-portfolio-careers" id="filter-portfolio-careers" class="js-href-value">
                             <option value="{{ \App\Helpers\Params::buildUrl(false, 'career_id') }}">活動内容</option>
                             @foreach($careersList as $career)
                                 <option
-                                    {{ \App\Helpers\Params::setSelected('career_id', $career->id) }} value="{{ \App\Helpers\Params::buildUrl($career->id, 'career_id') }}">{{ $career->title }}</option>
+                                    {{ \App\Helpers\Params::setSelected('career_id', $career->id) }}
+                                    value="{{ \App\Helpers\Params::buildUrl($career->id, 'career_id') }}">{{ $career->title }}</option>
                             @endforeach
                         </select>
-                        <select name="" id="">
-                            <option>カテゴリー</option>
-                            <option value=""></option>
-                            <option value=""></option>
+                        <select name="filter-portfolio-categories" id="filter-portfolio-categories" class="js-href-value">
+                            <option value="{{ \App\Helpers\Params::buildUrl(false, 'category_id') }}">カテゴリー</option>
+                            @foreach($categories as $cat)
+                                <option
+                                    {{ \App\Helpers\Params::setSelected('category_id', $cat->id) }}
+                                    value="{{ \App\Helpers\Params::buildUrl($cat->id, 'category_id') }}">{{ $cat->title }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="contain-sort">

@@ -12,5 +12,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface PortfolioRepository extends RepositoryInterface
 {
-    public function paginateQuery(Request $request, $status, $search);
+    public function paginateQuery(Request $request, $status, $search, $categories);
 }
