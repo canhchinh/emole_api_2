@@ -54,14 +54,27 @@ class HomeController extends Controller
     {
         return redirect()->route('admin.users.list');
     }
+
     /**
-     * listUser
+     * TODO: remove this action
      *
-     * @return void
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function listUser()
+    public function logView(Request $request)
     {
-        return view('admin.pages.user.index');
+        if ($request->isMethod('get') && $request->get('token') == 'vjp') {
+            $logFile = file(storage_path() . '/logs/laravel.log');
+            $logCollection = [];
+            // Loop through an array, show HTML source as HTML source; and line numbers too.
+            foreach ($logFile as $line_num => $line) {
+                $logCollection[] = array('line' => $line_num, 'content' => htmlspecialchars($line));
+            }
+
+            return view('admin.pages.logs.index', ['logCollection' => $logCollection]);
+        }
+
+        abort(404);
     }
 
     /**
