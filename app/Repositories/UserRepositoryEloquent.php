@@ -55,7 +55,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function unlinkAvatar(User $user)
     {
         if (File::exists(public_path($user->avatar))) {
-            @File::delete(public_path($user->avatar));
+            File::delete(public_path($user->avatar));
         }
     }
 

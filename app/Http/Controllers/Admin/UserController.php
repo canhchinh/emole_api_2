@@ -99,6 +99,7 @@ class UserController extends Controller
                 }
             } catch (\Exception $e) {
                 DB::rollBack();
+                return response()->json(['success' => false, 'message' => 'An error has occurred, message: ' . $e->getMessage()]);
             }
         }
 
