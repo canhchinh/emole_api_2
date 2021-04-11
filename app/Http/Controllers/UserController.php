@@ -37,12 +37,12 @@ use App\Services\TwitterService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateAvatarRequest;
-use MetzWeb\Instagram\Instagram;
-use Sovit\TikTok\Api;
+use App\Services\FacebookService;
 
 class UserController extends Controller
 {
@@ -74,6 +74,10 @@ class UserController extends Controller
      * @var \Sovit\TikTok\Api
      */
     private $tiktok;
+    /**
+     * @var FacebookService
+     */
+    private $fb;
 
     public function __construct(
         UserRepository $userRepo,
@@ -92,7 +96,8 @@ class UserController extends Controller
         PortfolioMemberRepository $portfolioMemberRepo,
         TwitterService $twitterService,
         GoogleService $googleService,
-        \Sovit\TikTok\Api $tiktok
+        \Sovit\TikTok\Api $tiktok,
+        FacebookService $fb
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -111,6 +116,7 @@ class UserController extends Controller
         $this->twitterService = $twitterService;
         $this->googleService = $googleService;
         $this->tiktok = $tiktok;
+        $this->fb = $fb;
     }
 
     /**
@@ -1936,6 +1942,15 @@ class UserController extends Controller
             }
         }
 
+        if ($userSearch->instagram_user) {
+            $access_token = Session::get('access_token');
+            if ($access_token) {
+                $this->fb->getFacebook()->setDefaultAccessToken($access_token);
+            }
+
+            $snsFollowersCount['instagram'] = $this->fb->getFollowersCount($userSearch->instagram_user);
+        }
+
         return response()->json([
             'status' => true,
             'data' => [
@@ -1986,6 +2001,15 @@ class UserController extends Controller
             if ($channelInfo) {
                 $snsFollowersCount['youtube'] = $channelInfo['subscriberCount'];
             }
+        }
+
+        if ($userSearch->instagram_user) {
+            $access_token = Session::get('access_token');
+            if ($access_token) {
+                $this->fb->getFacebook()->setDefaultAccessToken($access_token);
+            }
+
+            $snsFollowersCount['instagram'] = $this->fb->getFollowersCount($userSearch->instagram_user);
         }
 
         return response()->json([
