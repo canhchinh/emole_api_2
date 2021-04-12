@@ -59,6 +59,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
     Route::put('email-notification', [UserController::class, 'emailNotification']);
     Route::put('change-password', [UserController::class, 'changePassword']);
     Route::get('search/{username}', [UserController::class, 'searchUser'])->name('user.searchUser');
+    Route::get('notify', [UserController::class, 'getNotify']);
 });
 
 Route::get('public/search/{username}', [UserController::class, 'searchUserPublic'])->name('user.searchUserPublic');
