@@ -1057,19 +1057,28 @@ class UserController extends Controller
     */
     public function getNotify() 
     {
-        $user = auth()->user();
-        $listNotifies = $this->userNotificationRepository->where("user_id", $user->id)->select('notification_data')->first();
-        if ($listNotifies) {
-            $listIdNotifies = json_decode($listNotifies->notification_data)->notification_id_all;
-            // $listIdNotifiesUnread = json_decode($listNotifies->notification_data)->notification_id_unread;
-            // $listIdNotifiesRead = json_decode($listNotifies->notification_data)->notification_id_read;
-            // $listIdNotifiesDelete = json_decode($listNotifies->notification_data)->notification_id_deleted;
-            $data = $this->notificationRepository->whereIn("id", $listIdNotifies)->orderBy('id','DESC')->select('id','delivery_name','delivery_contents','subject')->get();
+        try {
+            $user = auth()->user();
+            $listNotifies = $this->userNotificationRepository->where("user_id", $user->id)->select('notification_data')->first();
+            if ($listNotifies) {
+                $listIdNotifies = json_decode($listNotifies->notification_data)->notification_id_all;
+                // $listIdNotifiesUnread = json_decode($listNotifies->notification_data)->notification_id_unread;
+                // $listIdNotifiesRead = json_decode($listNotifies->notification_data)->notification_id_read;
+                // $listIdNotifiesDelete = json_decode($listNotifies->notification_data)->notification_id_deleted;
+                $data = $this->notificationRepository->whereIn("id", $listIdNotifies)->orderBy('id','DESC')->select('id','delivery_name','delivery_contents','subject')->get();
+                if (!empty($data)) {
+                    return response()->json([
+                        'status' => true,
+                        "data" => $data
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                "data" => $e->getMessage()
+            ]);
         }
-        return response()->json([
-            'status' => true,
-            "data" => $data
-        ]);
     }
 
     /**
