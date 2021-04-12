@@ -101,15 +101,20 @@ class ImageRender extends Helper
 
     /**
      * @param $data
+     * @param false $limitReturn
      * @return array
      */
-    public static function parserPortfolioList($data)
+    public static function parserPortfolioList($data, $limitReturn = false)
     {
         $imgs = [];
         if ($data) {
             $arrData = explode(';=;', $data);
             if ($arrData) {
+                $count = 0;
                 foreach ($arrData as $arrs) {
+                    if ($limitReturn && $count >= $limitReturn) {
+                        continue;
+                    }
                     $arrs = str_replace('[', '', $arrs);
                     $arrs = str_replace(']', '', $arrs);
                     $subArr = explode(',', $arrs);
@@ -117,6 +122,7 @@ class ImageRender extends Helper
                         continue;
                     }
                     $imgs[] = $subArr[0];
+                    $count++;
                 }
             }
         }
