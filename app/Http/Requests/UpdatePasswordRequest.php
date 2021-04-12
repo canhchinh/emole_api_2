@@ -22,8 +22,8 @@ class UpdatePasswordRequest extends Base
     public function rules()
     {
         return [
-            'exist_password' => 'required|string',
-            'new_password' => 'required|string',
+            'exist_password' => '',
+            'new_password' => '',
         ];
     }
 }

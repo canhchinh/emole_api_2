@@ -47,6 +47,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
     Route::get('follower', [UserController::class, 'getFollower']);
 
     Route::put('avatar', [UserController::class, 'avatar']);
+    Route::put('update-popup', [UserController::class, 'updateStatusPopup']);
     Route::group(['prefix' => 'image'], function () {
         Route::post('', [UserImageController::class, 'imageUpload']);
         Route::get('', [UserImageController::class, 'listImage']);

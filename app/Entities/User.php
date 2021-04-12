@@ -36,6 +36,7 @@ class User extends Authenticatable implements Transformable
         'title',
         'profession',
         'gender',
+        'status_popup',
         'birthday',
         'self_introduction',
         'avatar',
