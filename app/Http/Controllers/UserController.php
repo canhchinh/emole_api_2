@@ -1040,6 +1040,54 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Patch(
+     *   path="/user/update-sns",
+     *   summary="update sns",
+     *   operationId="update-sns",
+     *   tags={"User info"},
+     *   security={ {"token": {}} },
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="twitter_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="tiktok_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="instagram_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="youtube_channel", type="string", example="xxxxx"),
+     *                 @OA\Property(property="facebook_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="line_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="note_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="pinterest_user", type="string", example="xxxxx"),
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+    */
+    public function updateSns(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = auth()->user();
+            $update = $user->update($request->params);
+            if ($update) {
+                DB::commit();
+                return response()->json([
+                    'status' => true,
+                ]);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $e->getMessage();
+        }
+    }
+
      /**
      * @OA\Get(
      *   path="/user/notify",

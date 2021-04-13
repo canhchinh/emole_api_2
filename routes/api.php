@@ -48,6 +48,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
 
     Route::put('avatar', [UserController::class, 'avatar']);
     Route::put('update-popup', [UserController::class, 'updateStatusPopup']);
+    Route::patch('update-sns', [UserController::class, 'updateSns']);
     Route::group(['prefix' => 'image'], function () {
         Route::post('', [UserImageController::class, 'imageUpload']);
         Route::get('', [UserImageController::class, 'listImage']);
