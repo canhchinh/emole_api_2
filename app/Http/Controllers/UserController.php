@@ -1065,7 +1065,7 @@ class UserController extends Controller
                 // $listIdNotifiesUnread = json_decode($listNotifies->notification_data)->notification_id_unread;
                 // $listIdNotifiesRead = json_decode($listNotifies->notification_data)->notification_id_read;
                 // $listIdNotifiesDelete = json_decode($listNotifies->notification_data)->notification_id_deleted;
-                $data = $this->notificationRepository->whereIn("id", $listIdNotifies)->orderBy('id','DESC')->select('id','delivery_name','delivery_contents','subject')->get();
+                $data = $this->notificationRepository->whereIn("id", $listIdNotifies)->orderBy('id','DESC')->select('id','delivery_name','delivery_contents','subject','url')->get();
                 if (!empty($data)) {
                     return response()->json([
                         'status' => true,
