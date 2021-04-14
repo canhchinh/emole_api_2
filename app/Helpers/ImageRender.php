@@ -107,23 +107,21 @@ class ImageRender extends Helper
     public static function parserPortfolioList($data, $limitReturn = false)
     {
         $imgs = [];
-        if ($data) {
-            $arrData = explode(';=;', $data);
-            if ($arrData) {
-                $count = 0;
-                foreach ($arrData as $arrs) {
-                    if ($limitReturn && $count >= $limitReturn) {
-                        continue;
-                    }
-                    $arrs = str_replace('[', '', $arrs);
-                    $arrs = str_replace(']', '', $arrs);
-                    $subArr = explode(',', $arrs);
-                    if (!isset($subArr[0])) {
-                        continue;
-                    }
-                    $imgs[] = $subArr[0];
-                    $count++;
+        $arrData = explode(';=;', $data);
+        if ($data && $arrData) {
+            $count = 0;
+            foreach ($arrData as $arr) {
+                if ($limitReturn && $count >= $limitReturn) {
+                    continue;
                 }
+                $arr = str_replace('["', '', $arr);
+                $arr = str_replace('"]', '', $arr);
+                $subArr = explode(',', $arr);
+                if (!isset($subArr[0])) {
+                    continue;
+                }
+                $imgs[] = str_replace('\/', '/', $subArr[0]);
+                $count++;
             }
         }
 

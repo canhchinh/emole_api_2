@@ -91,9 +91,9 @@
                             </div>
                         </div>
                         <div class="action-portfolio">
-
                             @php
                             $images = \App\Helpers\ImageRender::parserPortfolioList($user->portfolios_image, 4);
+
                             @endphp
                             @foreach($images as $img)
                             <img src="{{ \App\Helpers\ImageRender::portfolioAvatar($img) }}" alt="" style="border-radius: 4px" width="60" height="47">
