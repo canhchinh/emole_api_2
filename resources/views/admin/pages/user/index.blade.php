@@ -83,11 +83,11 @@
                                 {{ $user->title ?: '--' }}
                             </div>
                             <div class="action-social_list">
-                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> {{ \App\Helpers\Format::numberFormat($user->twitter_user  ?: 0, true) }}</div>
-                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="insta"> {{ \App\Helpers\Format::numberFormat($user->instagram_user ?: 0, true) }}</div>
-                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="youtube"> {{ \App\Helpers\Format::numberFormat($user->youtube_channel ?: 0, true) }}
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> {{ \App\Helpers\Format::numberFormat(isset($snsFollowersCount[$user->id]['twitter'])  ?: 0, true) }}</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="insta"> {{ \App\Helpers\Format::numberFormat(isset($snsFollowersCount[$user->id]['instagram']) ?: 0, true) }}</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="youtube"> {{ \App\Helpers\Format::numberFormat(isset($snsFollowersCount[$user->id]['youtube']) ?: 0, true) }}
                                 </div>
-                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="tiktok"> {{ \App\Helpers\Format::numberFormat($user->tiktok_user ?: 0, true) }}</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="tiktok"> {{ \App\Helpers\Format::numberFormat(isset($snsFollowersCount[$user->id]['tiktok']) ?: 0, true) }}</div>
                             </div>
                         </div>
                         <div class="action-portfolio">

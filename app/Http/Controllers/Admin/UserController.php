@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\SocialServices;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendMailToUser;
 use App\Repositories\ActivityBaseRepository;
 use App\Repositories\CareerRepository;
 use App\Repositories\UserRepository;
+use App\Services\GoogleService;
+use App\Services\TwitterService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Sovit\TikTok\Api;
 
 class UserController extends Controller
 {
@@ -25,6 +29,7 @@ class UserController extends Controller
 
     /**
      * UserController constructor.
+     *
      * @param CareerRepository $careerRepository
      * @param UserRepository $userRepository
      * @param ActivityBaseRepository $activityBaseRepository
@@ -39,6 +44,7 @@ class UserController extends Controller
     /**
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function listUser(Request $request)
     {
@@ -50,8 +56,11 @@ class UserController extends Controller
         $careersList = $this->careerRepository->query()->select(['id', 'title'])->get();
         $area = $this->activityBaseRepository->query()->select(['id', 'title'])->get();
 
+        $snsFollowersCount = (new SocialServices)->getStatistics(clone $users);
+
         return view('admin.pages.user.index', [
             'users' => $users,
+            'snsFollowersCount' => $snsFollowersCount,
             'careersList' => $careersList,
             'area' => $area,
             'searchKey' => $search,
