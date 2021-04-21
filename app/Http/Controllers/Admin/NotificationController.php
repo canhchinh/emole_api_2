@@ -47,7 +47,6 @@ class NotificationController extends Controller
 
         $notifications = $this->notificationRepository->paginateQuery($request, $status, $search);
         $careersList = $this->careerRepository->query()->select(['id', 'title'])->get();
-
         return view('admin.pages.notify.index', [
             'notifications' => $notifications,
             'careersList' => $careersList,
@@ -90,7 +89,6 @@ class NotificationController extends Controller
                 $notify->populate($request->all());
                 $notify->setCareerIds($request->get('career_ids'));
                 $notify->status = $request->get('storingSubmit') ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
-
                 DB::beginTransaction();
                 try {
                     if ($notify->save() && $notify->status == Notification::STATUS_PUBLIC) {

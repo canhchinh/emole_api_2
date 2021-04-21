@@ -43,6 +43,10 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateAvatarRequest;
 use App\Services\FacebookService;
+use MetzWeb\Instagram\Instagram;
+use Sovit\TikTok\Api;
+use App\Repositories\UserNotificationRepository;
+use App\Repositories\NotificationRepository;
 
 class UserController extends Controller
 {
@@ -60,6 +64,8 @@ class UserController extends Controller
     private $userImageRepo;
     private $portfolioJobRepo;
     private $portfolioMemberRepo;
+    private $userNotificationRepository;
+    private $notificationRepository;
     /**
      * @var TwitterService
      */
@@ -98,6 +104,8 @@ class UserController extends Controller
         GoogleService $googleService,
         \Sovit\TikTok\Api $tiktok,
         FacebookService $fb
+        UserNotificationRepository $userNotificationRepository,
+        NotificationRepository $notificationRepository
     ) {
         $this->userRepo = $userRepo;
         $this->userCategoryRepo = $userCategoryRepo;
@@ -117,6 +125,8 @@ class UserController extends Controller
         $this->googleService = $googleService;
         $this->tiktok = $tiktok;
         $this->fb = $fb;
+        $this->userNotificationRepository = $userNotificationRepository;
+        $this->notificationRepository = $notificationRepository;
     }
 
     /**
@@ -1003,6 +1013,128 @@ class UserController extends Controller
             'status' => true,
             'data' => $userInfo,
         ]);
+    }
+
+    /**
+     * @OA\Put(
+     *   path="/user/update-popup",
+     *   summary="update popup first login",
+     *   operationId="update-popup",
+     *   tags={"User info"},
+     *   security={ {"token": {}} },
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+    */
+    public function updateStatusPopup()
+    {
+        DB::beginTransaction();
+        try {
+            $user = auth()->user();
+            $user->update([
+                "status_popup" => 1,
+            ]);
+             DB::commit();
+            return response()->json([
+                'status' => true,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * @OA\Patch(
+     *   path="/user/update-sns",
+     *   summary="update sns",
+     *   operationId="update-sns",
+     *   tags={"User info"},
+     *   security={ {"token": {}} },
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="twitter_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="tiktok_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="instagram_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="youtube_channel", type="string", example="xxxxx"),
+     *                 @OA\Property(property="facebook_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="line_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="note_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="pinterest_user", type="string", example="xxxxx"),
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+    */
+    public function updateSns(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = auth()->user();
+            $update = $user->update($request->params);
+            if ($update) {
+                DB::commit();
+                return response()->json([
+                    'status' => true,
+                ]);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $e->getMessage();
+        }
+    }
+
+     /**
+     * @OA\Get(
+     *   path="/user/notify",
+     *   summary="get notify user",
+     *   operationId="user-notify",
+     *   tags={"User Notify"},
+     *   security={ {"token": {}} },
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+    */
+    public function getNotify() 
+    {
+        try {
+            $user = auth()->user();
+            $listNotifies = $this->userNotificationRepository->where("user_id", $user->id)->select('notification_data')->first();
+            if ($listNotifies) {
+                $listIdNotifies = json_decode($listNotifies->notification_data)->notification_id_all;
+                // $listIdNotifiesUnread = json_decode($listNotifies->notification_data)->notification_id_unread;
+                // $listIdNotifiesRead = json_decode($listNotifies->notification_data)->notification_id_read;
+                // $listIdNotifiesDelete = json_decode($listNotifies->notification_data)->notification_id_deleted;
+                $data = $this->notificationRepository->whereIn("id", $listIdNotifies)->orderBy('id','DESC')->select('id','delivery_name','delivery_contents','subject','url')->get();
+                if (!empty($data)) {
+                    return response()->json([
+                        'status' => true,
+                        "data" => $data
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                "data" => $e->getMessage()
+            ]);
+        }
     }
 
     /**

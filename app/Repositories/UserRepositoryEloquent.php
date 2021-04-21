@@ -55,7 +55,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function unlinkAvatar(User $user)
     {
         if (File::exists(public_path($user->avatar))) {
-            @File::delete(public_path($user->avatar));
+            File::delete(public_path($user->avatar));
         }
     }
 
@@ -77,7 +77,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function handleRelationship(User $user)
     {
         UserNotification::query()->where(['user_id' => $user->id])->delete();
-        UserCategory::query()->where(['user_id' => $user->id])->delete();
+//        UserCategory::query()->where(['user_id' => $user->id])->delete(); // TODO: not found
         UserCareer::query()->where(['user_id' => $user->id])->delete();
     }
 

@@ -105,6 +105,7 @@ class PortfolioRepositoryEloquent extends BaseRepository implements PortfolioRep
 
         $query->select([
             'portfolios.*',
+            'u.user_name as u_user_name',
             'u.given_name as u_given_name',
             'u.avatar as u_avatar',
             'u.title as u_title'

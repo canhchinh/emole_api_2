@@ -6,10 +6,15 @@ class Format
 {
     /**
      * @param $number
+     * @param false $skip
      * @return string
      */
-    public static function numberFormat($number)
+    public static function numberFormat($number, $skip = false)
     {
+        if ($skip) {
+            return $number;
+        }
+
         return number_format($number);
     }
 

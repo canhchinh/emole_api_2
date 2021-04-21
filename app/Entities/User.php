@@ -36,6 +36,7 @@ class User extends Authenticatable implements Transformable
         'title',
         'profession',
         'gender',
+        'status_popup',
         'birthday',
         'self_introduction',
         'avatar',
@@ -47,7 +48,11 @@ class User extends Authenticatable implements Transformable
         'twitter_user',
         'tiktok_user',
         'instagram_user',
-        'youtube_channel'
+        'youtube_channel',
+        'facebook_user',
+        'line_user',
+        'note_user',
+        'pinterest_user',
     ];
 
     /**

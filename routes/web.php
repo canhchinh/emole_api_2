@@ -23,6 +23,8 @@ Route::match(['get', 'post'], '/forgot-password', [AuthController::class, 'forgo
 Route::get('/reset-password/{token}', [AuthController::class, 'getResetPassword'])->name('admin.auth.get.resetPassword');
 Route::post('/reset-password', [AuthController::class, 'postResetPassword'])->name('admin.auth.post.newPassword');
 Route::middleware('auth')->group(function () {
+    Route::get('/log/view', [HomeController::class, 'logView'])->name('admin.home.logView'); // TODO: remove
+
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.auth.logout');
     Route::get('/', [HomeController::class, 'index'])->name('admin.home.index');
     Route::prefix('user')->group(function () {

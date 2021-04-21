@@ -83,19 +83,18 @@
                                 {{ $user->title ?: '--' }}
                             </div>
                             <div class="action-social_list">
-                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> 1,343</div>
-                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="twitter"> 4,840</div>
-                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="twitter"> 20,000
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tw.svg')}}" alt="twitter"> {{ \App\Helpers\Format::numberFormat(isset($snsFollowersCount[$user->id]['twitter'])  ?: 0, true) }}</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/insta.svg')}}" alt="insta"> {{ \App\Helpers\Format::numberFormat(isset($snsFollowersCount[$user->id]['instagram']) ?: 0, true) }}</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/youtube.svg')}}" alt="youtube"> {{ \App\Helpers\Format::numberFormat(isset($snsFollowersCount[$user->id]['youtube']) ?: 0, true) }}
                                 </div>
-                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="twitter"> 8,394</div>
+                                <div class="action-social_list-item"><img src="{{asset('/assets/images/icon-sm/tiktok.svg')}}" alt="tiktok"> {{ \App\Helpers\Format::numberFormat(isset($snsFollowersCount[$user->id]['tiktok']) ?: 0, true) }}</div>
                             </div>
                         </div>
                         <div class="action-portfolio">
-
                             @php
-                            $images = \App\Helpers\ImageRender::parserPortfolioList($user->portfolios_image);
-                            @endphp
+                            $images = \App\Helpers\ImageRender::parserPortfolioList($user->portfolios_image, 4);
 
+                            @endphp
                             @foreach($images as $img)
                             <img src="{{ \App\Helpers\ImageRender::portfolioAvatar($img) }}" alt="" style="border-radius: 4px" width="60" height="47">
                             @endforeach

@@ -47,6 +47,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
     Route::get('follower', [UserController::class, 'getFollower']);
 
     Route::put('avatar', [UserController::class, 'avatar']);
+    Route::put('update-popup', [UserController::class, 'updateStatusPopup']);
+    Route::patch('update-sns', [UserController::class, 'updateSns']);
     Route::group(['prefix' => 'image'], function () {
         Route::post('', [UserImageController::class, 'imageUpload']);
         Route::get('', [UserImageController::class, 'listImage']);
@@ -58,6 +60,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
     Route::put('email-notification', [UserController::class, 'emailNotification']);
     Route::put('change-password', [UserController::class, 'changePassword']);
     Route::get('search/{username}', [UserController::class, 'searchUser'])->name('user.searchUser');
+    Route::get('notify', [UserController::class, 'getNotify']);
 });
 
 Route::get('public/search/{username}', [UserController::class, 'searchUserPublic'])->name('user.searchUserPublic');
