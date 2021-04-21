@@ -9,7 +9,7 @@ class TwitterService
     /**
      * The OAuth server implementation.
      *
-     * @var Twitter
+     * @var \Atymic\Twitter\Twitter
      */
     protected $twitter;
 
