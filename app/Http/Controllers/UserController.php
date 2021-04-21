@@ -103,7 +103,7 @@ class UserController extends Controller
         TwitterService $twitterService,
         GoogleService $googleService,
         \Sovit\TikTok\Api $tiktok,
-        FacebookService $fb
+        FacebookService $fb,
         UserNotificationRepository $userNotificationRepository,
         NotificationRepository $notificationRepository
     ) {
@@ -696,7 +696,7 @@ class UserController extends Controller
 
     public function education(Request $request)
     {
-        
+
         $user = auth()->user();
         $req = $request->all();
         $this->educationRepo->where('user_id', $user->id)
@@ -1111,7 +1111,7 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
     */
-    public function getNotify() 
+    public function getNotify()
     {
         try {
             $user = auth()->user();
