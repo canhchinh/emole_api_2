@@ -1094,6 +1094,7 @@ class UserController extends Controller
             } else {
                 $data['tiktok_user'] = "";
             }
+            $data['temp_tiktok_user'] = json_encode($data['temp_tiktok_user']);
         }
         try {
             $user = auth()->user();
