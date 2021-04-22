@@ -1087,7 +1087,12 @@ class UserController extends Controller
         DB::beginTransaction();
         $url = $data['tiktok_user'];
         if(!empty($url)) {
-            $response = Http::get($url);
+            // $response = Http::get($url);
+            $client = new Client();
+            $response = $client->request('GET', $url);
+            return response()->json([
+                'status' => $response->getBody(),
+            ]);
             $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');
             if (!empty($tiktokUser)) {
                 $data['tiktok_user'] = $tiktokUser[0];
@@ -1098,7 +1103,6 @@ class UserController extends Controller
         }
         return response()->json([
             'status' => $data,
-            'dsadsad' => "dsadsad"
         ]);
         try {
             $user = auth()->user();
