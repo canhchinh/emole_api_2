@@ -47,6 +47,9 @@ use MetzWeb\Instagram\Instagram;
 use Sovit\TikTok\Api;
 use App\Repositories\UserNotificationRepository;
 use App\Repositories\NotificationRepository;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Collection;
+use GuzzleHttp\Client;
 
 class UserController extends Controller
 {
@@ -1080,10 +1083,19 @@ class UserController extends Controller
     */
     public function updateSns(Request $request)
     {
+        $data = $request->all();
         DB::beginTransaction();
+        $url = $data['tiktok_user'];
+        if(!empty($url)) {
+            $response = Http::get($url);
+            $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');
+            if (!empty($tiktokUser)) {
+                $data['tiktok_user'] = $tiktokUser[0];
+            }
+        }
         try {
             $user = auth()->user();
-            $update = $user->update($request->params);
+            $update = $user->update($data);
             if ($update) {
                 DB::commit();
                 return response()->json([
@@ -1095,6 +1107,24 @@ class UserController extends Controller
             return $e->getMessage();
         }
     }
+
+    private function getContents($str, $startDelimiter, $endDelimiter) {
+        $contents = array();
+        $startDelimiterLength = strlen($startDelimiter);
+        $endDelimiterLength = strlen($endDelimiter);
+        $startFrom = $contentStart = $contentEnd = 0;
+        while (false !== ($contentStart = strpos($str, $startDelimiter, $startFrom))) {
+          $contentStart += $startDelimiterLength;
+          $contentEnd = strpos($str, $endDelimiter, $contentStart);
+          if (false === $contentEnd) {
+            break;
+          }
+          $contents[] = substr($str, $contentStart, $contentEnd - $contentStart);
+          $startFrom = $contentEnd + $endDelimiterLength;
+        }
+      
+        return $contents;
+      }
 
      /**
      * @OA\Get(
