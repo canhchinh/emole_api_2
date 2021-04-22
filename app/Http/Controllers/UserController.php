@@ -1087,11 +1087,11 @@ class UserController extends Controller
         DB::beginTransaction();
         $url = $data['tiktok_user'];
         if(!empty($url)) {
-            // $response = Http::get($url);
-            $client = new \GuzzleHttp\Client();
-            $response = $client->get("https://vt.tiktok.com/ZSJkh7agh/");
+            $response = Http::get("https://vt.tiktok.com/ZSJkh7agh/");
+            // $client = new \GuzzleHttp\Client();
+            // $response = $client->get($url);
             return response()->json([
-                'status' => $response->getBody()
+                'status' => $response->body()
             ]);
             $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');
             if (!empty($tiktokUser)) {
