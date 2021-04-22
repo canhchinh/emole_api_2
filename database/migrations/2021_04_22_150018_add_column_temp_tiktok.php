@@ -14,7 +14,7 @@ class AddColumnTempTiktok extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->json("temp_tiktok_user")->nullable()->after("tiktok_user");
+            $table->json("temp_tiktok_user")->after("tiktok_user");
         });
     }
 
