@@ -1089,6 +1089,9 @@ class UserController extends Controller
         if(!empty($url)) {
             $response = Http::get($url);
             $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');
+            return response()->json([
+                'status' => $tiktokUser,
+            ]);
             if (!empty($tiktokUser)) {
                 $data['tiktok_user'] = $tiktokUser[0];
             } else {
