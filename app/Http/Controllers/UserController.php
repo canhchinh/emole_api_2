@@ -1098,6 +1098,7 @@ class UserController extends Controller
         }
         return response()->json([
             'status' => $data,
+            'dsadsad' => "dsadsad"
         ]);
         try {
             $user = auth()->user();
