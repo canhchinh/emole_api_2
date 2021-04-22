@@ -1091,6 +1091,8 @@ class UserController extends Controller
             $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');
             if (!empty($tiktokUser)) {
                 $data['tiktok_user'] = $tiktokUser[0];
+            } else {
+                $data['tiktok_user'] = "";
             }
         }
         try {
