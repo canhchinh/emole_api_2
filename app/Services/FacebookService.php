@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Log;
 use \Facebook\Facebook;
 
 class FacebookService {
-
-    const APP_ID_ENV_NAME = 'FACEBOOK_APP_ID';
     const APP_SECRET_ENV_NAME = 'APP_SECRET_ENV_NAME';
     const DEFAULT_GRAPH_VERSION = 'v10.0';
 
@@ -19,8 +17,8 @@ class FacebookService {
 
     public function __construct()
     {
-        $app_id = getenv(static::APP_ID_ENV_NAME);
-        $app_secret = getenv(static::APP_SECRET_ENV_NAME);
+        $app_id = config('common.facebook.app_id');
+        $app_secret = config('common.facebook.secret_key');
         try {
             $this->fb = new Facebook([
                 'app_id' => $app_id,

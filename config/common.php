@@ -18,6 +18,10 @@ return [
             'key' => 'genre'
         ]
     ],
+    'facebook' => [
+        'app_id' => env('FACEBOOK_APP_ID', '555802755811269'),
+        'secret_key' => env('APP_SECRET_ENV_NAME', '13569b94c57a73dfa972cd461954296d')
+    ],
     'status_code' => [
         '500' => 500
     ]

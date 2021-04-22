@@ -45,7 +45,7 @@ class GoogleService
             ];
 
             $res = $this->youtube->channels->listChannels('statistics', $queryParams);
-            return (array) $res->items[0]->statistics;
+            return empty($res->items) ? [] : (array) $res->items[0]->statistics;
         } catch (Exception $e) {
             return [];
         }
