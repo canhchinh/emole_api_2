@@ -1096,6 +1096,9 @@ class UserController extends Controller
             }
             $data['temp_tiktok_user'] = json_encode($data['temp_tiktok_user']);
         }
+        return response()->json([
+            'status' => $data,
+        ]);
         try {
             $user = auth()->user();
             $update = $user->update($data);
