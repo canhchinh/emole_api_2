@@ -1063,7 +1063,8 @@ class UserController extends Controller
      *         mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(property="twitter_user", type="string", example="xxxxx"),
-     *                 @OA\Property(property="tiktok_user", type="string", example="xxxxx"),
+     *                 @OA\Property(property="tiktok_user", type="string", example="https://vt.tiktok.com/ZSJkh7agh/"),
+     *                 @OA\Property(property="temp_tiktok_user", type="string", example="ZSJkh7agh"),
      *                 @OA\Property(property="instagram_user", type="string", example="xxxxx"),
      *                 @OA\Property(property="youtube_channel", type="string", example="xxxxx"),
      *                 @OA\Property(property="facebook_user", type="string", example="xxxxx"),
@@ -1088,6 +1089,7 @@ class UserController extends Controller
         $url = $data['tiktok_user'];
         if(!empty($url)) {
             $response = Http::get($url);
+            return $response;
             // $client = new \GuzzleHttp\Client();
             // $response = $client->get($url);
             $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');

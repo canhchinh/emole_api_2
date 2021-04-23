@@ -2651,7 +2651,11 @@
                                     },
                                     "tiktok_user": {
                                         "type": "string",
-                                        "example": "xxxxx"
+                                        "example": "https://vt.tiktok.com/ZSJkh7agh/"
+                                    },
+                                    "temp_tiktok_user": {
+                                        "type": "string",
+                                        "example": "ZSJkh7agh"
                                     },
                                     "instagram_user": {
                                         "type": "string",
