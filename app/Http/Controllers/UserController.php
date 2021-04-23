@@ -1090,7 +1090,7 @@ class UserController extends Controller
             $url = $data['tiktok_user'];
             if(!empty($url)) {
                 $response = Http::withOptions([
-                    'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+                    'User-Agent' => 'testing/1.0',
                     'Accept'     => 'application/json',
                 ])->get($url);
                 return $response;
