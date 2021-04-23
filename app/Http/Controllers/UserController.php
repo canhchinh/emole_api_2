@@ -1084,19 +1084,21 @@ class UserController extends Controller
     */
     public function updateSns(Request $request)
     {
-        $data = $request->all();
-        DB::beginTransaction();
-        $url = $data['tiktok_user'];
-        if(!empty($url)) {
-            $response = Http::get($url);
-            return $response;
-            // $client = new \GuzzleHttp\Client();
-            // $response = $client->get($url);
-            $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');
-            $data['tiktok_user'] = !empty($tiktokUser) ? $tiktokUser[0] : "";
-            $data['temp_tiktok_user'] = json_encode($data['temp_tiktok_user']);
-        }
         try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $url = $data['tiktok_user'];
+            if(!empty($url)) {
+                $response = Http::withHeaders([
+                    'content-type' => 'application/json'
+                ])->get($url);
+                return $response;
+                // $client = new \GuzzleHttp\Client();
+                // $response = $client->get($url);
+                $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');
+                $data['tiktok_user'] = !empty($tiktokUser) ? $tiktokUser[0] : "";
+                $data['temp_tiktok_user'] = json_encode($data['temp_tiktok_user']);
+            }
             $user = auth()->user();
             $update = $user->update($data);
             if ($update) {
