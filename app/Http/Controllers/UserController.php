@@ -1091,16 +1091,9 @@ class UserController extends Controller
             // $client = new \GuzzleHttp\Client();
             // $response = $client->get($url);
             $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');
-            if (!empty($tiktokUser)) {
-                $data['tiktok_user'] = $tiktokUser[0];
-            } else {
-                $data['tiktok_user'] = "";
-            }
+            $data['tiktok_user'] = !empty($tiktokUser) ? $tiktokUser[0] : "";
             $data['temp_tiktok_user'] = json_encode($data['temp_tiktok_user']);
         }
-        return response()->json([
-            'status' => $data,
-        ]);
         try {
             $user = auth()->user();
             $update = $user->update($data);
