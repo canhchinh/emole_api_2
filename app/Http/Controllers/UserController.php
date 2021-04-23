@@ -1089,8 +1089,8 @@ class UserController extends Controller
             $data = $request->all();
             $url = $data['tiktok_user'];
             if(!empty($url)) {
-                $response = Http::withHeaders([
-                    'content-type' => 'application/json'
+                $response = Http::withOptions([
+                    'Accept'     => 'application/json',
                 ])->get($url);
                 return $response;
                 // $client = new \GuzzleHttp\Client();
