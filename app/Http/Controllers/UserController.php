@@ -830,6 +830,7 @@ class UserController extends Controller
                 ->where('key', 'job')
                 ->pluck('id');
 
+            return $jobIds;
             if (empty($jobIds) || (count($req['job_ids']) != count($jobIds))) {
                 return response()->json([
                     'status' => false,
