@@ -825,7 +825,7 @@ class UserController extends Controller
                 }
             }
 
-            return $req['job_ids'];
+            return gettype($req['job_ids']);
             $jobIds = $this->activityContentRepo->whereIn('id', $req['job_ids'])
                 ->where('key', 'job')
                 ->pluck('id');
