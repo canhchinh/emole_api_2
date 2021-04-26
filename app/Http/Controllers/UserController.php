@@ -826,7 +826,7 @@ class UserController extends Controller
             }
 
             $jobIds = $this->activityContentRepo->whereIn('id', $req['job_ids'])
-                // ->where('key', 'job')
+                ->where('key', 'job')
                 ->pluck('id');
 
             if (empty($jobIds) || (count($req['job_ids']) != count($jobIds))) {
