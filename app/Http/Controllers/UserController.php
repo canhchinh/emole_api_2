@@ -1063,7 +1063,6 @@ class UserController extends Controller
      *             @OA\Schema(
      *                 @OA\Property(property="twitter_user", type="string", example="xxxxx"),
      *                 @OA\Property(property="tiktok_user", type="string", example="https://vt.tiktok.com/ZSJkh7agh/"),
-     *                 @OA\Property(property="temp_tiktok_user", type="string", example="ZSJkh7agh"),
      *                 @OA\Property(property="instagram_user", type="string", example="xxxxx"),
      *                 @OA\Property(property="youtube_channel", type="string", example="xxxxx"),
      *                 @OA\Property(property="facebook_user", type="string", example="xxxxx"),
@@ -1086,19 +1085,19 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $url = $data['tiktok_user'];
-            if(!empty($url)) {
-                $response = Http::withOptions([
-                    'User-Agent' => 'testing/1.0',
-                    'Accept'     => 'application/json',
-                ])->get($url);
-                return $response;
-                // $client = new \GuzzleHttp\Client();
-                // $response = $client->get($url);
-                $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');
-                $data['tiktok_user'] = !empty($tiktokUser) ? $tiktokUser[0] : "";
-                $data['temp_tiktok_user'] = json_encode($data['temp_tiktok_user']);
-            }
+            // $url = $data['tiktok_user'];
+            // if(!empty($url)) {
+            //     $response = Http::withOptions([
+            //         'User-Agent' => 'testing/1.0',
+            //         'Accept'     => 'application/json',
+            //     ])->get($url);
+            //     return $response;
+            //     // $client = new \GuzzleHttp\Client();
+            //     // $response = $client->get($url);
+            //     // $tiktokUser = $this->getContents($response->body(), 'href="https://www.tiktok.com/@', '"');
+            //     $data['tiktok_user'] = !empty($tiktokUser) ? $tiktokUser[0] : "";
+            //     $data['temp_tiktok_user'] = json_encode($data['temp_tiktok_user']);
+            // }
             $user = auth()->user();
             $update = $user->update($data);
             if ($update) {
