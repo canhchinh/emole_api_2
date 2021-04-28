@@ -10,6 +10,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Entities\ActivityBase;
 use App\Entities\Portfolio;
+use Carbon\Carbon;
+use DB;
 
 /**
  * Class User.
@@ -36,6 +38,7 @@ class User extends Authenticatable implements Transformable
         'title',
         'profession',
         'gender',
+        'active',
         'status_popup',
         'birthday',
         'self_introduction',
@@ -106,5 +109,15 @@ class User extends Authenticatable implements Transformable
         return $this->where('user_name', $username)
             ->orWhere('given_name', $username)
             ->first();
+    }
+
+    public function activeAccount($token){
+        $password_resets = [
+            'email'        => $this->email,
+            'token'        => $token,
+            'created_at'   => Carbon::now(),
+        ];
+        DB::table('password_resets')->insert($password_resets);
+        return true;
     }
 }

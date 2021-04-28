@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Entities\PasswordReset;
 use App\Entities\Portfolio;
+use App\Events\SendMailActiveEvent;
 use App\Http\Requests\FollowRequest;
 use App\Http\Requests\ForgotPassword;
 use App\Http\Requests\LoginGoogle;
@@ -230,7 +231,7 @@ class UserController extends Controller
      *      @OA\MediaType(
      *         mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="email", type="string", example="a@example.com"),
+     *                 @OA\Property(property="email", type="string", example="phancanhchinh@gmail.com"),
      *                 @OA\Property(property="password", type="string", example="123456"),
      *             )
      *         )
@@ -254,11 +255,52 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'register_finish_step' => 1,
         ]);
-        $tokenResult = $user->createToken('authToken')->plainTextToken;
+        if ($user) {
+            /* event send email */
+            event(new SendMailActiveEvent($user));
+        }
+        // $tokenResult = $user->createToken('authToken')->plainTextToken;
         return response()->json([
             'status' => true,
-            'access_token' => $tokenResult,
-            'token_type' => 'Bearer',
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/user/active-account",
+     *   summary="active account",
+     *   operationId="active_account",
+     *   tags={"Auth"},
+     *   @OA\RequestBody(
+     *      @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="token", type="string", example="dad98130e8b84eb5831194061ad2864b"),
+     *             )
+     *         )
+     *     ),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
+     *   @OA\Response(response=403, description="Forbidden", @OA\JsonContent()),
+     *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
+     * )
+     */
+    public function postActive(Request $request)
+    {
+        $dataUser = $this->userRepo->activeAccount($request->token);
+        if (!empty($dataUser)) {
+            $tokenResult = $dataUser->createToken('authToken')->plainTextToken;
+            return response()->json([
+                'status' => true,
+                'access_token' => $tokenResult,
+                'token_type' => 'Bearer',
+            ]);
+        }
+        return response()->json([
+            'status' => false,
+            'message' => "cannot find your account"
         ]);
     }
 

@@ -123,6 +123,33 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         }
 
     }
+    
+    /**
+     * activeAccount
+     *
+     * @param  mixed $token
+     * @return void
+     */
+    
+    public function activeAccount($token){
+        DB::beginTransaction();
+        $token = str_replace(" ", "", $token);
+        $data = DB::table('password_resets')->where('token', $token)->latest()->first();
+        if (!$data) {
+            return null;
+        }
+        $email = $data->email;
+        $user = $this->model->where('email',$email)->first();
+        if ($user) {
+            $user->active = 1;
+            $user->save();
+            /* Delete Token Record */
+            DB::table('password_resets')->where('email', $email)->delete();
+        }
+        DB::commit();
+        return $user;
+    }
+
 
     /**
      * @param Request $request

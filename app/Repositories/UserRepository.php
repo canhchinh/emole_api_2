@@ -16,6 +16,8 @@ interface UserRepository extends RepositoryInterface
 
     public function is_base64($file);
 
+    public function activeAccount($token);
+
     // For admin =======================================================================================================
 
     public function paginateQuery(Request $request, $status, $search);

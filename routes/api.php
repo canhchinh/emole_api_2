@@ -25,6 +25,7 @@ use App\Http\Controllers\LineNotifyController;
 /**************** user ****************/
 Route::group(['prefix' => 'user'], function () {
     Route::post('register-step1', [UserController::class, 'registerStep1']);
+    Route::post('active-account', [UserController::class, 'postActive']);
     Route::post('login', [UserController::class, 'login']);
     Route::post('login-google', [UserController::class, 'loginGoogle']);
 });
