@@ -174,6 +174,11 @@ class UserController extends Controller
                 'status' => false,
                 'message' => "password doesn't match.",
             ], 403);
+        } elseif (!$user->active) {
+            return response()->json([
+                'status' => false,
+                'message' => "Account is not active",
+            ], 403);
         }
 
         $tokenResult = $user->createToken('authToken')->plainTextToken;
