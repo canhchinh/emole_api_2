@@ -150,3 +150,5 @@ Route::group(['prefix' => 'twitter-login'], function () {
     Route::get('get-info', [TwitterLoginController::class, 'getInfo']);
     Route::post('login', [TwitterLoginController::class, 'login']);
 });
+
+Route::get('/test', [UserController::class, 'test']);

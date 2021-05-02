@@ -1173,7 +1173,7 @@ class UserController extends Controller
           $contents[] = substr($str, $contentStart, $contentEnd - $contentStart);
           $startFrom = $contentEnd + $endDelimiterLength;
         }
-      
+
         return $contents;
       }
 
@@ -2234,5 +2234,10 @@ class UserController extends Controller
                 'is_owner' => false
             ]
         ]);
+    }
+
+    public function test()
+    {
+        mail('phanxuanbachkh@gmail.com', 'test emole', 'ok good');
     }
 }
