@@ -43,6 +43,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateAvatarRequest;
+use App\Mail\ToUser;
 use App\Services\FacebookService;
 use MetzWeb\Instagram\Instagram;
 use Sovit\TikTok\Api;
@@ -51,6 +52,7 @@ use App\Repositories\NotificationRepository;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Collection;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -2238,7 +2240,12 @@ class UserController extends Controller
 
     public function test()
     {
-        mail('phanxuanbachkh@gmail.com', 'test emole', 'ok good');
+        $data = [
+            'subject' => 'bachpx test email',
+            'content' => 'hello world'
+        ];
+
+        Mail::to('phanxuanbachkh@gmail.com')->send(new ToUser($data));
         exit('done');
     }
 }
