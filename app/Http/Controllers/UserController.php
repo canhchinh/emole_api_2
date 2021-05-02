@@ -2239,5 +2239,6 @@ class UserController extends Controller
     public function test()
     {
         mail('phanxuanbachkh@gmail.com', 'test emole', 'ok good');
+        exit('done');
     }
 }
