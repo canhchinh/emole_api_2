@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Entities\PasswordReset;
 use App\Entities\Portfolio;
-use App\Events\SendMailActiveEvent;
 use App\Http\Requests\FollowRequest;
 use App\Http\Requests\ForgotPassword;
 use App\Http\Requests\LoginGoogle;
@@ -12,7 +11,6 @@ use App\Http\Requests\NewPassword;
 use App\Http\Requests\PortfolioImageRequest;
 use App\Http\Requests\PortfolioRequest;
 use App\Http\Requests\ResetPassword;
-use App\Http\Requests\SelfIntroductionRequest;
 use App\Http\Requests\UpdateAccountNameRequest;
 use App\Http\Requests\UpdateBasicInformationRequest;
 use App\Http\Requests\UpdateEmailNotificationRequest;
@@ -43,18 +41,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateAvatarRequest;
-use App\Mail\ActiveRegisterMail;
 use App\Mail\ToUser;
 use App\Services\FacebookService;
-use MetzWeb\Instagram\Instagram;
-use Sovit\TikTok\Api;
 use App\Repositories\UserNotificationRepository;
 use App\Repositories\NotificationRepository;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Collection;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -255,9 +246,6 @@ class UserController extends Controller
      */
     public function registerStep1(Request $request)
     {
-        return response()->json([
-            'status' => true,
-        ]);
         $request->validate([
             'email' => 'email|required|unique:users',
             'password' => 'required',
