@@ -176,7 +176,8 @@ class CareerController extends Controller
         foreach ($careerIds as $careerId) {
             if(empty($listOld[$careerId])) {
                 $param = ['user_id' => $user->id, 'career_id' => $careerId];
-                $this->userCareerRepo->create($param);
+                // $this->userCareerRepo->create($param);
+                $this->userCareerRepo->updateOrCreate($param, $param);
             }
 
             $listNew[] = $careerId;
