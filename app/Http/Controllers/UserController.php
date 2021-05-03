@@ -41,6 +41,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateAvatarRequest;
+use App\Mail\ActiveRegisterMail;
 use App\Mail\ToUser;
 use App\Services\FacebookService;
 use App\Repositories\UserNotificationRepository;
@@ -257,13 +258,13 @@ class UserController extends Controller
             'register_finish_step' => 1,
         ]);
 
-        // $data = [
-        //     'token' => Str::uuid(),
-        //     'email' => $user->email,
-        //     'urlActive' => config('common.frontend_url') . '/active/'
-        // ];
+        $data = [
+            'token' => Str::uuid(),
+            'email' => $user->email,
+            'urlActive' => config('common.frontend_url') . '/active/'
+        ];
 
-        // Mail::to($user->email)->queue(new ActiveRegisterMail($data));
+        Mail::to($user->email)->queue(new ActiveRegisterMail($data));
 
         return response()->json([
             'status' => true,
