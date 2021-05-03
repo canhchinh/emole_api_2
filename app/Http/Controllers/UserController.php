@@ -303,6 +303,7 @@ class UserController extends Controller
         if (!empty($user->id)) {
             $tokenResult = $user->createToken('authToken')->plainTextToken;
             $user->remember_token = null;
+            $user->active = 1;
             $user->save();
 
             return response()->json([
