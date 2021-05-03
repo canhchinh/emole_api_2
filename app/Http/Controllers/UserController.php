@@ -43,6 +43,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateAvatarRequest;
+use App\Mail\ActiveRegisterMail;
 use App\Mail\ToUser;
 use App\Services\FacebookService;
 use MetzWeb\Instagram\Instagram;
@@ -53,6 +54,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Collection;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -257,16 +259,21 @@ class UserController extends Controller
             'email' => 'email|required|unique:users',
             'password' => 'required',
         ]);
+
         $user = $this->userRepo->create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'register_finish_step' => 1,
         ]);
-        if ($user) {
-            /* event send email */
-            event(new SendMailActiveEvent($user));
-        }
-        // $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+        $data = [
+            'token' => Str::uuid(),
+            'email' => $user->email,
+            'urlActive' => config('common.frontend_url') . '/active/'
+        ];
+
+        Mail::to($user->email)->queue(new ActiveRegisterMail($data));
+
         return response()->json([
             'status' => true,
         ]);

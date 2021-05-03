@@ -35,8 +35,9 @@ class SendMailActiveListener
         $data = [
             'token' => $token,
             'email' => $user->email,
-            'urlActive' => env('REGISTER_LINK_ACTIVE','https://emole.gotechjsc.com/active/')
+            'urlActive' => config('common.frontend_url') . '/active/'
         ];
-        Mail::to($user['email'])->send(new ActiveRegisterMail($data));
+
+        Mail::to($user['email'])->queue(new ActiveRegisterMail($data));
     }
 }

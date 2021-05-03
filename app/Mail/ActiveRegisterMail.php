@@ -30,8 +30,7 @@ class ActiveRegisterMail extends Mailable
      */
     public function build()
     {
-        return $this->from(env('MAIL_FROM_ADDRESS','phancanhchinh123123@gmail.com'),env('MAIL_FROM_NAME','phancanhchinh123123@gmail.com'))
-                    ->subject('['.env('APP_NAME','Emole').'] active your account')
+        return $this->subject('[' . config('app.name') . '] active your account')
                     ->markdown('api.mail_register',$this->params);
     }
 }
