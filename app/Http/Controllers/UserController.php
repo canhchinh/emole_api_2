@@ -255,6 +255,9 @@ class UserController extends Controller
      */
     public function registerStep1(Request $request)
     {
+        return response()->json([
+            'status' => true,
+        ]);
         $request->validate([
             'email' => 'email|required|unique:users',
             'password' => 'required',
