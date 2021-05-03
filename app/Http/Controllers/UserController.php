@@ -252,14 +252,17 @@ class UserController extends Controller
             'password' => 'required',
         ]);
 
+        $token = Str::uuid();
+
         $user = $this->userRepo->create([
+            'remember_token' => $token,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'register_finish_step' => 1,
         ]);
 
         $data = [
-            'token' => Str::uuid(),
+            'token' => $token,
             'email' => $user->email,
             'urlActive' => config('common.frontend_url') . '/active/'
         ];
@@ -295,9 +298,13 @@ class UserController extends Controller
      */
     public function postActive(Request $request)
     {
-        $dataUser = $this->userRepo->activeAccount($request->token);
-        if (!empty($dataUser)) {
-            $tokenResult = $dataUser->createToken('authToken')->plainTextToken;
+        $user = $this->userRepo->where('remember_token', $request->token)->first();
+
+        if (!empty($user->id)) {
+            $tokenResult = $user->createToken('authToken')->plainTextToken;
+            $user->remember_token = null;
+            $user->save();
+
             return response()->json([
                 'status' => true,
                 'access_token' => $tokenResult,
