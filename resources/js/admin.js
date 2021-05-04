@@ -10,6 +10,7 @@ var Admin = function () {
             this.notificationListPage();
             this.userListPage();
             this.userPortfolioPage();
+            this.doSendEmailToAllUser();
 
             var els = $('.selectizeSelect');
             els?.each(function () {
@@ -155,7 +156,6 @@ var Admin = function () {
 
             $('#datepicker-birthday').on('change', function () {
                 var val = $(this).val();
-                console.log(val);
                 if (val != $(this).data('current-value')) {
                     var url = $(this).data('url');
                     var newUrl = url.replace('birthdayValue', val);
@@ -233,6 +233,45 @@ var Admin = function () {
                 modalEl.find('.ajax-response').hide();
                 modalEl.modal('show');
             });
+        },
+        doSendEmailToAllUser: function () {
+            var sendEmailToAllUser = '.sendEmailToAllUser';
+            var modalEl = $('#send-email-to-all-users');
+
+            if ($(sendEmailToAllUser).length) {
+                $(sendEmailToAllUser).on('click', function (e) {
+                    e.preventDefault();
+                    modalEl.modal('show');
+                });
+            }
+
+            $("#sendEmailToAllUserForm").validate({
+                submitHandler: function () {
+                    doSend($('#sendEmailToAllUserForm'));
+                }
+            });
+
+
+            function doSend(form) {
+                var btnSubmit = form.find('[type="submit"]');
+                btnSubmit.attr('disabled', true);
+                $.post({
+                    type: form.data('method'),
+                    data: form.serializeArray(),
+                    url: form.attr('action')
+                }).done(function (data) {
+                    form.find('.ajax-response').hide();
+                    if (data.hasOwnProperty('success') && data.success) {
+                        form.find('input[type="text"]').val('');
+                        form.find('[name="email_content"]').val('');
+                        form.find('.ajax-response.text-success').html(data.message).show();
+                    }
+                    if (data.hasOwnProperty('success') && data.success == false) {
+                        form.find('.ajax-response.text-danger').html(data.message).show();
+                    }
+                    btnSubmit.attr('disabled', false);
+                });
+            }
         }
     }
 }();

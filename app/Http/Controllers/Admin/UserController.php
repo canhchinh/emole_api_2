@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helpers\SocialServices;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendMailToAllUser;
 use App\Jobs\SendMailToUser;
 use App\Repositories\ActivityBaseRepository;
 use App\Repositories\CareerRepository;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Sovit\TikTok\Api;
 
 class UserController extends Controller
@@ -130,6 +132,42 @@ class UserController extends Controller
                     'content' => $request->get('email_content')
                 ];
                 SendMailToUser::dispatch($user->email, $data)->onQueue('processing');
+
+                return response()->json(['success' => true, 'message' => 'リクエストが送信されました']);
+            } catch (\Exception $e) {
+                Log::error('Can not send email to user, error message: ' . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'このリクエストを実行できません。後でしてください。']);
+            }
+        }
+
+        abort(404);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendEmailToAllUser(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            try {
+                $query = $this->userRepository->query();
+                $users = $query
+                    ->where('email', '!=', '')
+                    ->get();
+                $data = [
+                    'subject' => $request->get('email_subject'),
+                    'content' => $request->get('email_content')
+                ];
+                if ($users) {
+                    foreach ($users as $user) {
+                        if ($user) {
+                            SendMailToAllUser::dispatch($user->email, $data)->onQueue('processing');
+                        }
+                    }
+                } else {
+                    return response()->json(['success' => false, 'message' => 'ユーザーが見つかりません']);
+                }
 
                 return response()->json(['success' => true, 'message' => 'リクエストが送信されました']);
             } catch (\Exception $e) {
