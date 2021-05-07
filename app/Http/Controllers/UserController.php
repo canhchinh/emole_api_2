@@ -413,7 +413,7 @@ class UserController extends Controller
 
         $birthday = \DateTime::createFromFormat('Y-m-d', $data['birthday'])->format('Y-m-d');
         $user->given_name = $data['given_name'];
-        $user->email = $user->email ?? $data['email'];
+        // $user->email = $user->email ?? $data['email'];
         $user->title = $data['title'];
         $user->birthday = $birthday;
         $user->gender = $data['gender'];
