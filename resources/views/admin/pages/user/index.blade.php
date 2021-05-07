@@ -135,7 +135,7 @@
                 </div>
                 <div class="hr"></div>
                 <div class="footer">
-                    <a href="{{ config('common.frontend_url') }}{{ $user->user_name }}" class="item-button detail">詳細</a>
+                    <a href="{{ \App\Helpers\Helper::concatStringBySlash(config('common.frontend_url'), $user->user_name) }}" class="item-button detail">詳細</a>
                     <button class="item-button email sendEmail"
                             data-user-id="{{ $user->id }}"
                             data-user-name="{{ $user->given_name ?: $user->username }}"

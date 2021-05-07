@@ -122,7 +122,7 @@
                         </div>
                         <div class="hr"></div>
                         <div class="footer">
-                            <a class="item-button detail" href="{{ config('common.frontend_url') }}{{ $portfolio->u_user_name }}">詳細</a>
+                            <a class="item-button detail" href="{{ \App\Helpers\Helper::concatStringBySlash(config('common.frontend_url'), $portfolio->u_user_name) }}">詳細</a>
                             <button class="item-button email sendEmailPortfolio"
                                     data-user-id="{{ $portfolio->user_id }}"
                                     data-user-name="{{ $portfolio->u_given_name }}"
