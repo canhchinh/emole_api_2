@@ -1786,7 +1786,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Permission',
-            ], 401);
+            ], 403);
         } else {
             return $this->getPortfolioDetail($portfolio);
         }
