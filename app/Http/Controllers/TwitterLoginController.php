@@ -61,7 +61,8 @@ class TwitterLoginController extends Controller
                         'user_name' => $userTwitter->name,
                         'given_name' => $userTwitter->name,
                         'email' => $userTwitter->email,
-                        'avatar' => $userTwitter->imageUrl
+                        'avatar' => $userTwitter->imageUrl,
+                        'active' => 1
                     ]
                 );
             } else {
