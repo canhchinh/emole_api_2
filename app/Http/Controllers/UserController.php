@@ -188,7 +188,7 @@ class UserController extends Controller
 
     public function loginGoogle(LoginGoogle $request)
     {
-        $data = $request->all(['email', 'given_name', 'google_id', 'avatar',"active"]);
+        $data = $request->all(['email', 'user_name', 'google_id', 'avatar',"active"]);
 
         $user = $this->userRepo->where('email', $data['email'])->first();
 
@@ -197,7 +197,7 @@ class UserController extends Controller
                 'email' => $data['email'],
                 'google_id' => $data['google_id'],
                 'avatar' => $data['avatar'],
-                'given_name' => $data['given_name'],
+                'user_name' => $data['user_name'],
                 'active' => $data['active']
             ]);
             $gotoUsername = true;
