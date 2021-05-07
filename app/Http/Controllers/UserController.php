@@ -188,7 +188,7 @@ class UserController extends Controller
 
     public function loginGoogle(LoginGoogle $request)
     {
-        $data = $request->all(['email', 'given_name', 'google_id', 'avatar']);
+        $data = $request->all(['email', 'given_name', 'google_id', 'avatar',"active"]);
 
         $user = $this->userRepo->where('email', $data['email'])->first();
 
@@ -197,7 +197,8 @@ class UserController extends Controller
                 'email' => $data['email'],
                 'google_id' => $data['google_id'],
                 'avatar' => $data['avatar'],
-                'given_name' => $data['given_name']
+                'given_name' => $data['given_name'],
+                'active' => $data['active']
             ]);
             $gotoUsername = true;
         } else {
@@ -413,7 +414,7 @@ class UserController extends Controller
 
         $birthday = \DateTime::createFromFormat('Y-m-d', $data['birthday'])->format('Y-m-d');
         $user->given_name = $data['given_name'];
-        $user->email = $user->email ?? $data['email'];
+        // $user->email = $user->email ?? $data['email'];
         $user->title = $data['title'];
         $user->birthday = $birthday;
         $user->gender = $data['gender'];
@@ -1786,7 +1787,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Permission',
-            ], 401);
+            ], 403);
         } else {
             return $this->getPortfolioDetail($portfolio);
         }
