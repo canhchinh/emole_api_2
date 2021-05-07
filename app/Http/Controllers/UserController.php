@@ -197,7 +197,8 @@ class UserController extends Controller
                 'email' => $data['email'],
                 'google_id' => $data['google_id'],
                 'avatar' => $data['avatar'],
-                'given_name' => $data['given_name']
+                'given_name' => $data['given_name'],
+                'active' => $data['active']
             ]);
             $gotoUsername = true;
         } else {
