@@ -467,11 +467,11 @@ class UserController extends Controller
             }
             $extension = explode('/', mime_content_type($file))[1];
             $path = 'user/';
-            if(!in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
+            if(!in_array($extension, ['jpg', 'png', 'jpeg', 'gif', 'svg'])) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Only support file jpg, png, jpeg, gif'
-                ]);
+                    'message' => 'Only support file jpg, png, jpeg, gif, svg'
+                ], 400);
             }
 
             $fileName = $this->saveImgBase64($file, $path, $user->id);
@@ -1984,7 +1984,7 @@ class UserController extends Controller
                         ], 500);
                     }
                     $extension = explode('/', mime_content_type($file))[1];
-                    if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
+                    if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif', 'svg'])) {
                         $path = 'user/';
                         $fileName = $this->saveImgBase64($file, $path, $user->id, true);
                         $url = '/storage/' . $path . 'group/' . $fileName;
@@ -1992,6 +1992,11 @@ class UserController extends Controller
                             'user_id' => $user->id,
                             'url' => $url,
                         ]);
+                    } else {
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'Only support file jpg, png, jpeg, gif, svg'
+                        ], 400);
                     }
                 }
             }
