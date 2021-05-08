@@ -39,7 +39,11 @@ class TwitterLoginController extends Controller
 
     private function replaceUrlAvatarTwitter($url) {
         if ($url) {
-            return chop($url, "_normal"); 
+            $string = chop($url, "_normal"); 
+            return response()->json([
+                'status' => false,
+                'message' => $string
+            ]);
         }
         return "";
     }
