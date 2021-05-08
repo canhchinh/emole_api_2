@@ -37,6 +37,13 @@ class TwitterLoginController extends Controller
         }
     }
 
+    private function replaceUrlAvatarTwitter($url) {
+        if ($url) {
+            return trim($url, "_normal"); 
+        }
+        return "";
+    }
+
     public function login(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -61,7 +68,7 @@ class TwitterLoginController extends Controller
                         'user_name' => $userTwitter->name,
                         'given_name' => $userTwitter->name,
                         'email' => $userTwitter->email,
-                        'avatar' => $userTwitter->imageUrl,
+                        'avatar' => $this->replaceUrlAvatarTwitter($userTwitter->imageUrl),
                         'active' => 1
                     ]
                 );
