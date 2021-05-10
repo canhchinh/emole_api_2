@@ -24,7 +24,7 @@ class SendMailResetPassword implements ShouldQueue
     {
         $this->email = $email;
         // $this->resetPasswordLink = config('common.frontend_url') . 'reset-password/' . http_build_query(['token' => $token]);
-        $this->resetPasswordLink = config('common.frontend_url') . 'new-password/' .  $token;
+        $this->resetPasswordLink = config('common.frontend_url'). '/' . 'new-password/' .  $token;
     }
 
     /**
