@@ -12,4 +12,6 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface UserNotificationRepository extends RepositoryInterface
 {
     public function addNotification(Notification $notification);
+
+    public function removeNotification(Notification $notification);
 }

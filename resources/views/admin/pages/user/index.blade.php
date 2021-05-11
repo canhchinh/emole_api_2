@@ -103,7 +103,7 @@
                     <div class="info">
                         <div class="info-gender">
                             <span class="title-item">性別</span>
-                            <span class="content-item">{{ ($user->gender == 1) ? '男性' : '女性' }}</span>
+                            <span class="content-item">{{ $user->gender? $user->gender : '' }}</span>
                         </div>
                         <div class="info-bod">
                             <span class="title-item">生年月日</span>

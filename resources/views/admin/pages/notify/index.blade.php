@@ -103,11 +103,9 @@
                             <option value="{{ \App\Entities\Notification::STATUS_PUBLIC }}"
                             @if ($notify->status == \App\Entities\Notification::STATUS_PUBLIC) selected @endif
                                 >公開</option>
-                            @if ($notify->status == \App\Entities\Notification::STATUS_DRAFT)
                             <option value="{{ \App\Entities\Notification::STATUS_DRAFT }}"
                                     @if ($notify->status == \App\Entities\Notification::STATUS_DRAFT) selected @endif
                             >非公開</option>
-                            @endif
                         </select>
                     </div>
                     <a class="item-button delete js-click"

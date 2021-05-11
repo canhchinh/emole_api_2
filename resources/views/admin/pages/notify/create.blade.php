@@ -9,7 +9,7 @@
                     お知らせ配信
                 </div>
                 <div class="form">
-                    <form action="" method="POST" id="">
+                    <form action="" method="POST" id="create-noti-form">
                         @csrf
                         <div class="contain">
                             <label for="username">配信名称</label><br>
@@ -62,8 +62,9 @@
                             @enderror
                         </div>
                         <div class="footer">
+                            <input type="hidden" value="draft" name="storingType">
                             <button name="draftSubmit" value="on" class="button-outline mr-2 once-click-disabled" type="submit">下書き保存</button>
-                            <button name="storingSubmit" value="on" class="once-click-disabled" type="submit">配信</button>
+                            <button name="storingSubmit" value="on" class="once-click-disableds" type="submit">配信</button>
                         </div>
                     </form>
                 </div>
@@ -71,4 +72,11 @@
         </div>
     </div>
 </div>
+    <script>
+        jQuery(function ($) {
+            $('#create-noti-form').on('click', 'button[name="storingSubmit"]', function () {
+                $('input[name="storingType"]').val('public');
+            });
+        });
+    </script>
 @stop

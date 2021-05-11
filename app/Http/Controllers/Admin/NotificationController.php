@@ -88,7 +88,8 @@ class NotificationController extends Controller
                 $notify = new Notification();
                 $notify->populate($request->all());
                 $notify->setCareerIds($request->get('career_ids'));
-                $notify->status = $request->get('storingSubmit') ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
+                $notify->status = ($request->get('storingType', 'draft') ==  Notification::STATUS_PUBLIC) ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
+
                 DB::beginTransaction();
                 try {
                     if ($notify->save() && $notify->status == Notification::STATUS_PUBLIC) {
@@ -138,8 +139,13 @@ class NotificationController extends Controller
                 $notify = $query->where(['id' => $id])->first();
                 if ($newStatus != $notify->status) {
                     $notify->status = $newStatus;
-                    if ($notify->save() && $notify->status == Notification::STATUS_PUBLIC) {
-                        $this->userNotificationRepository->addNotification($notify);
+                    if ($notify->save()) {
+                        if ($notify->status == Notification::STATUS_PUBLIC) {
+                            $this->userNotificationRepository->addNotification($notify);
+                        }
+                        if ($notify->status == Notification::STATUS_DRAFT) {
+                            $this->userNotificationRepository->removeNotification($notify);
+                        }
                     }
                 }
 
