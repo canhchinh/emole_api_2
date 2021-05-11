@@ -102,7 +102,7 @@
                         <select name="change-status-notify" class="change-status-notify" data-method="put" data-url-change-status="{{ route('admin.notify.update.status', ['id' => $notify->id]) }}">
                             <option value="{{ \App\Entities\Notification::STATUS_PUBLIC }}"
                             @if ($notify->status == \App\Entities\Notification::STATUS_PUBLIC) selected @endif
-                                >公開</option>
+                                >公開</option>change-status-notify
                             <option value="{{ \App\Entities\Notification::STATUS_DRAFT }}"
                                     @if ($notify->status == \App\Entities\Notification::STATUS_DRAFT) selected @endif
                             >非公開</option>

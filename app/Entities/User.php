@@ -22,6 +22,9 @@ class User extends Authenticatable implements Transformable
 {
     use TransformableTrait, HasApiTokens, HasFactory, Notifiable;
 
+    const STATUS_ACTIVE = 0;
+    const STATUS_INACTIVE = 1;
+
     /**
      * The attributes that are mass assignable.
      *

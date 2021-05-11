@@ -141,9 +141,9 @@
                             data-user-name="{{ $user->given_name ?: $user->username }}"
                     >メール</button>
                     <div class="contain-filter">
-                        <select name="change-status" id="change-status">
-                            <option value="">公開</option>
-                            <option value="">非公開</option>
+                        <select name="change-status" id="change-status" data-url="{{ route('admin.user.update.status', ['id' => $user->id]) }}">
+                            <option value="{{ \App\Entities\User::STATUS_ACTIVE }}"  @if ($user->active == \App\Entities\User::STATUS_ACTIVE) selected @endif>公開</option>
+                            <option value="{{ \App\Entities\User::STATUS_INACTIVE }}"  @if ($user->active == \App\Entities\User::STATUS_INACTIVE) selected @endif>非公開</option>
                         </select>
                     </div>
                     <a
@@ -161,7 +161,21 @@
         </div>
     </div>
 </div>
-
+<script>
+    jQuery(function ($) {
+        $('select#change-status').on('change', function () {
+            $.ajax({
+                method: 'put',
+                data: {status: $(this).val()},
+                url: $(this).data('url')
+            }).done(function (data) {
+                if (data.hasOwnProperty('success') && data.success) {
+                    window.location.reload();
+                }
+            });
+        });
+    });
+</script>
 <!-- Modal -->
 <div class="modal" id="email-content" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

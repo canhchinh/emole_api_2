@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entities\Notification;
 use App\Helpers\SocialServices;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendMailToAllUser;
@@ -85,6 +86,42 @@ class UserController extends Controller
         return view('admin.pages.user.detail', [
             'user' => $user
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateUserStatus(Request $request, $id)
+    {
+        if ($request->isMethod('put')) {
+            DB::beginTransaction();
+            try {
+                $newStatus = trim($request->get('status'));
+                /** @var Builder $query */
+                $query = $this->userRepository->query();
+                $user = $query->where(['id' => $id])->first();
+                if ($newStatus != $user->active) {
+                    $user->active = $newStatus;
+                    if ($user->save()) {
+                        DB::commit();
+                        return response()->json(['success' => true]);
+                    } else {
+                        DB::rollBack();
+                        return response()->json(['success' => false, 'message' => "Some thing went wrong!"]);
+                    }
+                }
+
+                DB::commit();
+                return response()->json(['success' => true]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                abort('Some thing error, please try again or contact admin. Thank very much!');
+            }
+        }
+
+        return response()->json(['success' => false, 'message' => 'No request found!']);
     }
 
     /**

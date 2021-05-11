@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/', [AdminUserController::class, 'listUser'])->name('admin.users.list');
         Route::get('/view/{id}', [AdminUserController::class, 'detailUser'])->name('admin.users.detail');
+        Route::match(['put'], '/change/status/{id}', [AdminUserController::class, 'updateUserStatus'])->name('admin.user.update.status');
         Route::delete('/delete/{id}', [AdminUserController::class, 'deleteUser'])->name('admin.users.delete');
         Route::post('/send-email-to-user', [AdminUserController::class, 'sendEmailToUser'])->name('admin.users.sendEmail');
         Route::post('/user/send-to-all-email', [AdminUserController::class, 'sendEmailToAllUser'])->name('admin.user.sendEmailAll');

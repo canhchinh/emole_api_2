@@ -72,11 +72,11 @@
         </div>
     </div>
 </div>
-    <script>
-        jQuery(function ($) {
-            $('#create-noti-form').on('click', 'button[name="storingSubmit"]', function () {
-                $('input[name="storingType"]').val('public');
-            });
+<script>
+    jQuery(function ($) {
+        $('#create-noti-form').on('click', 'button[name="storingSubmit"]', function () {
+            $('input[name="storingType"]').val('public');
         });
-    </script>
+    });
+</script>
 @stop
