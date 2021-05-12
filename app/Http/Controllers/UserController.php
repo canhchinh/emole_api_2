@@ -1206,13 +1206,12 @@ class UserController extends Controller
     {
         try {
             $user = auth()->user();
-            $listNotifies = $this->userNotificationRepository->where("user_id", $user->id)->select('notification_data')->first();
-            if ($listNotifies) {
-                $listIdNotifies = json_decode($listNotifies->notification_data)->notification_id_all;
-                // $listIdNotifiesUnread = json_decode($listNotifies->notification_data)->notification_id_unread;
-                // $listIdNotifiesRead = json_decode($listNotifies->notification_data)->notification_id_read;
-                // $listIdNotifiesDelete = json_decode($listNotifies->notification_data)->notification_id_deleted;
-                $data = $this->notificationRepository->whereIn("id", $listIdNotifies)
+            $listNotifies = $this->userNotificationRepository->where("user_id", $user->id)
+                ->first();
+            if (!empty($listNotifies->id)) {
+                $data = json_decode($listNotifies->notification_data, true);
+
+                $data = $this->notificationRepository->whereIn("id", $data['notification_id_unread'])
                     ->orderBy('id','DESC')
                     ->select('id','delivery_name','delivery_contents','subject','url')
                     ->get();
@@ -1220,7 +1219,10 @@ class UserController extends Controller
                 if (!empty($data)) {
                     return response()->json([
                         'status' => true,
-                        "data" => $data
+                        "data" => [
+                            'list' => $data,
+                            'count' => count($data['notification_id_unread'])
+                        ]
                     ]);
                 }
             }
