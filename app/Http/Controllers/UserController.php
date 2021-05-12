@@ -1212,7 +1212,11 @@ class UserController extends Controller
                 // $listIdNotifiesUnread = json_decode($listNotifies->notification_data)->notification_id_unread;
                 // $listIdNotifiesRead = json_decode($listNotifies->notification_data)->notification_id_read;
                 // $listIdNotifiesDelete = json_decode($listNotifies->notification_data)->notification_id_deleted;
-                $data = $this->notificationRepository->whereIn("id", $listIdNotifies)->orderBy('id','DESC')->select('id','delivery_name','delivery_contents','subject','url')->get();
+                $data = $this->notificationRepository->whereIn("id", $listIdNotifies)
+                    ->orderBy('id','DESC')
+                    ->select('id','delivery_name','delivery_contents','subject','url')
+                    ->get();
+
                 if (!empty($data)) {
                     return response()->json([
                         'status' => true,
@@ -1511,12 +1515,30 @@ class UserController extends Controller
             ->first();
 
         if ($data['status'] == 'UNFOLLOW' && !empty($record->id)) {
+            $noti = $this->notificationRepository->where('id', $record->notification_id)
+                ->first();
+
+            if(!empty($noti->id)) {
+                $this->userNotificationRepository->removeNotiForUser($data['target_id'], $noti->id);
+                $noti->delete();
+            }
+
             $record->delete();
         } elseif ($data['status'] == 'FOLLOW' && empty($record->id)) {
+            $noti = $this->notificationRepository->create([
+                'delivery_name' => 'EMOLE',
+                'delivery_contents' => $owner->given_name . 'さんにフォローされました',
+                'subject' => '',
+                'url' => config('common.frontend_profile') . '/' . $owner->user_name
+            ]);
+
             $this->followRepo->create([
                 'user_id' => $owner->id,
                 'target_id' => $data['target_id'],
+                'notification_id' => $noti->id
             ]);
+
+            $this->userNotificationRepository->addNotiForUser($data['target_id'], $noti->id);
         }
 
         return response()->json([

@@ -2,6 +2,7 @@
 return [
     'api_url' => env('API_URL'),
     'frontend_url' => env('FRONTEND_URL', 'https://emole.gotechjsc.com'),
+    'frontend_profile' => env('FRONTEND_URL', 'https://emole.gotechjsc.com'),
     'app_url' => env('APP_URL', "https://emole-api.t4code.xyz"),
     'paging' => env('PAGING', 10),
     'activity_content' => [

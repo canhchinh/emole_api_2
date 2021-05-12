@@ -143,4 +143,54 @@ class UserNotificationRepositoryEloquent extends BaseRepository implements UserN
 
         return true;
     }
+
+    public function addNotiForUser($userId, $notiId)
+    {
+        $noti = $this->where('user_id', $userId)
+            ->first();
+
+        if(empty($noti->id)) {
+            $data = [
+                'notification_id_all' => [$notiId],
+                'notification_id_unread' => [$notiId],
+                'notification_id_read' => [],
+                'notification_id_deleted' => [],
+            ];
+
+            $this->create([
+                'user_id' => $userId,
+                'notification_data' => json_encode($data)
+            ]);
+        } else {
+            $data = json_decode($noti->notification_data, true);
+
+            $data['notification_id_all'] = array_merge($data['notification_id_all'], [$notiId]);
+            $data['notification_id_unread'] = array_merge($data['notification_id_unread'], [$notiId]);
+
+            $noti->notification_data = json_encode($data);
+            $noti->save();
+        }
+
+        return true;
+    }
+
+    public function removeNotiForUser($userId, $notiId)
+    {
+        $noti = $this->where('user_id', $userId)
+            ->first();
+
+        if(!empty($noti->id)) {
+            $data = json_decode($noti->notification_data, true);
+
+            unset($data['notification_id_all'][$notiId]);
+            unset($data['notification_id_unread'][$notiId]);
+            unset($data['notification_id_read'][$notiId]);
+            unset($data['notification_id_deleted'][$notiId]);
+
+            $noti->notification_data = json_encode($data);
+            $noti->save();
+        }
+
+        return true;
+    }
 }
