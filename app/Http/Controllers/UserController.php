@@ -1211,9 +1211,10 @@ class UserController extends Controller
             if (!empty($listNotifies->id)) {
                 return response()->json([
                     'status' => true,
-                    'data' => json_decode($listNotifies->notification_data, true)
+                    'data' => json_decode($listNotifies->notification_data, true)['notification_id_unread']
                 ]);
                 $data = json_decode($listNotifies->notification_data, true);
+
 
                 $data = $this->notificationRepository->whereIn("id", $data['notification_id_unread'])
                     ->orderBy('id','DESC')
