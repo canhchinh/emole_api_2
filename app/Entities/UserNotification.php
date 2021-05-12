@@ -23,7 +23,9 @@ class UserNotification extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'user_id', 'notification_data'
+    ];
 
     /**
      * @param $notificationId

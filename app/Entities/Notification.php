@@ -26,7 +26,10 @@ class Notification extends Model implements Transformable
     protected $fillable = [
         'id',
         'career_id',
-        'delivery_name'
+        'delivery_name',
+        'delivery_contents',
+        'subject',
+        'url'
     ];
 
     /**
