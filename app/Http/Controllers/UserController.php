@@ -1211,7 +1211,7 @@ class UserController extends Controller
             if (!empty($listNotifies->id)) {
                 return response()->json([
                     'status' => true,
-                    'data' => $listNotifies->notification_data
+                    'data' => json_decode($listNotifies->notification_data, true)
                 ]);
                 $data = json_decode($listNotifies->notification_data, true);
 
