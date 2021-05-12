@@ -1209,6 +1209,10 @@ class UserController extends Controller
             $listNotifies = $this->userNotificationRepository->where("user_id", $user->id)
                 ->first();
             if (!empty($listNotifies->id)) {
+                return response()->json([
+                    'status' => true,
+                    'data' => $listNotifies->notification_data
+                ]);
                 $data = json_decode($listNotifies->notification_data, true);
 
                 $data = $this->notificationRepository->whereIn("id", $data['notification_id_unread'])
