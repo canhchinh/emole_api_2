@@ -193,4 +193,22 @@ class UserNotificationRepositoryEloquent extends BaseRepository implements UserN
 
         return true;
     }
+
+    public function setReadAllForUser($userId)
+    {
+        $noti = $this->where('user_id', $userId)
+        ->first();
+
+        if(!empty($noti->id)) {
+            $data = json_decode($noti->notification_data, true);
+
+            $data['notification_id_read'] = array_merge($data['notification_id_read'], $data['notification_id_unread']);
+            $data['notification_id_unread'] = [];
+
+            $noti->notification_data = json_encode($data);
+            $noti->save();
+        }
+
+        return true;
+    }
 }

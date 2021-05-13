@@ -18,4 +18,6 @@ interface UserNotificationRepository extends RepositoryInterface
     public function addNotiForUser($userId, $notiId);
 
     public function removeNotiForUser($userId, $notiId);
+
+    public function setReadAllForUser($userId);
 }

@@ -2283,4 +2283,15 @@ class UserController extends Controller
         Mail::to('phanxuanbachkh@gmail.com')->send(new ToUser($data));
         exit('done');
     }
+
+    public function setRead()
+    {
+        $user = auth()->user();
+        $this->userNotificationRepository->setReadAllForUser($user->id);
+
+        return response()->json([
+            'status' => true,
+            'data' => 'success'
+        ]);
+    }
 }
