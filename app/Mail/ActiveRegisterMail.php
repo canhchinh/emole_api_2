@@ -30,7 +30,7 @@ class ActiveRegisterMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('[' . config('app.name') . '] active your account')
+        return $this->subject('【emole】メールアドレスの確認をして登録を完了しよう')
                     ->markdown('api.mail_register',$this->params);
     }
 }

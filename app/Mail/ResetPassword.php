@@ -28,6 +28,6 @@ class ResetPassword extends Mailable
      */
     public function build()
     {
-        return $this->subject('Reset password')->view('mail.reset_password', ['link' => $this->link]);
+        return $this->subject('【emole】パスワードを再設定しましょう')->view('mail.reset_password', ['link' => $this->link]);
     }
 }
