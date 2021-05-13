@@ -1,11 +1,14 @@
 <html>
     <head>
         <style>
+            p{
+                color: #718096 !important;
+            }
             a{
                 box-sizing: border-box;
                 font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';
                 border-radius: 4px;
-                color: #fff;
+                color: #fff !important;
                 display: inline-block;
                 overflow: hidden;
                 text-decoration: none;
