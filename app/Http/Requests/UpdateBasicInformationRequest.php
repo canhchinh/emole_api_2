@@ -23,7 +23,7 @@ class UpdateBasicInformationRequest extends Base
     {
         return [
             'given_name' => 'required|string',
-            'title' => 'required|string',
+            // 'title' => '|string',
             'gender' => 'required|string',
             'birthday' => 'required|string',
             'activity_base_id' => 'required|numeric',
