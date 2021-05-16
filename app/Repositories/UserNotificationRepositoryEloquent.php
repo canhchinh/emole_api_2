@@ -44,7 +44,8 @@ class UserNotificationRepositoryEloquent extends BaseRepository implements UserN
         if (0 == $notification->career_ids) {
             $userData = User::query()
                 ->leftJoin('user_notifications as un', 'users.id', '=', 'un.user_id')
-                ->select(['users.id as u_user_id', 'un.*'])->groupBy('user_careers.user_id')->get();
+                ->select(['users.id as u_user_id', 'un.*'])
+                ->get();
 
             return $this->doAddNotificationForEachUser($userData, $notification->id);
         } else {

@@ -90,17 +90,18 @@ class NotificationController extends Controller
                 $notify->setCareerIds($request->get('career_ids'));
                 $notify->status = ($request->get('storingType', 'draft') ==  Notification::STATUS_PUBLIC) ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
 
-                DB::beginTransaction();
-                try {
+                // DB::beginTransaction();
+                // try {
                     if ($notify->save() && $notify->status == Notification::STATUS_PUBLIC) {
                         $this->userNotificationRepository->addNotification($notify);
                     }
                     DB::commit();
                     return redirect()->route('admin.notify.list');
-                } catch (\Exception $e) {
-                    DB::rollBack();
-                    abort('Some thing error, please try again or contact admin. Thank very much!');
-                }
+                // } catch (\Exception $e) {
+                //     DB::rollBack();
+
+                //     abort(500, 'Some thing error, please try again or contact admin. Thank very much!');
+                // }
             }
         }
 
