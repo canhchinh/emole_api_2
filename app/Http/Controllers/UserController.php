@@ -397,7 +397,7 @@ class UserController extends Controller
         if (!empty($file)) {
             $extension = explode('/', mime_content_type($file))[1];
             $path = 'user/';
-            if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
+            if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif', 'bmp', 'tiff'])) {
                 $fileName = $this->saveImgBase64($file, $path, $user->id);
                 $url = '/storage/' . $path . $fileName;
                 $user->avatar = $url;
