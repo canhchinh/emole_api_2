@@ -81,7 +81,7 @@ class NotificationController extends Controller
                 'career_ids' => 'required',
                 'delivery_contents' => 'required|max:160|min:2',
                 'subject' => 'required|max:255|min:2',
-                'url' => 'url|nullable',
+                'url' => 'nullable|url',
             ], $messages);
 
             if ($validator->validated()) {

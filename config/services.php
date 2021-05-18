@@ -29,11 +29,16 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    
+
     'twitter' => [
         'client_id' => env('TWITTER_CONSUMER_KEY'),
         'client_secret' => env('TWITTER_CONSUMER_SECRET'),
         'redirect' => env('TWITTER_REDIRECT_URL'),
-    ]
+    ],
 
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT_URL')
+    ],
 ];
