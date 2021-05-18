@@ -72,7 +72,7 @@ class NotificationController extends Controller
                 'subject.required' => '件名フィールドは必須です。',
                 'subject.min' => '件名の最小値は2文字です。',
                 'subject.max' => '件名はできませんovers255文字。',
-                'url.required' => '転送先URLが必要です。',
+                // 'url.required' => '転送先URLが必要です。',
                 'url.url' => '転送先のURLが正しい形式ではありません。',
             ];
 
@@ -81,7 +81,7 @@ class NotificationController extends Controller
                 'career_ids' => 'required',
                 'delivery_contents' => 'required|max:160|min:2',
                 'subject' => 'required|max:255|min:2',
-                'url' => 'required|url',
+                'url' => 'url|nullable',
             ], $messages);
 
             if ($validator->validated()) {
