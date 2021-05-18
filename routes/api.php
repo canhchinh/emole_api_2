@@ -11,6 +11,7 @@ use App\Http\Controllers\GenreController;
 use App\Http\Controllers\SnsController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\LineNotifyController;
+use App\Http\Controllers\SocialController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -153,3 +154,4 @@ Route::group(['prefix' => 'twitter-login'], function () {
 });
 
 Route::get('/test', [UserController::class, 'test']);
+Route::get('/callback/facebook', [SocialController::class, 'callback']);
