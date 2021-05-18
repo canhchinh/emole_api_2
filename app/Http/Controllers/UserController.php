@@ -2293,11 +2293,11 @@ class UserController extends Controller
     {
         if ($request->id) {
             $user = auth()->user();
-            $a = $this->userNotificationRepository->setReadAllForUser($user->id, $request->id);
+            $result = $this->userNotificationRepository->setReadAllForUser($user->id, $request->id);
         }
         return response()->json([
             'status' => true,
-            'data' => $a
+            'data' => $result
         ]);
     }
 }
