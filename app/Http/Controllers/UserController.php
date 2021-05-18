@@ -397,7 +397,7 @@ class UserController extends Controller
         if (!empty($file)) {
             $extension = explode('/', mime_content_type($file))[1];
             $path = 'user/';
-            if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif', 'bmp', 'tiff'])) {
+            if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
                 $fileName = $this->saveImgBase64($file, $path, $user->id);
                 $url = '/storage/' . $path . $fileName;
                 $user->avatar = $url;
@@ -1211,7 +1211,11 @@ class UserController extends Controller
             if (!empty($listNotifies->id)) {
                 $data = json_decode($listNotifies->notification_data, true);
 
-                $list = $this->notificationRepository->whereIn("id", $data['notification_id_unread'])
+                $listUnread = $this->notificationRepository->whereIn("id", $data['notification_id_unread'])
+                    ->orderBy('id','DESC')
+                    ->select('id','delivery_name','delivery_contents','subject','url')
+                    ->get();
+                $listRead = $this->notificationRepository->whereIn("id", $data['notification_id_read'])
                     ->orderBy('id','DESC')
                     ->select('id','delivery_name','delivery_contents','subject','url')
                     ->get();
@@ -1219,8 +1223,9 @@ class UserController extends Controller
                 return response()->json([
                     'status' => true,
                     "data" => [
-                        'list' => $list,
-                        'count' => count($data['notification_id_unread'])
+                        'listUnRead' => $listUnread,
+                        'countUnRead' => count($data['notification_id_unread']),
+                        'listRead' => $listRead,
                     ]
                 ]);
             }
@@ -2284,14 +2289,15 @@ class UserController extends Controller
         exit('done');
     }
 
-    public function setRead()
+    public function setRead(Request $request)
     {
-        $user = auth()->user();
-        $this->userNotificationRepository->setReadAllForUser($user->id);
-
+        if ($request->id) {
+            $user = auth()->user();
+            $result = $this->userNotificationRepository->setReadAllForUser($user->id, $request->id);
+        }
         return response()->json([
             'status' => true,
-            'data' => 'success'
+            'data' => $result
         ]);
     }
 }
