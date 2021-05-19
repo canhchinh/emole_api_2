@@ -154,4 +154,4 @@ Route::group(['prefix' => 'twitter-login'], function () {
 });
 
 Route::get('/test', [UserController::class, 'test']);
-Route::get('/callback/facebook', [SocialController::class, 'callback']);
+Route::patch('/callback/facebook', [SocialController::class, 'callback']);
