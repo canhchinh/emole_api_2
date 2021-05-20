@@ -19,6 +19,8 @@ class Portfolio extends Model implements Transformable
 
     const PUBLIC_YES = 1;
     const PUBLIC_NO = 0;
+    const STATUS_SHOW = 1;
+    const STATUS_HIDDEN = 0;
 
     protected $table = 'portfolios';
     /**
@@ -48,6 +50,7 @@ class Portfolio extends Model implements Transformable
         'work_description',
         'member_ids',
         'is_public',
+        'is_status',
         'tags'
     ];
 

@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('portfolio')->group(function () {
         Route::get('/', [AdminPortfolioController::class, 'listPortfolio'])->name('admin.portfolio.list');
         Route::delete('/delete/{id}', [AdminPortfolioController::class, 'deletePortfolio'])->name('admin.portfolio.delete');
-        Route::match(['put'], '/change/status/{id}', [AdminPortfolioController::class, 'updatePortfolioStatus'])->name('admin.portfolio.update.status');
+        Route::match(['put'], '/change/status/{id}/{key}', [AdminPortfolioController::class, 'updatePortfolioStatus'])->name('admin.portfolio.update.status');
         Route::post('/send-email-to-portfolio', [AdminPortfolioController::class, 'sendEmailToPortfolio'])->name('admin.portfolio.sendEmail');
     });
     Route::prefix('notify')->group(function () {

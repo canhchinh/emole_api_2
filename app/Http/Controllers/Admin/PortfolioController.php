@@ -58,7 +58,6 @@ class PortfolioController extends Controller
             ->select(['id', 'title'])->get();
         $portfolios = $this->portfolioRepository->paginateQuery($request, $status, $search, $categories);
         $careersList = $this->careerRepository->query()->select(['id', 'title'])->get();
-
         return view('admin.pages.portfolio.index', [
             'portfolios' => $portfolios,
             'careersList' => $careersList,
@@ -119,17 +118,22 @@ class PortfolioController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function updatePortfolioStatus(Request $request, $id)
+    public function updatePortfolioStatus(Request $request, $id, $key)
     {
         if ($request->isMethod('put')) {
             DB::beginTransaction();
             try {
                 $newStatus = trim($request->get('status'));
+                $newStatusActive = trim($request->get('statusActive'));
                 /** @var Builder $query */
                 $query = $this->portfolioRepository->query();
                 $portfolio = $query->where(['id' => $id])->first();
-                if ($newStatus != $portfolio->is_public) {
+                if ($key === "status" && $newStatus != $portfolio->is_public) {
                     $portfolio->is_public = $newStatus;
+                    $portfolio->save();
+                }
+                if ($key === "active" && $newStatusActive != $portfolio->is_status) {
+                    $portfolio->is_status = $newStatusActive;
                     $portfolio->save();
                 }
 
