@@ -137,15 +137,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 });
 
 // /**************** Line Notify ****************/
-// Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
-//     Route::get('get-auth-link', [LineNotifyController::class, 'getAuthLink']);
-// });
-// Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
-//     Route::get('get-access-token', [LineNotifyController::class, 'getAccessToken']);
-// });
-// Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
-//     Route::post('send-notify', [LineNotifyController::class, 'sendNotify']);
-// });
+Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('get-auth-link', [LineNotifyController::class, 'getAuthLink']);
+});
+Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
+    Route::get('get-access-token', [LineNotifyController::class, 'getAccessToken']);
+});
+Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
+    Route::post('send-notify', [LineNotifyController::class, 'sendNotify']);
+});
 
 /**************** social login ****************/
 Route::group(['prefix' => 'twitter-login'], function () {
