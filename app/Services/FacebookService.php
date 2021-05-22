@@ -46,16 +46,43 @@ class FacebookService {
      */
     public function getUserInfo($query = 'me', $access_token = null)
     {
-        // Returns a `Facebook\Response` object
-        /**
-         * @var \Facebook\FacebookResponse
-         */
-        $response = $this->fb->get(
-            $query,
-            $access_token ? $access_token : null
-        );
+        try {
+            // Returns a `Facebook\Response` object
+            /**
+             * @var \Facebook\FacebookResponse
+             */
+            $response = $this->fb->get(
+                $query,
+                $access_token ? $access_token : null
+            );
 
-        return $response->getDecodedBody();
+            return $response->getDecodedBody();
+        } catch(\Exception $e) {
+            Log::error("Facebook Response Exception : " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * @param $access_token
+     * @return array
+     * @throws FacebookSDKException
+     */
+    public function getLongTermToken($access_token) {
+        $app_id = config('services.facebook.client_id');
+        $app_secret = config('services.facebook.client_secret');
+        try {
+            /**
+             * @var \Facebook\FacebookResponse
+             */
+            $response = $this->fb->get(
+                "oauth/access_token?grant_type=fb_exchange_token&fb_exchange_token=$access_token&client_id=$app_id&client_secret=$app_secret",
+            );
+            return $response->getGraphNode()->getField('access_token');
+        } catch(\Exception $e) {
+            Log::error("Facebook Response Exception : " . $e->getMessage());
+            return null;
+        }
     }
 
     /**
