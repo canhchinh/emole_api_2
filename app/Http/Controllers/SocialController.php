@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
+use App\Services\FacebookService;
+use Mockery\Exception;
 
 /**
  * Class SocialController
@@ -12,12 +15,34 @@ use Laravel\Socialite\Facades\Socialite;
 class SocialController extends Controller
 {
     /**
-     * @OA\Get(
+     * @var \App\Services\FacebookService
+     */
+    private $fbService;
+
+
+    public function __construct(
+        FacebookService $facebookService
+    )
+    {
+        $this->fbService = $facebookService;
+    }
+
+    /**
+     * @OA\Patch(
      *   path="/callback/facebook",
      *   summary="Function call back facebook",
      *   operationId="callback_facebook",
      *   tags={"Callback facebook"},
      *   security={ {"token": {}} },
+     *      @OA\Parameter(
+     *          name="token",
+     *          description="Access token",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      *   @OA\Response(response=200, description="successful operation", @OA\JsonContent()),
      *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
      *   @OA\Response(response=401, description="Unauthorized", @OA\JsonContent()),
@@ -28,7 +53,18 @@ class SocialController extends Controller
      */
     public function callback(Request $request)
     {
-        $user = Socialite::driver('facebook')->userFromToken($request->get('token'));
-        return response()->json($user);
+        $token = $request->get('token');
+        $this->fbService->getFacebook()->setDefaultAccessToken($token);
+        $user_info = $this->fbService->getUserInfo('me?fields=accounts{connected_instagram_account}');
+        try {
+            $connected_instagram_account_id = $user_info['accounts']['data'][0]['connected_instagram_account']['id'];
+        } catch (Exception $e) {
+            $connected_instagram_account_id = null;
+        }
+
+        return response()->json([
+            'access_token' => $token,
+            'id_ig' => $connected_instagram_account_id
+        ]);
     }
 }

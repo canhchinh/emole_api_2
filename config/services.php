@@ -37,8 +37,8 @@ return [
     ],
 
     'facebook' => [
-        'client_id' => env('FACEBOOK_CLIENT_ID'),
-        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect' => env('FACEBOOK_REDIRECT_URL')
+        'client_id' => env('FACEBOOK_APP_ID', '913375666118910'),
+        'client_secret' => env('FACEBOOK_APP_SECRET', '40ed855c6fa801cd3a26381882a13271'),
+        'redirect' => env('FACEBOOK_REDIRECT_URL', 'https://emole-api.t4code.xyz/callback/facebook')
     ],
 ];

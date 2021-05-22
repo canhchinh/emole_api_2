@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Log;
 use \Facebook\Facebook;
 
 class FacebookService {
-    const APP_SECRET_ENV_NAME = 'APP_SECRET_ENV_NAME';
     const DEFAULT_GRAPH_VERSION = 'v10.0';
 
     /**
@@ -17,8 +16,8 @@ class FacebookService {
 
     public function __construct()
     {
-        $app_id = config('common.facebook.app_id');
-        $app_secret = config('common.facebook.secret_key');
+        $app_id = config('services.facebook.client_id');
+        $app_secret = config('services.facebook.client_secret');
         try {
             $this->fb = new Facebook([
                 'app_id' => $app_id,
@@ -41,6 +40,25 @@ class FacebookService {
     }
 
     /**
+     * @param string $query
+     * @param null $access_token
+     * @return int|mixed|null
+     */
+    public function getUserInfo($query = 'me', $access_token = null)
+    {
+        // Returns a `Facebook\Response` object
+        /**
+         * @var \Facebook\FacebookResponse
+         */
+        $response = $this->fb->get(
+            $query,
+            $access_token ? $access_token : null
+        );
+
+        return $response->getDecodedBody();
+    }
+
+    /**
      * @param $user_id
      * @return int
      */
@@ -52,10 +70,10 @@ class FacebookService {
              * @var \Facebook\FacebookResponse
              */
             $response = $this->fb->get(
-                "$user_id"
+                "$user_id?fields=ig_id,name,followers_count"
             );
 
-            return $response->getGraphNode()->getField('followed_by_count');
+            return $response->getGraphNode()->getField('followers_count');
         } catch(\Facebook\Exceptions\FacebookResponseException $e) {
             Log::error("Facebook Response Exception : " . $e->getMessage());
             return 0;
