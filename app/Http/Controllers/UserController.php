@@ -769,8 +769,6 @@ class UserController extends Controller
                 'start_date' => $this->validateDate($item['start_date']) ? \DateTime::createFromFormat('Y-m-d', $item['start_date'])->format('Y-m-d') : null,
                 'end_date' => $this->checkValidateEndDate($item['is_still_active'], $item['end_date']),
                 'is_still_active' => $item['is_still_active'],
-                'link' => $item['link'],
-                'description' => $item['description'],
             ];
             $this->educationRepo->create($param);
         }
