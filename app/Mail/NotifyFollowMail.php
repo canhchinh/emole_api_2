@@ -21,7 +21,6 @@ class NotifyFollowMail extends Mailable
     public function __construct($params)
     {
         $this->params = $params;
-        return $params;
     }
 
     /**
