@@ -40,7 +40,7 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
     public function getListFollowByUser($userId)
     {
         $query = $this->join('users', 'users.id', '=', 'follows.target_id')
-            ->where(['follows.user_id' => $userId, 'users.active' => 1])
+            ->where('follows.user_id', $userId)
             ->selectRaw("
                 users.id,
                 users.gender,
@@ -51,6 +51,7 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
                 users.self_introduction,
                 users.avatar,
                 users.birthday,
+                users.active,
             ");
         return $query->paginate(config('common.paging'));
     }
