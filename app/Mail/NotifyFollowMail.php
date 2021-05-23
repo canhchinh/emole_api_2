@@ -21,6 +21,7 @@ class NotifyFollowMail extends Mailable
     public function __construct($params)
     {
         $this->params = $params;
+        dd($params);
     }
 
     /**
@@ -30,8 +31,7 @@ class NotifyFollowMail extends Mailable
      */
     public function build()
     {
-        dd($this->params);
-        // return $this->subject('【emole】notify follow')
-        //             ->view('mail.mail_notify_follow', $this->params);
+        return $this->subject('【emole】notify follow')
+                    ->view('mail.mail_notify_follow', $this->params);
     }
 }
