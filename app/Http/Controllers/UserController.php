@@ -42,6 +42,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateAvatarRequest;
 use App\Mail\ActiveRegisterMail;
+use App\Mail\NotifyFollowMail;
 use App\Mail\ToUser;
 use App\Services\FacebookService;
 use App\Repositories\UserNotificationRepository;
@@ -1513,9 +1514,6 @@ class UserController extends Controller
         ]);
 
         $userTarget = $this->userRepo->find($data['target_id']);
-        return response()->json([
-            'status' =>  $userTarget,
-        ]);
 
         $owner = auth()->user();
         $record = $this->followRepo->where('user_id', $owner->id)
@@ -1534,20 +1532,26 @@ class UserController extends Controller
 
             $record->delete();
         } elseif ($data['status'] == 'FOLLOW' && empty($record->id)) {
-            $noti = $this->notificationRepository->create([
-                'delivery_name' => 'EMOLE',
-                'delivery_contents' => $owner->given_name . 'さんにフォローされました',
-                'subject' => '',
-                'url' => config('common.frontend_profile') . '/' . $owner->user_name
-            ]);
-
+            
+            if (isset($userTarget->is_enable_email_notification)) {
+                $noti = $this->notificationRepository->create([
+                    'delivery_name' => 'EMOLE',
+                    'delivery_contents' => $owner->given_name . 'さんにフォローされました',
+                    'subject' => '',
+                    'url' => config('common.frontend_profile') . '/' . $owner->user_name
+                ]);
+                $this->userNotificationRepository->addNotiForUser($data['target_id'], $noti->id);
+                if (!empty($userTarget->email)) {
+                    Mail::to($userTarget->email)->queue(new NotifyFollowMail($owner->given_name . 'さんにフォローされました'));
+                }
+            }
+            
             $this->followRepo->create([
                 'user_id' => $owner->id,
                 'target_id' => $data['target_id'],
-                'notification_id' => $noti->id
+                'notification_id' => $noti->id ?? 0
             ]);
 
-            $this->userNotificationRepository->addNotiForUser($data['target_id'], $noti->id);
         }
 
         return response()->json([
