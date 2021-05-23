@@ -13,6 +13,6 @@ interface FollowRepository extends RepositoryInterface
 {
     public function getListFollowByUser($userId);
 
-    public function getListFollowerByUser($userId, $page, $limit);
+    public function getListFollowerByUser($userId);
 
 }

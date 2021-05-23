@@ -1625,24 +1625,22 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function getFollower(Request $request)
+    public function getFollower()
     {
         $owner = auth()->user();
-        $req = $request->all();
-        $currentPage = 1;
-        $limit  = config('common.paging');
-        if(!empty($req['current_page'])) {
-            $currentPage = $req['current_page'];
-        }
-        if(!empty($req['limit'])) {
-            $limit = $req['limit'];
-        }
 
-        $list = $this->followRepo->getListFollowerByUser($owner->id, $currentPage, $limit);
-
+        $lists = $this->followRepo->getListFollowerByUser($owner->id);
+        foreach($lists as $list) {
+            $listPortfolio = Portfolio::where('user_id', $list->id)->get();
+            $arrayPortfolio = [];
+            foreach($listPortfolio as $image) {
+                array_push($arrayPortfolio, $image->image[0]);
+            }
+            $list->portfolio = $arrayPortfolio;
+        }
         return response()->json([
             'status' => true,
-            'data' => $list,
+            'data' => $lists,
         ]);
     }
 
