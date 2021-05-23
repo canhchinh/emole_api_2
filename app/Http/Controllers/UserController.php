@@ -1532,8 +1532,7 @@ class UserController extends Controller
 
             $record->delete();
         } elseif ($data['status'] == 'FOLLOW' && empty($record->id)) {
-            return isset($userTarget->is_enable_email_notification);
-            if (isset($userTarget->is_enable_email_notification)) {
+            if ($userTarget->is_enable_email_notification) {
                 $noti = $this->notificationRepository->create([
                     'delivery_name' => 'EMOLE',
                     'delivery_contents' => $owner->given_name . 'さんにフォローされました',
