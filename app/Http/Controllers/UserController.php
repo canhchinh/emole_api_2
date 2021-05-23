@@ -1512,10 +1512,16 @@ class UserController extends Controller
             'target_id', 'status',
         ]);
 
+        $userTarget = $this->userRepo->find($data['target_id']);
+        return response()->json([
+            'status' =>  $userTarget,
+        ]);
+
         $owner = auth()->user();
         $record = $this->followRepo->where('user_id', $owner->id)
             ->where('target_id', $data['target_id'])
             ->first();
+        
 
         if ($data['status'] == 'UNFOLLOW' && !empty($record->id)) {
             $noti = $this->notificationRepository->where('id', $record->notification_id)
