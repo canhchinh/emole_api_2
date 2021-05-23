@@ -40,8 +40,7 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
     public function getListFollowByUser($userId)
     {
         $query = $this->join('users', 'users.id', '=', 'follows.target_id')
-            ->where('users.active', 1)
-            ->where('follows.user_id', $userId)
+            ->where(['follows.user_id' => $userId, 'users.active' => 1])
             ->selectRaw("
                 users.id,
                 users.gender,
