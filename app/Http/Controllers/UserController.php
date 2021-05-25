@@ -266,7 +266,7 @@ class UserController extends Controller
         $data = [
             'token' => $token,
             'email' => $user->email,
-            'urlActive' => config('common.frontend_url') . '/active/'
+            'urlActive' => config('common.frontend_url') . 'active/'
         ];
 
         Mail::to($user->email)->queue(new ActiveRegisterMail($data));
