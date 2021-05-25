@@ -1776,7 +1776,7 @@ class UserController extends Controller
         $user = auth()->user();
 
         $data = $this->educationRepo->where('user_id', $user->id)
-            ->orderBy('start_date', 'ASC')
+            ->orderBy('id', 'ASC')
             ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description', 'link'])
             ->get();
 
