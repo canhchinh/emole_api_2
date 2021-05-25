@@ -266,7 +266,7 @@ class UserController extends Controller
         $data = [
             'token' => $token,
             'email' => $user->email,
-            'urlActive' => config('common.frontend_url') . 'active/'
+            'urlActive' => config('common.frontend_url') . '/active/'
         ];
 
         Mail::to($user->email)->queue(new ActiveRegisterMail($data));
@@ -767,6 +767,8 @@ class UserController extends Controller
                 'user_id' => $user->id,
                 'title' => $item['title'],
                 'role' => $item['role'],
+                'link' => $item['link'],
+                'description' => $item['description'],
                 'start_date' => $this->validateDate($item['start_date']) ? \DateTime::createFromFormat('Y-m-d', $item['start_date'])->format('Y-m-d') : null,
                 'end_date' => $this->checkValidateEndDate($item['is_still_active'], $item['end_date']),
                 'is_still_active' => $item['is_still_active'],
