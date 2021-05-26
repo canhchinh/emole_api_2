@@ -78,7 +78,7 @@ class UserImageController extends Controller
     }
 
     private function isRemoveImage($listId, $userId) {
-        return $this->userImageRepo->where('user_id', array_unique($userId))->whereIn("id", $listId)->delete();
+        return $this->userImageRepo->where('user_id', $userId)->whereIn("id", array_unique($listId))->delete();
     }
 
     /**
