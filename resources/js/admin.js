@@ -81,6 +81,7 @@ var Admin = (function () {
 
             $(".change-status-notify").on("change", function (e) {
                 var $this = $(this);
+                var firstStatus = $this.data('first-status');
                 var val = $(this).val();
                 $.ajax({
                     type: $this.data("method"),
@@ -89,6 +90,10 @@ var Admin = (function () {
                 }).done(function (data) {
                     if (data.hasOwnProperty("success") && data.success) {
                         window.location.href = $("#filter-notify-status").val();
+                    }
+                    if (data.hasOwnProperty("success") && data.success == false) {
+                        $this.val(firstStatus);
+                        alert(data.message);
                     }
                 });
             });
