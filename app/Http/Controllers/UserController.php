@@ -1993,7 +1993,7 @@ class UserController extends Controller
             $user = $request->user();
             $careerIds = $req['career_ids'];
             if (!empty($req['remove_image_ids'])) {
-                $imageUrls = $this->userImageRepo->whereIn('id', $req['remove_image_ids'])
+                $imageUrls = $this->userImageRepo->whereIn('id', array_unique($req['remove_image_ids']))
                     ->where('user_id', $user->id)
                     ->get();
                 if (empty($imageUrls)) {
