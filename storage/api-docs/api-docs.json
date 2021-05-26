@@ -1303,12 +1303,23 @@
             }
         },
         "/callback/facebook": {
-            "get": {
+            "patch": {
                 "tags": [
                     "Callback facebook"
                 ],
                 "summary": "Function call back facebook",
                 "operationId": "callback_facebook",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "description": "Access token",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",

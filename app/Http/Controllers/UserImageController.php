@@ -50,6 +50,9 @@ class UserImageController extends Controller
     {
         try {
             $user = $request->user();
+            if ($request->imageRemove) {
+                $this->isRemoveImage($request->imageRemove, $user->id);
+            }
             $files = $request->images;
             foreach ($files as $file) {
                 $extension = explode('/', mime_content_type($file))[1];
@@ -72,6 +75,10 @@ class UserImageController extends Controller
                 'message' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    private function isRemoveImage($listId, $userId) {
+        return $this->userImageRepo->where('user_id', $userId)->whereIn("id", $listId)->delete();
     }
 
     /**

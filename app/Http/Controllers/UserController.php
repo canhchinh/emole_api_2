@@ -42,6 +42,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateAvatarRequest;
 use App\Mail\ActiveRegisterMail;
+use App\Mail\NotifyFollowMail;
 use App\Mail\ToUser;
 use App\Services\FacebookService;
 use App\Repositories\UserNotificationRepository;
@@ -766,11 +767,11 @@ class UserController extends Controller
                 'user_id' => $user->id,
                 'title' => $item['title'],
                 'role' => $item['role'],
+                'link' => $item['link'],
+                'description' => $item['description'],
                 'start_date' => $this->validateDate($item['start_date']) ? \DateTime::createFromFormat('Y-m-d', $item['start_date'])->format('Y-m-d') : null,
                 'end_date' => $this->checkValidateEndDate($item['is_still_active'], $item['end_date']),
                 'is_still_active' => $item['is_still_active'],
-                'link' => $item['link'],
-                'description' => $item['description'],
             ];
             $this->educationRepo->create($param);
         }
@@ -1514,10 +1515,13 @@ class UserController extends Controller
             'target_id', 'status',
         ]);
 
+        $userTarget = $this->userRepo->find($data['target_id']);
+
         $owner = auth()->user();
         $record = $this->followRepo->where('user_id', $owner->id)
             ->where('target_id', $data['target_id'])
             ->first();
+        
 
         if ($data['status'] == 'UNFOLLOW' && !empty($record->id)) {
             $noti = $this->notificationRepository->where('id', $record->notification_id)
@@ -1530,20 +1534,27 @@ class UserController extends Controller
 
             $record->delete();
         } elseif ($data['status'] == 'FOLLOW' && empty($record->id)) {
-            $noti = $this->notificationRepository->create([
-                'delivery_name' => 'EMOLE',
-                'delivery_contents' => $owner->given_name . 'さんにフォローされました',
-                'subject' => '',
-                'url' => config('common.frontend_profile') . '/' . $owner->user_name
-            ]);
-
+            if ($userTarget->is_enable_email_notification) {
+                $noti = $this->notificationRepository->create([
+                    'delivery_name' => 'EMOLE',
+                    'delivery_contents' => $owner->given_name . 'さんにフォローされました',
+                    'subject' => '',
+                    'url' => config('common.frontend_profile') . '/' . $owner->user_name
+                ]);
+                $this->userNotificationRepository->addNotiForUser($data['target_id'], $noti->id);
+                if (!empty($userTarget->email)) {
+                    Mail::to($userTarget->email)->queue(new NotifyFollowMail([
+                        "content" => $owner->given_name . 'さんにフォローされました',
+                    ]));
+                }
+            }
+            
             $this->followRepo->create([
                 'user_id' => $owner->id,
                 'target_id' => $data['target_id'],
-                'notification_id' => $noti->id
+                'notification_id' => $noti->id ?? 0
             ]);
 
-            $this->userNotificationRepository->addNotiForUser($data['target_id'], $noti->id);
         }
 
         return response()->json([
@@ -1616,24 +1627,22 @@ class UserController extends Controller
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
      */
-    public function getFollower(Request $request)
+    public function getFollower()
     {
         $owner = auth()->user();
-        $req = $request->all();
-        $currentPage = 1;
-        $limit  = config('common.paging');
-        if(!empty($req['current_page'])) {
-            $currentPage = $req['current_page'];
-        }
-        if(!empty($req['limit'])) {
-            $limit = $req['limit'];
-        }
 
-        $list = $this->followRepo->getListFollowerByUser($owner->id, $currentPage, $limit);
-
+        $lists = $this->followRepo->getListFollowerByUser($owner->id);
+        foreach($lists as $list) {
+            $listPortfolio = Portfolio::where('user_id', $list->id)->get();
+            $arrayPortfolio = [];
+            foreach($listPortfolio as $image) {
+                array_push($arrayPortfolio, $image->image[0]);
+            }
+            $list->portfolio = $arrayPortfolio;
+        }
         return response()->json([
             'status' => true,
-            'data' => $list,
+            'data' => $lists,
         ]);
     }
 
@@ -1769,7 +1778,7 @@ class UserController extends Controller
         $user = auth()->user();
 
         $data = $this->educationRepo->where('user_id', $user->id)
-            ->orderBy('start_date', 'ASC')
+            ->orderBy('id', 'ASC')
             ->select(['id', 'title', 'role', 'start_date', 'end_date', 'is_still_active', 'description', 'link'])
             ->get();
 
@@ -2198,14 +2207,15 @@ class UserController extends Controller
         }
 
         if ($userSearch->instagram_user) {
-            $access_token = Session::get('access_token');
+            $access_token = $userSearch->access_token;
             if ($access_token) {
                 $this->fb->getFacebook()->setDefaultAccessToken($access_token);
             }
 
-            $snsFollowersCount['instagram'] = $this->fb->getFollowersCount($userSearch->instagram_user);
+            $snsFollowersCount['instagram'] = $this->fb->getFollowersCount($userSearch->instagram_id);
         }
 
+        unset($userSearch['access_token']);
         return response()->json([
             'status' => true,
             'data' => [
@@ -2259,12 +2269,12 @@ class UserController extends Controller
         }
 
         if ($userSearch->instagram_user) {
-            $access_token = Session::get('access_token');
+            $access_token = $userSearch->access_token;
             if ($access_token) {
                 $this->fb->getFacebook()->setDefaultAccessToken($access_token);
             }
 
-            $snsFollowersCount['instagram'] = $this->fb->getFollowersCount($userSearch->instagram_user);
+            $snsFollowersCount['instagram'] = $this->fb->getFollowersCount($userSearch->instagram_id);
         }
 
         return response()->json([

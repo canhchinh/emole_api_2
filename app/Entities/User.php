@@ -54,6 +54,8 @@ class User extends Authenticatable implements Transformable
         'twitter_user',
         'tiktok_user',
         'instagram_user',
+        'access_token',
+        'instagram_id',
         'youtube_channel',
         'facebook_user',
         'line_user',

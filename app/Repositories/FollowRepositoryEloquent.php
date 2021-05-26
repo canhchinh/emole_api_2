@@ -41,6 +41,7 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
     {
         $query = $this->join('users', 'users.id', '=', 'follows.target_id')
             ->where('follows.user_id', $userId)
+            ->where('users.active', '<>', 0)
             ->selectRaw("
                 users.id,
                 users.gender,
@@ -55,26 +56,22 @@ class FollowRepositoryEloquent extends BaseRepository implements FollowRepositor
         return $query->paginate(config('common.paging'));
     }
 
-    public function getListFollowerByUser($userId, $page, $limit)
+    public function getListFollowerByUser($userId)
     {
-        $query = $this->where('target_id', $userId)->select(['id', 'user_id', 'target_id']);
-
-        if ($page >= 1) {
-            Paginator::currentPageResolver(function () use ($page) {
-                return $page;
-            });
-        }
-
-        $query = $query->paginate($limit);
-        $followerIds = [];
-        $data = $query->toArray();
-
-        foreach($data['data'] as $item) {
-            array_push($followerIds, $item['user_id']);
-        }
-        $followers = User::whereIn('id', $followerIds)->get();
-        $data['data'] = $followers;
-
-        return $data;
+        $query = $this->Join('users', 'users.id', '=', 'follows.user_id')
+            ->where('follows.target_id', $userId)
+            ->where('users.active', '<>', 0)
+            ->selectRaw("
+                users.id,
+                users.gender,
+                users.user_name,
+                users.given_name,
+                users.title,
+                users.profession,
+                users.self_introduction,
+                users.avatar,
+                users.birthday
+            ");
+        return $query->paginate(config('common.paging'));
     }
 }

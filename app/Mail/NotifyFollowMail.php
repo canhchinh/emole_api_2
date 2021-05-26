@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ActiveRegisterMail extends Mailable
+class NotifyFollowMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -30,7 +30,7 @@ class ActiveRegisterMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('【emole】メールアドレスの確認をして登録を完了しよう')
-                    ->view('mail.mail_register', $this->params);
+        return $this->subject('【emole】notify follow')
+                    ->view('mail.mail_notify_follow', $this->params);
     }
 }
