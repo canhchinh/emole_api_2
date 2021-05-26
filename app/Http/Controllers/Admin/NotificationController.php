@@ -65,6 +65,8 @@ class NotificationController extends Controller
     {
         $career = $this->careerRepository->select()->get();
         if ($request->isMethod('post')) {
+            $storingState = ($request->get('storingType', 'draft') ==  Notification::STATUS_PUBLIC) ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
+
             $messages = [
                 'career_ids.required' => 'キャリアIDフィールドは必須です。',
                 'delivery_name.required' => '配達名フィールドが必要です。',
@@ -76,13 +78,20 @@ class NotificationController extends Controller
                 'url.url' => '転送先のURLが正しい形式ではありません。',
             ];
 
-            $validator = Validator::make($request->all(), [
-                'delivery_name' => 'required|min:2',
-                'career_ids' => 'required',
-                'delivery_contents' => 'required|max:160|min:2',
-                'subject' => 'required|max:255|min:2',
-                'url' => 'nullable|url',
-            ], $messages);
+            $rules = [
+                'delivery_name' => 'required',
+            ];
+
+            if ($storingState == Notification::STATUS_PUBLIC) {
+                $rules = array_merge($rules, [
+                    'career_ids' => 'required',
+                    'delivery_contents' => 'required|max:160|min:2',
+                    'subject' => 'required|max:255|min:2',
+                    'url' => 'nullable|url',
+                ]);
+            }
+
+            $validator = Validator::make($request->all(), $rules, $messages);
 
             if ($validator->validated()) {
                 $notify = new Notification();
@@ -139,6 +148,20 @@ class NotificationController extends Controller
                 $notify = $query->where(['id' => $id])->first();
                 if ($newStatus != $notify->status) {
                     $notify->status = $newStatus;
+                    if ($notify->status == Notification::STATUS_PUBLIC) {
+                        $rules = [
+                            'delivery_name' => 'required',
+                            'career_ids' => 'required',
+                            'delivery_contents' => 'required|max:160|min:2',
+                            'subject' => 'required|max:255|min:2',
+                            'url' => 'nullable|url',
+                        ];
+
+                        $validator = Validator::make($notify->toArray(), $rules);
+                        if ($validator->fails()) {
+                            return response()->json(['success' => false, 'message' => '必須項目を入力してください。']);
+                        }
+                    }
                     if ($notify->save()) {
                         if ($notify->status == Notification::STATUS_PUBLIC) {
                             $this->userNotificationRepository->addNotification($notify);
