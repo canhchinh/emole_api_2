@@ -1544,7 +1544,8 @@ class UserController extends Controller
                 $this->userNotificationRepository->addNotiForUser($data['target_id'], $noti->id);
                 if (!empty($userTarget->email)) {
                     Mail::to($userTarget->email)->queue(new NotifyFollowMail([
-                        "content" => $owner->given_name . 'さんにフォローされました',
+                        "user_name" => $owner->user_name,
+                        'url' => config('common.frontend_profile') . '/' . $owner->user_name,
                     ]));
                 }
             }

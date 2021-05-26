@@ -24,7 +24,8 @@
 </head>
 
 <body>
-    <p>{{$content}}</p>
+    <p>{{$user_name}}さんがあなたのアカウントをフォローしました</p>
+    <a href="{{$url}}">{{$user_name}}さんのプロフィールを確認</a>
 </body>
 
 </html>
