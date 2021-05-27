@@ -128,7 +128,7 @@ class LineNotifyController extends Controller
             $message = (new LaravelLineMessage())->message($request->message);
             $user = auth()->user();
             $token = $this->lineNotifyAccessTokenRepo->where('user_id', $user->id)->first();
-            app('line-notify')->sendNotify($message, $token->line_notify_access_token);
+            app('line-notify')->sendNotify("<a href='https://www.google.com/'>click</a>", $token->line_notify_access_token);
             return response()->json([
                 'status' => true
             ]);
