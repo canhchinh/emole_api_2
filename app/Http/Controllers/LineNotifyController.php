@@ -126,7 +126,7 @@ class LineNotifyController extends Controller
         ]);
 
         try {
-            $message = (new LaravelLineMessage());
+            $message = (new LaravelLineMessage())->message($request->message)->http(["google" => $request->url]);
             return response()->json([
                 'status' => $message,
             ]);
