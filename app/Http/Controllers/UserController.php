@@ -1547,19 +1547,17 @@ class UserController extends Controller
                         "user_name" => $owner->user_name,
                         'url' => config('common.frontend_profile') . '/' . $owner->user_name,
                     ]));
+                    $this->followRepo->updateOrCreate([
+                        'user_id' => $owner->id,
+                        'target_id' => $data['target_id'],
+                        'notification_id' => $noti->id ?? 0
+                    ],[
+                        'user_id' => $owner->id,
+                        'target_id' => $data['target_id'],
+                        'notification_id' => $noti->id ?? 0
+                    ]);
                 }
             }
-            
-            $this->followRepo->updateOrCreate([
-                'user_id' => $owner->id,
-                'target_id' => $data['target_id'],
-                'notification_id' => $noti->id ?? 0
-            ],[
-                'user_id' => $owner->id,
-                'target_id' => $data['target_id'],
-                'notification_id' => $noti->id ?? 0
-            ]);
-
         }
 
         return response()->json([
