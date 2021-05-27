@@ -1521,6 +1521,9 @@ class UserController extends Controller
         $record = $this->followRepo->where('user_id', $owner->id)
             ->where('target_id', $data['target_id'])
             ->first();
+        return response()->json([
+            'status' => $record,
+        ]);
         
 
         if ($data['status'] == 'UNFOLLOW' && !empty($record->id)) {
@@ -1547,15 +1550,12 @@ class UserController extends Controller
                         "user_name" => $owner->user_name,
                         'url' => config('common.frontend_profile') . '/' . $owner->user_name,
                     ]));
-                    $this->followRepo->updateOrCreate([
-                        'user_id' => $owner->id,
-                        'target_id' => $data['target_id'],
-                        'notification_id' => $noti->id ?? 0
-                    ],[
-                        'user_id' => $owner->id,
-                        'target_id' => $data['target_id'],
-                    ]);
                 }
+                $this->followRepo->updateOrCreate([
+                    'user_id' => $owner->id,
+                    'target_id' => $data['target_id'],
+                    'notification_id' => $noti->id ?? 0
+                ]);
             }
         }
 
