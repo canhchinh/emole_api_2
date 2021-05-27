@@ -868,14 +868,13 @@ class UserController extends Controller
             $user = auth()->user();
             $req = $request->all();
             $members = $req['members'];
-            return response()->json([
-                'status' => $members,
-            ]);
 
             if(!empty($members)) {
                 $memberIds = [];
                 foreach($members as $member) {
-                    array_push($memberIds, $member['id']);
+                    if(!empty($member['id'])) {
+                        array_push($memberIds, $member['id']);
+                    }
                 }
                 $userIds = $this->userRepo->whereIn('id', $memberIds)->pluck('id');
                 if (empty($userIds) || (count($memberIds) != count($userIds))) {
