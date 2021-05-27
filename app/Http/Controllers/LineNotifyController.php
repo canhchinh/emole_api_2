@@ -122,10 +122,14 @@ class LineNotifyController extends Controller
     {
         $request->validate([
             'message' => 'required',
+            "url" => 'required',
         ]);
 
         try {
-            $message = (new LaravelLineMessage())->message($request->message);
+            $message = (new LaravelLineMessage())->message($request->message)->http(["google" => $request->url]);
+            return response()->json([
+                'status' => $message,
+            ]);
             $user = auth()->user();
             $token = $this->lineNotifyAccessTokenRepo->where('user_id', $user->id)->first();
             app('line-notify')->sendNotify($message, $token->line_notify_access_token);

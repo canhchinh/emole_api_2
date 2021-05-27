@@ -30,7 +30,7 @@ class NotifyFollowMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('【emole】notify follow')
+        return $this->subject('【emole】フォローされました')
                     ->view('mail.mail_notify_follow', $this->params);
     }
 }

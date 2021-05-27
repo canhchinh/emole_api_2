@@ -1521,7 +1521,6 @@ class UserController extends Controller
         $record = $this->followRepo->where('user_id', $owner->id)
             ->where('target_id', $data['target_id'])
             ->first();
-        
 
         if ($data['status'] == 'UNFOLLOW' && !empty($record->id)) {
             $noti = $this->notificationRepository->where('id', $record->notification_id)
@@ -1542,19 +1541,18 @@ class UserController extends Controller
                     'url' => config('common.frontend_profile') . '/' . $owner->user_name
                 ]);
                 $this->userNotificationRepository->addNotiForUser($data['target_id'], $noti->id);
+                $this->followRepo->create([
+                    'user_id' => $owner->id,
+                    'target_id' => $data['target_id'],
+                    'notification_id' => $noti->id ?? 0
+                ]);
                 if (!empty($userTarget->email)) {
                     Mail::to($userTarget->email)->queue(new NotifyFollowMail([
-                        "content" => $owner->given_name . 'さんにフォローされました',
+                        "user_name" => $owner->user_name,
+                        'url' => config('common.frontend_profile') . '/' . $owner->user_name,
                     ]));
                 }
             }
-            
-            $this->followRepo->create([
-                'user_id' => $owner->id,
-                'target_id' => $data['target_id'],
-                'notification_id' => $noti->id ?? 0
-            ]);
-
         }
 
         return response()->json([
@@ -1993,7 +1991,7 @@ class UserController extends Controller
             $user = $request->user();
             $careerIds = $req['career_ids'];
             if (!empty($req['remove_image_ids'])) {
-                $imageUrls = $this->userImageRepo->whereIn('id', $req['remove_image_ids'])
+                $imageUrls = $this->userImageRepo->whereIn('id', array_unique($req['remove_image_ids']))
                     ->where('user_id', $user->id)
                     ->get();
                 if (empty($imageUrls)) {
