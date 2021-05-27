@@ -61,6 +61,9 @@ class NotificationRepositoryEloquent extends BaseRepository implements Notificat
             $query->where('delivery_name', 'LIKE', '%' . $search . '%');
         }
 
+        $query->where('delivery_name', '!=' , 'EMOLE');
+        $query->where('delivery_contents', 'NOT LIKE' , '%にフォローされました%');
+
         $query->orderBy($request->input('sort', 'created_at'), $request->input('arrange', 'desc'));
 
         return $query->paginate(3);
