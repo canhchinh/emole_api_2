@@ -1556,7 +1556,8 @@ class UserController extends Controller
                 'notification_id' => $noti->id ?? 0
             ],[
                 'user_id' => $owner->id,
-                'target_id' => $data['target_id']
+                'target_id' => $data['target_id'],
+                'notification_id' => $noti->id ?? 0
             ]);
 
         }
