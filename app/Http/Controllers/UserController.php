@@ -868,6 +868,9 @@ class UserController extends Controller
             $user = auth()->user();
             $req = $request->all();
             $members = $req['members'];
+            return response()->json([
+                'status' => $members,
+            ]);
 
             if(!empty($members)) {
                 $memberIds = [];
