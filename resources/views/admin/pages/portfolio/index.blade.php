@@ -135,11 +135,11 @@
                             data-url-change-status="{{ route('admin.portfolio.update.status', ['id' => $portfolio->id, 'key' => 'status']) }}">
                             <option value="{{ \App\Entities\Portfolio::PUBLIC_YES }}" @if ($portfolio->is_public ==
                                 \App\Entities\Portfolio::PUBLIC_YES) selected @endif
-                                >公開
+                                >全ての人に公開
                             </option>
                             <option value="{{ \App\Entities\Portfolio::PUBLIC_NO }}" @if ($portfolio->is_public ==
                                 \App\Entities\Portfolio::PUBLIC_NO) selected @endif
-                                >非公開
+                                >許可した人にのみ
                             </option>
                         </select>
                     </div>
@@ -148,11 +148,11 @@
                             data-url-change-status="{{ route('admin.portfolio.update.status', ['id' => $portfolio->id, 'key' => 'active']) }}">
                             <option value="{{ \App\Entities\Portfolio::PUBLIC_YES }}" @if ($portfolio->is_status ==
                                 \App\Entities\Portfolio::STATUS_SHOW) selected @endif
-                                >Show
+                                >公開
                             </option>
                             <option value="{{ \App\Entities\Portfolio::PUBLIC_NO }}" @if ($portfolio->is_status ==
                                 \App\Entities\Portfolio::STATUS_HIDDEN) selected @endif
-                                >Hidden
+                                >非公開
                             </option>
                         </select>
                     </div>
