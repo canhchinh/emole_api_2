@@ -872,7 +872,7 @@ class UserController extends Controller
             if(!empty($members)) {
                 $memberIds = [];
                 foreach($members as $member) {
-                    if($member['id']) {
+                    if(isset($member['id'])) {
                         array_push($memberIds, $member['id']);
                     }
                 }
