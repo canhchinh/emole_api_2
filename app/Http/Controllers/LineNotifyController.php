@@ -126,9 +126,6 @@ class LineNotifyController extends Controller
 
         try {
             $message = (new LaravelLineMessage())->message($request->message);
-            return response()->json([
-                'status' => $message,
-            ]);
             $user = auth()->user();
             $token = $this->lineNotifyAccessTokenRepo->where('user_id', $user->id)->first();
             app('line-notify')->sendNotify($message, $token->line_notify_access_token);
