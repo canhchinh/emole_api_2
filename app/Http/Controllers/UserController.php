@@ -973,6 +973,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => true,
+                "id" => $portfolio->id,
             ]);
         } catch (\Exception $e) {
             return response()->json([
