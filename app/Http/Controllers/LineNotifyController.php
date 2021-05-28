@@ -122,11 +122,10 @@ class LineNotifyController extends Controller
     {
         $request->validate([
             'message' => 'required',
-            "url" => 'required',
         ]);
 
         try {
-            $message = (new LaravelLineMessage())->message($request->message)->http(["google" => $request->url]);
+            $message = (new LaravelLineMessage())->message($request->message);
             return response()->json([
                 'status' => $message,
             ]);
