@@ -871,6 +871,9 @@ class UserController extends Controller
 
             if(!empty($members)) {
                 $memberIds = [];
+                return response()->json([
+                    'status' => $members ,
+                ]);
                 foreach($members as $member) {
                     if(isset($member['id'])) {
                         array_push($memberIds, $member['id']);
