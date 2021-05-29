@@ -1918,7 +1918,6 @@ class UserController extends Controller
                 array_push($memberConvert, $member);
             }
         }
-        return $memberConvert;
         $portfolio['members'] = $memberConvert;
         $jobIds = [];
         $jobIds = $this->portfolioJobRepo
