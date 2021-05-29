@@ -1911,9 +1911,10 @@ class UserController extends Controller
             ->get();
         if(!empty($portfolioMembers)) {
             foreach($portfolioMembers as $portfolioMember) {
+                $active = $this->userRepo->where("id", $portfolioMember->member_id)->get();
                 $member = $portfolioMember['member'];
                 $member['role'] = $portfolioMember['role'];
-                $member['status'] = $this->userRepo->where("id", $portfolioMember->member_id)->get()->active ?? 0;
+                $member['status'] =  $active->active ?? 0;
                 array_push($memberConvert, $member);
             }
         }
