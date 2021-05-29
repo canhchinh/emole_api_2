@@ -1909,16 +1909,16 @@ class UserController extends Controller
             ->where('portfolio_id', $portfolio->id)
             ->with(['member'])
             ->get();
-        return $portfolioMembers;
         if(!empty($portfolioMembers)) {
             foreach($portfolioMembers as $portfolioMember) {
                 $member = $portfolioMember['member'];
                 $member['role'] = $portfolioMember['role'];
+                $member['status'] = $this->userRepo->find($portfolioMember->id)->active ?? 0;
                 array_push($memberConvert, $member);
             }
         }
+        return $memberConvert;
         $portfolio['members'] = $memberConvert;
-
         $jobIds = [];
         $jobIds = $this->portfolioJobRepo
             ->where('portfolio_id', $portfolio->id)
