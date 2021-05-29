@@ -1913,7 +1913,7 @@ class UserController extends Controller
             foreach($portfolioMembers as $portfolioMember) {
                 $member = $portfolioMember['member'];
                 $member['role'] = $portfolioMember['role'];
-                $member['status'] = $this->userRepo->where("id", $portfolioMember->member_id)->active ?? 0;
+                $member['status'] = $this->userRepo->where("id", $portfolioMember->member_id)->active ? 1 : 0;
                 array_push($memberConvert, $member);
             }
         }
