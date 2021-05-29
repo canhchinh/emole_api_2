@@ -1909,6 +1909,7 @@ class UserController extends Controller
             ->where('portfolio_id', $portfolio->id)
             ->with(['member'])
             ->get();
+        return $portfolioMembers;
         if(!empty($portfolioMembers)) {
             foreach($portfolioMembers as $portfolioMember) {
                 $member = $portfolioMember['member'];
