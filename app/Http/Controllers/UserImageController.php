@@ -115,7 +115,7 @@ class UserImageController extends Controller
             }
 
             $images = $this->userImageRepo->where('user_id', $userId)
-                ->select(['id', 'url'])->limit(9)->get();
+                ->select(['id', 'url'])->limit(9)->orderBy("id","DESC")->get();
             if (!empty($images)) {
                 $images->map(function ($value) {
                     $value->url = config('common.app_url') . $value->url;
