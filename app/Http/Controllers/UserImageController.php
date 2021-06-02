@@ -54,7 +54,7 @@ class UserImageController extends Controller
                 'name' => $user->user_name,
                 'date' => date('Y-m-d H:i:s'),
             ];
-            \Log::channel('user_action_upload')->info("upload Images profile ". json_encode($infoUserJson));
+            \Log::channel('userActionUpload')->info("upload Images profile ". json_encode($infoUserJson));
             if ($request->imageRemove) {
                 $this->isRemoveImage($request->imageRemove, $user->id);
             }

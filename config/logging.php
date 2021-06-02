@@ -99,7 +99,7 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
-        'user_action_upload' => [
+        'userActionUpload' => [
             'driver' => 'single',
             'level'  => 'info',
             'path'   => storage_path('logs/all-action-upload.log'),
