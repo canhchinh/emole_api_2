@@ -100,7 +100,7 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
         'userActionUpload' => [
-            'driver' => 'single',
+            'driver' => 'auth',
             'level'  => 'info',
             'path'   => storage_path('logs/all-action-upload.log'),
         ],
