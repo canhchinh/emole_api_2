@@ -5,6 +5,7 @@ namespace App\Services;
 use Facebook\Exceptions\FacebookSDKException;
 use Illuminate\Support\Facades\Log;
 use \Facebook\Facebook;
+use GuzzleHttp;
 
 class FacebookService {
     const DEFAULT_GRAPH_VERSION = 'v10.0';
@@ -110,6 +111,30 @@ class FacebookService {
         } catch (\Exception $e) {
             Log::error("Facebook Get Followers Count Exception : " . $e->getMessage());
             return 0;
+        }
+    }
+
+    /**
+     * @param $access_token
+     * @return any
+     */
+    public function getUserInstagram($access_token){
+        try {
+            $client = new GuzzleHttp\Client();
+            $res = $client->get(
+                'https://graph.facebook.com/me',
+                [
+                    'query' => [
+                        'access_token' => $access_token,
+                        'fields' => 'accounts{connected_instagram_account}'
+                    ]
+                ]
+            );
+            $data = $res->getBody();
+            return json_decode($data);
+        } catch(\Exception $e) {
+            Log::error("Facebook Response Exception : " . $e->getMessage());
+            return null;
         }
     }
 }
