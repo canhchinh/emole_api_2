@@ -59,7 +59,7 @@ class SocialController extends Controller
         $access_token = $this->fbService->getLongTermToken($token);
         $connected_instagram_account_id = null;
         $user_name = null;
-        if ($user_info && $user_info['accounts']) {
+        if ($user_info && !empty($user_info['accounts'])) {
             $connected_instagram_account_id = $user_info['accounts']['data'][0]['connected_instagram_account']['id'];
             $user_info = $this->fbService->getUserInfo("$connected_instagram_account_id?fields=username");
             $user_name = $user_info["username"];
