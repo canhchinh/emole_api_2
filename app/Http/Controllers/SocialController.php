@@ -67,7 +67,7 @@ class SocialController extends Controller
         // }
         return response()->json([
             'access_token' => $access_token,
-            'id_ig' => $user_info->id,
+            'id_ig' => $user_info && $user_info->id ? $user_info->id : null,
             'username_ig' => $user_name,
         ]);
     }
