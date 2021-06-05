@@ -2213,7 +2213,7 @@ class UserController extends Controller
                 $this->fb->getFacebook()->setDefaultAccessToken($access_token);
             }
 
-            $snsFollowersCount['instagram'] = $this->fb->getFollowersCount($userSearch->instagram_id);
+            $snsFollowersCount['instagram'] = $this->fb->getFollowersCount($userSearch->instagram_id, $access_token);
         }
 
         unset($userSearch['access_token']);
@@ -2275,7 +2275,7 @@ class UserController extends Controller
                 $this->fb->getFacebook()->setDefaultAccessToken($access_token);
             }
 
-            $snsFollowersCount['instagram'] = $this->fb->getFollowersCount($userSearch->instagram_id);
+            $snsFollowersCount['instagram'] = $this->fb->getFollowersCount($userSearch->instagram_id, $access_token);
         }
 
         return response()->json([
