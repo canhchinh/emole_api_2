@@ -884,16 +884,16 @@ class UserController extends Controller
                 }
             }
 
-            $jobIds = $this->activityContentRepo->whereIn('id', $req['job_ids'])
-                ->where('key', 'job')
-                ->pluck('id');
+            // $jobIds = $this->activityContentRepo->whereIn('id', $req['job_ids'])
+            //     ->where('key', 'job')
+            //     ->pluck('id');
 
-            if (empty($jobIds) || (count($req['job_ids']) != count($jobIds))) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Job description not found',
-                ], 500);
-            }
+            // if (empty($jobIds) || (count($req['job_ids']) != count($jobIds))) {
+            //     return response()->json([
+            //         'status' => false,
+            //         'message' => 'Job description not found',
+            //     ], 500);
+            // }
 
             $imageUrl = [];
             if(count($req['images']) > 0) {
