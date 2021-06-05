@@ -97,18 +97,6 @@ class FacebookService {
             /**
              * @var \Facebook\FacebookResponse
              */
-            $client = new GuzzleHttp\Client();
-            $res = $client->get(
-                "https://graph.facebook.com/$user_id",
-                [
-                    'query' => [
-                        'access_token' => $access_token,
-                        'fields' => 'business_discovery'
-                    ]
-                ]
-            );
-            Log::error("Test save business instagram : " . json_decode($res->getBody()));
-
             $response = $this->fb->get(
                 "$user_id?fields=ig_id,name,followers_count"
             );

@@ -56,18 +56,18 @@ class SocialController extends Controller
         $connected_instagram_account_id = null;
         $user_name = null;
         $token = $request->get('token');
-        $user_info = $this->fbService->getUserInstagram($token);
         $access_token = $this->fbService->getLongTermToken($token);
-        // $this->fbService->getFacebook()->setDefaultAccessToken($token);
-        // $user_info = $this->fbService->getUserInfo('me?fields=accounts{connected_instagram_account}');
-        // if ($user_info && !empty($user_info['accounts'])) {
-        //     $connected_instagram_account_id = $user_info['accounts']['data'][0]['connected_instagram_account']['id'];
-        //     $user_info = $this->fbService->getUserInfo("$connected_instagram_account_id?fields=username");
-        //     $user_name = $user_info["username"];
-        // }
+        $this->fbService->getFacebook()->setDefaultAccessToken($token);
+        $user_info = $this->fbService->getUserInfo('me?fields=accounts{connected_instagram_account}');
+        if ($user_info && !empty($user_info['accounts'])) {
+            $connected_instagram_account_id = $user_info['accounts']['data'][0]['connected_instagram_account']['id'];
+            $user_info = $this->fbService->getUserInfo("$connected_instagram_account_id?fields=username");
+            $user_name = $user_info["username"];
+        }
+        
         return response()->json([
             'access_token' => $access_token,
-            'id_ig' => $user_info && $user_info->id ? $user_info->id : null,
+            'id_ig' => $connected_instagram_account_id,
             'username_ig' => $user_name,
         ]);
     }
