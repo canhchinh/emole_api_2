@@ -931,7 +931,7 @@ class UserController extends Controller
                 'cpa_count' => isset($req['cpa_count']) ? $req['cpa_count'] : null,
                 'video_link' => isset($req['video_link']) ? $req['video_link'] : null,
                 'work_link' => isset($req['work_link']) ? $req['work_link'] : null,
-                'work_description' => $req['work_description'],
+                'work_description' => $req['work_description'] ?? null,
                 'tags' => !empty($req['tags']) ? implode(":|||:", $req['tags']) : null,
             ];
 
