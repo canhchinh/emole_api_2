@@ -24,7 +24,6 @@ class PortfolioRequest extends Base
         return [
             'title' => 'required',
             'job_ids' => 'required',
-            'work_description' => 'required',
             'is_public' => 'required',
             'images' => 'required'
         ];
