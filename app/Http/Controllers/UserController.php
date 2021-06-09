@@ -1701,7 +1701,7 @@ class UserController extends Controller
         if (!empty($req['limit'])) {
             $limit = $req['limit'];
         }
-        $user = $this->userRepo->listUsers($user->id, $filters, $page, $limit);
+        $user = $this->userRepo->listUsers($user->id, $filters, $page, $limit, $req['query']);
         return response()->json([
             'status' => true,
             'data' => $user['data'],
