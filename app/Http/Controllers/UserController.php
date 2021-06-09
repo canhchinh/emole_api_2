@@ -1706,7 +1706,10 @@ class UserController extends Controller
             $query = $req['query'];
         }
         $user = $this->userRepo->listUsers($user->id, $filters, $page, $limit, $query);
-        return $user;
+        return response()->json([
+            'status' => true,
+            'user' => $user
+        ]);
         return response()->json([
             'status' => true,
             'data' => $user['data'],
