@@ -1692,6 +1692,7 @@ class UserController extends Controller
         $filters = [];
         $limit = 10;
         $user = auth()->user();
+        $query = false;
         if (!empty($req['current_page'])) {
             $page = $req['current_page'];
         }
@@ -1701,8 +1702,11 @@ class UserController extends Controller
         if (!empty($req['limit'])) {
             $limit = $req['limit'];
         }
-        $user = $this->userRepo->listUsers($user->id, $filters, $page, $limit, $req['query']);
-        return $user;
+        if (!empty($req['limit'])) {
+            $query = $req['query'];
+        }
+        return $query;
+        $user = $this->userRepo->listUsers($user->id, $filters, $page, $limit, $query);
         return response()->json([
             'status' => true,
             'data' => $user['data'],
