@@ -83,6 +83,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
     public function listUsers($userId, $filters = [],$page = 1, $limit=10, $query)
     {
+        return $query;
         $users = User::select('*')
             ->where('id', '<>', $userId)
             ->where('active', '<>', 0)
