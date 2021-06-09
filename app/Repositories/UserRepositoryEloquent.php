@@ -87,7 +87,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             ->where('id', '<>', $userId)
             ->where('active', '<>', 0)
             ->with(['activity_base', 'portfolio'])->orderBy('id', 'DESC');
-        if(!empty($query) && $query) {
+        if(!empty($query)) {
             $users->has('portfolio');
         }
         if(!empty($filters['keyword'])) {
