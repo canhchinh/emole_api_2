@@ -86,8 +86,8 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $users = User::select('*')
             ->where('id', '<>', $userId)
             ->where('active', '<>', 0)
-            ->with(['activity_base', 'portfolio'])->orderBy('id', 'DESC');
-        
+            ->with(['activity_base', 'portfolio'])->orderBy('id', 'DESC')->get();
+        return $users;
         if(!empty($filters['keyword'])) {
             $users->where('user_name', 'like', '%'.$filters['keyword'].'%')
             ->orWhere('given_name', 'like', '%'.$filters['keyword'].'%');
@@ -104,6 +104,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         } else {
             $targetIds = [];
         }
+
         $users = $users->paginate($limit);
         $users->getCollection()->transform(function ($user) use ($targetIds){
             if(in_array($user->id, $targetIds)) {
