@@ -81,7 +81,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         UserCareer::query()->where(['user_id' => $user->id])->delete();
     }
 
-    public function listUsers($userId, $filters = [],$page = 1, $limit=10, $query = false)
+    public function listUsers($userId, $filters = [],$page = 1, $limit=10, $query)
     {
         $users = User::select('*')
             ->where('id', '<>', $userId)
