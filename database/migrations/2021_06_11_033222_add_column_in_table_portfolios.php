@@ -14,7 +14,7 @@ class AddColumnInTablePortfolios extends Migration
     public function up()
     {
         Schema::table('portfolios', function (Blueprint $table) {
-            $table->json('career_id')->nullable()->after('title');
+            $table->text('career_id')->nullable()->after('title');
         });
     }
 
