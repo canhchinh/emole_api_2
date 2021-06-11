@@ -171,18 +171,14 @@ class CareerController extends Controller
         ]);
         $careerIds = $request->input('career_ids');
         $user = auth()->user();
-        $listOld = $this->userCareerRepo->where('user_id', $user->id)->get()->keyBy('id')->toArray();
-        return response()->json([
-            'status' => $listOld,
-        ]);
+        // $listOld = $this->userCareerRepo->where('user_id', $user->id)->get()->keyBy('id')->toArray();
         // $listNew = [];
         foreach ($careerIds as $careerId) {
-            if(empty($listOld[$careerId])) {
-                $param = ['user_id' => $user->id, 'career_id' => $careerId];
-                // $this->userCareerRepo->create($param);
-                $this->userCareerRepo->updateOrCreate($param, $param);
-            }
-
+            // if(empty($listOld[$careerId])) {
+            $param = ['user_id' => $user->id, 'career_id' => $careerId];
+            // $this->userCareerRepo->create($param);
+            $this->userCareerRepo->updateOrCreate($param, $param);
+            // }
             // $listNew[] = $careerId;
         }
 
