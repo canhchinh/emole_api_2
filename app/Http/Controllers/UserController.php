@@ -918,7 +918,7 @@ class UserController extends Controller
             $param = [
                 'user_id' => $user->id,
                 'title' => $req['title'],
-                'career_id' => $req['career_id'],
+                'career_id' => json_encode($req['career_id']),
                 'job_ids' => !empty($req['job_ids']) ? json_encode($req['job_ids']) : null,
                 'start_date' => $startDate,
                 'end_date' => empty($req['is_still_active']) ? $endDate : date('Y-m-d'),
