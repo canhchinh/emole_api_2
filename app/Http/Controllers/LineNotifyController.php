@@ -131,6 +131,9 @@ class LineNotifyController extends Controller
             foreach( $tokenLists as $tokenList) {
                 app('line-notify')->sendNotify($message, $tokenList->line_notify_access_token);
             }
+            return response()->json([
+                'status' => true
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
