@@ -122,8 +122,11 @@ class LineNotifyController extends Controller
     {
         $request->validate([
             'message' => 'required',
+            'ids' => 'required|array'
         ]);
-
+        return response()->json([
+            'ids' => $request->all(),
+        ]);
         try {
             $message = (new LaravelLineMessage())->message($request->message);
             $user = auth()->user();
