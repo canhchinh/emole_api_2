@@ -124,13 +124,13 @@ class LineNotifyController extends Controller
             'message' => 'required',
             'ids' => 'required|array'
         ]);
-        return response()->json([
-            'ids' => $request->all(),
-        ]);
         try {
             $message = (new LaravelLineMessage())->message($request->message);
-            $user = auth()->user();
-            $token = $this->lineNotifyAccessTokenRepo->where('user_id', $user->id)->first();
+            // $user = auth()->user();
+            $tokenList = $this->lineNotifyAccessTokenRepo->whereIn('user_id', $request->ids)->get();
+            return response()->json([
+                'tokenList' => $tokenList,
+            ]);
             app('line-notify')->sendNotify($message, $token->line_notify_access_token);
             return response()->json([
                 'status' => true
