@@ -106,7 +106,7 @@ class User extends Authenticatable implements Transformable
 
     public function portfolio()
     {
-        return $this->hasOne(Portfolio::class, 'user_id', 'id');
+        return $this->hasMany(Portfolio::class, 'user_id', 'id');
     }
 
     public function search($username)
