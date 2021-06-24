@@ -115,4 +115,67 @@ class HomeController extends Controller
         // Excel::import(new OneImport,request()->file('file'));
         return back();
     }
+    
+    /**
+     * testImage
+     *
+     * @return void
+     */
+    public function testImage() {
+       try {
+            $img = \Image::make(public_path('images/default/background.png'));
+            $image = \Image::make(public_path('images/default/aimiho.jpg'));
+            $image->encode('png');
+            $image->fit(425, 425);
+            $width = $image->getWidth();
+            $height = $image->getHeight();
+            $mask = \Image::canvas($width, $height);
+            // draw a white circle
+            $mask->circle($width, $width/2, $height/2, function ($draw) {
+                $draw->background('#fff');
+            });
+            $image->mask($mask, false);
+            $img->insert($image, "left", 60);
+            $img->text('藍 美帆', 600, 250, function($font) {
+                $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
+                $font->size(28);
+                $font->color('#050518');
+            });
+            $img->text('女優・アーティスト', 600, 300, function($font) {
+                $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
+                $font->size(16);
+                $font->color('#050519');
+            });
+            $img->text("アクター", 600, 350, function($font) {
+                $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
+                $font->size(16);
+                $font->color('#050518');
+            });
+            $img->text("モデル", 700, 350, function($font) {
+                $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
+                $font->size(16);
+                $font->color('#050518');
+            });
+            // foreach($arrayCareers as $arrayCareer) {
+            //     $img->text($arrayCareer, 600, 350, function($font) {
+            //         $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
+            //         $font->size(16);
+            //         $font->color('#050518');
+            //     });
+            // }
+            $img->text('のポートフォリオを', 600, 400, function($font) {
+                $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
+                $font->size(16);
+                $font->color('#050518');
+            });
+            $img->text('Check', 750, 400, function($font) {
+                $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
+                $font->size(24);
+                $font->color('#EF2E1A');
+            });
+            $img->save(public_path('images/default/newImage.png'));
+       } catch (\Exception $e) {
+          echo $e->getMessage();
+       }
+    }
 }
