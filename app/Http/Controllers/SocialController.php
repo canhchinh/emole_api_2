@@ -67,6 +67,7 @@ class SocialController extends Controller
             }
             
             return response()->json([
+                'userInfo' => $user_info,
                 'access_token' => $access_token,
                 'id_ig' => $connected_instagram_account_id,
                 'username_ig' => $user_name,
