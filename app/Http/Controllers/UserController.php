@@ -478,9 +478,9 @@ class UserController extends Controller
             $fileName = $this->saveImgBase64($file, $path, $user->id);
             $url = '/storage/' . $path . $fileName;
 
-            // todo unlink image server or delete on s3
-
-            $this->userRepo->where('id', $user->id)->update(['avatar' => $url]);
+            $userInfo = $this->userRepo->where('id', $user->id);
+            $this->deleteImagesInStorage($userInfo->get(), "avatar");
+            $userInfo->update(['avatar' => $url]);
 
             return response()->json([
                 'status' => true
@@ -1998,8 +1998,8 @@ class UserController extends Controller
             $req = $request->all();
             $user = $request->user();
             $careerIds = $req['career_ids'];
-            if (!empty($req['remove_image_ids'])) {
-                $imageUrls = $this->userImageRepo->whereIn('id', array_unique($req['remove_image_ids']))
+            if (!empty($req['imageRemove'])) {
+                $imageUrls = $this->userImageRepo->whereIn('id', array_unique($req['imageRemove']))
                     ->where('user_id', $user->id)
                     ->get();
                 if (empty($imageUrls)) {
@@ -2009,11 +2009,13 @@ class UserController extends Controller
                     ], 500);
                 }
 
-                $this->userImageRepo->whereIn('id', $req['remove_image_ids'])
-                    ->where('user_id', $user->id)
-                    ->delete();
+                $imagesDelete =  $this->userImageRepo->whereIn('id', $req['imageRemove'])->where('user_id', $user->id);
 
-                // todo unlink image server or delete on s3
+                // delete in storage
+                $this->deleteImagesInStorage($imagesDelete->get());
+
+                //delete database
+                $imagesDelete->delete();
             }
 
             if(!empty($req['images'])) {
@@ -2077,6 +2079,22 @@ class UserController extends Controller
                 'status' => false,
                 'data' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+    /**
+     * deleteImagesInStorage
+     *
+     * @return void
+     */
+    private function deleteImagesInStorage($imagesDelete, $type = "profile") {
+        $arrayImages = [];
+        foreach($imagesDelete as $imageDelete) {
+            $path = str_replace("/storage", "public", $type === "profile" ? $imageDelete->url : $imageDelete->avatar);
+            $arrayImages[] = $path;
+        }
+        if (!empty($arrayImages)) {
+            Storage::delete($arrayImages);
         }
     }
 
