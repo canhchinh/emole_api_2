@@ -70,9 +70,13 @@ class SocialController extends Controller
             $tokenResult = null;
             if(empty($user->id)) {
                 $createUser = $this->userRepo->create([
-                    'user_name' => $user_name ,
+                    'user_name' => $user_name,
                     'facebook_id' => $connected_instagram_account_id, 
                     'active' => 1,
+                    'instagram_user' => $user_name,
+                    'access_token' => $access_token,
+                    'instagram_id' => $connected_instagram_account_id,
+                    'register_finish_step' => 2,
                 ]);
                 $tokenResult = $createUser->createToken('authToken')->plainTextToken;
             } else {
@@ -85,6 +89,7 @@ class SocialController extends Controller
                 'id_ig' => $connected_instagram_account_id,
                 'username_ig' => $user_name,
                 'token_type' => 'Bearer',
+                'register_finish_step' => $user->register_finish_step ? $user->register_finish_step : 0,
             ]);
         } catch (\Exception $e) {
             return response()->json([
