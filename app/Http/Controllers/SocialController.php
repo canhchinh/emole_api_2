@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Laravel\Socialite\Facades\Socialite;
 use App\Services\FacebookService;
-use Mockery\Exception;
+use App\Repositories\UserRepository;
 
 /**
  * Class SocialController
@@ -18,13 +16,16 @@ class SocialController extends Controller
      * @var \App\Services\FacebookService
      */
     private $fbService;
+    private $userRepo;
 
 
     public function __construct(
+        UserRepository $userRepo,
         FacebookService $facebookService
     )
     {
         $this->fbService = $facebookService;
+        $this->userRepo = $userRepo;
     }
 
     /**
