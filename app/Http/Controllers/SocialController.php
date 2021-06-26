@@ -89,7 +89,7 @@ class SocialController extends Controller
                 'id_ig' => $connected_instagram_account_id,
                 'username_ig' => $user_name,
                 'token_type' => 'Bearer',
-                'register_finish_step' => !$user->register_finish_step ? $user->register_finish_step : 0,
+                'register_finish_step' => (!empty($user) && $user->register_finish_step) ? $user->register_finish_step : 0,
             ]);
         } catch (\Exception $e) {
             return response()->json([
