@@ -36,6 +36,7 @@ class User extends Authenticatable implements Transformable
         'email',
         'email_verified_at',
         'password',
+        'facebook_id',
         'google_id',
         'remember_token',
         'title',

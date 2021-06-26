@@ -65,12 +65,28 @@ class SocialController extends Controller
                 $user_info = $this->fbService->getUserInfo("$connected_instagram_account_id?fields=username");
                 $user_name = $user_info["username"];
             }
-            
+            $user = $this->userRepo->where('facebook_id', $connected_instagram_account_id)->first();
+
+            if(empty($user->id)) {
+                $this->userRepo->create([
+                    'user_name' => $user_name ,
+                    'facebook_id' => $connected_instagram_account_id, 
+                    'active' => 1,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Account already exists",
+                ], 403);
+            }
+            $tokenResult = $user->createToken('authToken')->plainTextToken;
             return response()->json([
-                'userInfo' => $user_info,
+                'status' => true,
+                'accessToken' => $tokenResult,
                 'access_token' => $access_token,
                 'id_ig' => $connected_instagram_account_id,
                 'username_ig' => $user_name,
+                'token_type' => 'Bearer',
             ]);
         } catch (\Exception $e) {
             return response()->json([
