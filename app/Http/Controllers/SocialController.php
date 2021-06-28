@@ -62,13 +62,9 @@ class SocialController extends Controller
             $this->fbService->getFacebook()->setDefaultAccessToken($token);
             $user_info = $this->fbService->getUserInfo('me?fields=accounts{connected_instagram_account}');
             if ($user_info && !empty($user_info['accounts'])) {
-                $connected_instagram_account_id = $user_info['accounts']['data'][0]['connected_instagram_account']['id'];
-                // $connected_instagram_account_id = $user_info['id'];
+                // $connected_instagram_account_id = $user_info['accounts']['data'][0]['connected_instagram_account']['id'];
+                $connected_instagram_account_id = $user_info['id'];
                 $user_info = $this->fbService->getUserInfo("$connected_instagram_account_id?fields=username");
-                return response()->json([
-                    'status' => true,
-                    'info' => $user_info,
-                ]);
                 $user_name = $user_info["username"] ?? null;
             }
             // $user = $this->userRepo->where('facebook_id', $connected_instagram_account_id)->first();
