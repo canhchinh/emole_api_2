@@ -223,7 +223,7 @@ class UserController extends Controller
             'token_type' => 'Bearer',
         ]);
     }
-    public function loginFacebook(LoginGoogle $request)
+    public function loginFacebook(Request $request)
     {
         $data = $request->all(['given_name', 'facebook_id', 'email']);
 
