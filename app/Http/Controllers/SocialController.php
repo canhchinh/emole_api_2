@@ -65,6 +65,10 @@ class SocialController extends Controller
                 // $connected_instagram_account_id = $user_info['accounts']['data'][0]['connected_instagram_account']['id'];
                 $connected_instagram_account_id = $user_info['id'];
                 $user_info = $this->fbService->getUserInfo("$connected_instagram_account_id?fields=username");
+                return response()->json([
+                    'status' => true,
+                    'info' => $user_info["username"] ?? 'a',
+                ]);
                 $user_name = $user_info["username"];
             }
             // $user = $this->userRepo->where('facebook_id', $connected_instagram_account_id)->first();
