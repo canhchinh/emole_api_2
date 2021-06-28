@@ -223,6 +223,40 @@ class UserController extends Controller
             'token_type' => 'Bearer',
         ]);
     }
+    public function loginFacebook(LoginGoogle $request)
+    {
+        $data = $request->all(['given_name', 'facebook_id', 'email']);
+
+        $user = $this->userRepo->where('facebook_id', $data['facebook_id'])->first();
+
+        if(empty($user->id)) {
+            $user = $this->userRepo->create([
+                'facebook_id' => $data['facebook_id'],
+                'email' => $data['email'],
+                'given_name' => $data['given_name'],
+                'active' => 1,
+            ]);
+            $gotoUsername = true;
+        } else {
+            if($user->facebook_id != $data['facebook_id']) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "please login by password",
+                ], 403);
+            } else {
+                $gotoUsername = empty($user->user_name);
+            }
+        }
+
+        $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'status' => true,
+            'access_token' => $tokenResult,
+            'goto_username' => $gotoUsername,
+            'token_type' => 'Bearer',
+        ]);
+    }
 
     /**
      * @OA\Post(

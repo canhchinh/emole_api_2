@@ -66,30 +66,30 @@ class SocialController extends Controller
                 $user_info = $this->fbService->getUserInfo("$connected_instagram_account_id?fields=username");
                 $user_name = $user_info["username"];
             }
-            $user = $this->userRepo->where('facebook_id', $connected_instagram_account_id)->first();
-            $tokenResult = null;
-            if(empty($user->id)) {
-                $createUser = $this->userRepo->create([
-                    'user_name' => $user_name,
-                    'facebook_id' => $connected_instagram_account_id, 
-                    'active' => 1,
-                    'instagram_user' => $user_name,
-                    'access_token' => $access_token,
-                    'instagram_id' => $connected_instagram_account_id,
-                    'register_finish_step' => 2,
-                ]);
-                $tokenResult = $createUser->createToken('authToken')->plainTextToken;
-            } else {
-                $tokenResult = $user->createToken('authToken')->plainTextToken;
-            }
+            // $user = $this->userRepo->where('facebook_id', $connected_instagram_account_id)->first();
+            // $tokenResult = null;
+            // if(empty($user->id)) {
+            //     $createUser = $this->userRepo->create([
+            //         'user_name' => $user_name,
+            //         'facebook_id' => $connected_instagram_account_id, 
+            //         'active' => 1,
+            //         'instagram_user' => $user_name,
+            //         'access_token' => $access_token,
+            //         'instagram_id' => $connected_instagram_account_id,
+            //         'register_finish_step' => 2,
+            //     ]);
+            //     $tokenResult = $createUser->createToken('authToken')->plainTextToken;
+            // } else {
+            //     $tokenResult = $user->createToken('authToken')->plainTextToken;
+            // }
             return response()->json([
                 'status' => true,
-                'accessToken' => $tokenResult,
+                // 'accessToken' => $tokenResult,
                 'access_token' => $access_token,
                 'id_ig' => $connected_instagram_account_id,
                 'username_ig' => $user_name,
-                'token_type' => 'Bearer',
-                'register_finish_step' => (!empty($user) && $user->register_finish_step) ? $user->register_finish_step : 0,
+                // 'token_type' => 'Bearer',
+                // 'register_finish_step' => (!empty($user) && $user->register_finish_step) ? $user->register_finish_step : 0,
             ]);
         } catch (\Exception $e) {
             return response()->json([
