@@ -64,10 +64,10 @@ class SocialController extends Controller
             return response()->json([
                 'status' => true,
                 'info' => $user_info,
-                'info' => $user_info['id'],
             ]);
             if ($user_info && !empty($user_info->id)) {
-                $connected_instagram_account_id = $user_info['accounts']['data'][0]['connected_instagram_account']['id'];
+                // $connected_instagram_account_id = $user_info['accounts']['data'][0]['connected_instagram_account']['id'];
+                $connected_instagram_account_id = $user_info['id'];
                 $user_info = $this->fbService->getUserInfo("$connected_instagram_account_id?fields=username");
                 $user_name = $user_info["username"];
             }
