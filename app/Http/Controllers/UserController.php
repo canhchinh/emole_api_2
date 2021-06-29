@@ -225,6 +225,10 @@ class UserController extends Controller
     }
     public function loginFacebook(Request $request)
     {
+        $request->validate([
+            'facebook_id' => 'required'
+        ]);
+
         $data = $request->all(['given_name', 'facebook_id', 'email']);
 
         $user = $this->userRepo->where('facebook_id', $data['facebook_id'])->first();
