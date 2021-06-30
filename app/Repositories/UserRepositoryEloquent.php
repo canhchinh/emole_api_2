@@ -254,7 +254,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                 //     });
                 // }
                 $pathSave = "storage/opg/$user->id.png";
-                $path = "public/opg/$user->id.png";
+                $path = "public/$user->id.png";
                 $img->save(storage_path($path));
                 return $pathSave;
             }
