@@ -462,6 +462,7 @@ class UserController extends Controller
         $result = $this->userRepo->createImageInfo($user);
         $user->image_opg = $result;
         $user->save();
+        
         return response()->json([
             'status' => true,
             'user' => $user,
