@@ -47,6 +47,7 @@ class User extends Authenticatable implements Transformable
         'birthday',
         'self_introduction',
         'avatar',
+        'image_opg',
         'register_finish_step',
         'activity_base_id',
         'is_enable_email_notification',

@@ -459,9 +459,9 @@ class UserController extends Controller
         $user->gender = $data['gender'];
         $user->register_finish_step = 3;
         $user->activity_base_id = $data['activity_base_id'];
-
+        $result = $this->userRepo->createImageInfo($user);
+        $user->image_opg = $result;
         $user->save();
-
         return response()->json([
             'status' => true,
             'user' => $user,

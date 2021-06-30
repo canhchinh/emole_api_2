@@ -18,6 +18,8 @@ interface UserRepository extends RepositoryInterface
 
     public function activeAccount($token);
 
+    public function createImageInfo($user);
+
     // For admin =======================================================================================================
 
     public function paginateQuery(Request $request, $status, $search);

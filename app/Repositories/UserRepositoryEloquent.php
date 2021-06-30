@@ -207,5 +207,58 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
         return $query->get();
     }
-
+    
+    /**
+     * createImageInfo
+     *
+     * @return void
+     */
+    public function createImageInfo($user)
+    {
+        try {
+            if (!empty($user->avatar)) {
+                $img = \Image::make(public_path('images/default/background.png'));
+                $image = \Image::make(public_path($user->avatar));
+                $image->encode('png');
+                $image->fit(300, 300);
+                $width = $image->getWidth();
+                $height = $image->getHeight();
+                $mask = \Image::canvas($width, $height);
+                // draw a white circle
+                $mask->circle($width, $width/2, $height/2, function ($draw) {
+                    $draw->background('#fff');
+                });
+                $image->mask($mask, false);
+                $img->insert($image, "top-left", 15, 90);
+                $img->text($user->given_name, 350, 190, function($font) {
+                    $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
+                    $font->size(38);
+                    $font->color('#050518');
+                }); 
+                $img->text($user->title, 350, 240, function($font) {
+                    $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
+                    $font->size(26);
+                    $font->color('#050519');
+                });
+                if ($user->careers) {
+                    $career = $user->careers;
+                    $img->text($career[0]->title, 350, 290, function($font) {
+                        $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
+                        $font->size(18);
+                        $font->color('#050518');
+                    });
+                    $img->text($career[1]->title, 550, 290, function($font) {
+                        $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
+                        $font->size(18);
+                        $font->color('#050518');
+                    });
+                }
+                $path = "images/default/opg/$user->id.png";
+                $img->save(public_path($path));
+                return $path;
+            }
+       } catch (\Exception $e) {
+          echo $e->getMessage();
+       }
+    }
 }
