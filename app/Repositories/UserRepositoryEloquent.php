@@ -240,7 +240,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                     $font->size(26);
                     $font->color('#050519');
                 });
-                if ($user->careers) {
+                if (!empty($user->careers)) {
                     $career = $user->careers;
                     $img->text($career[0]->title, 350, 290, function($font) {
                         $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
