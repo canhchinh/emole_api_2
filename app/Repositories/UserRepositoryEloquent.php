@@ -224,7 +224,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                 $width = $image->getWidth();
                 $height = $image->getHeight();
                 $mask = \Image::canvas($width, $height);
-                return 'aaaaa';
                 // draw a white circle
                 $mask->circle($width, $width/2, $height/2, function ($draw) {
                     $draw->background('#fff');
@@ -241,6 +240,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                     $font->size(26);
                     $font->color('#050519');
                 });
+                return 'aaaaa';
                 // if (!empty($user->careers)) {
                 //     $career = $user->careers;
                 //     $img->text($career[0]->title, 350, 290, function($font) {
