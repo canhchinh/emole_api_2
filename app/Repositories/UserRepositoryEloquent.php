@@ -218,13 +218,13 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         try {
             if (!empty($user->avatar)) {
                 $img = \Image::make(public_path('images/default/background.png'));
-                return 'aaaaa';
                 $image = \Image::make(public_path($user->avatar));
                 $image->encode('png');
                 $image->fit(300, 300);
                 $width = $image->getWidth();
                 $height = $image->getHeight();
                 $mask = \Image::canvas($width, $height);
+                return 'aaaaa';
                 // draw a white circle
                 $mask->circle($width, $width/2, $height/2, function ($draw) {
                     $draw->background('#fff');
