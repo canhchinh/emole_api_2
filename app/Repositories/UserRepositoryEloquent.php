@@ -240,7 +240,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                     $font->size(26);
                     $font->color('#050519');
                 });
-                return 'aaaaa';
                 // if (!empty($user->careers)) {
                 //     $career = $user->careers;
                 //     $img->text($career[0]->title, 350, 290, function($font) {
@@ -256,7 +255,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                 // }
                 $pathSave = "storage/opg/$user->id.png";
                 $path = "public/opg/$user->id.png";
-                // $img->save(storage_path($path));
+                $img->save(storage_path($path));
                 return $pathSave;
             }
             return false;
