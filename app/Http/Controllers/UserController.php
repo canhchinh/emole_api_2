@@ -522,6 +522,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => true,
+                'user' => $result,
             ]);
         } catch (\Exception $e) {
             return response()->json([
