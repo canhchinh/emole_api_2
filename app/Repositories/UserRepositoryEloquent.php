@@ -230,19 +230,19 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                 });
                 $image->mask($mask, false);
                 $img->insert($image, "top-left", 15, 90);
-                $img->text($user->given_name, 360, 190, function($font) {
+                $img->text($user->given_name, 370, 190, function($font) {
                     $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
                     $font->size(38);
                     $font->color('#050518');
                 }); 
-                $img->text($user->title, 360, 240, function($font) {
+                $img->text($user->title, 370, 240, function($font) {
                     $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
                     $font->size(26);
                     $font->color('#050519');
                 });
                 if (count($user->careers) > 0) {
                     $career = $user->careers;
-                    $img->text($career[0]->title, 360, 290, function($font) {
+                    $img->text($career[0]->title, 370, 290, function($font) {
                         $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
                         $font->size(18);
                         $font->color('#050518');
