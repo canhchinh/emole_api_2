@@ -215,7 +215,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
      */
     public function createImageInfo($user)
     {
-        return $user;
         try {
             if (!empty($user->avatar)) {
                 $img = \Image::make(public_path('images/default/background.png'));
