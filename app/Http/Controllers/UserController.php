@@ -523,7 +523,7 @@ class UserController extends Controller
             $user->save();
 
             return response()->json([
-                'status' => true
+                'status' => $result
             ]);
         } catch (\Exception $e) {
             return response()->json([
