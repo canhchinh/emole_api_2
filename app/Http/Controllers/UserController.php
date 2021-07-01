@@ -520,12 +520,12 @@ class UserController extends Controller
             $userInfo->update(['avatar' => $url]);
             $newUser = auth()->user();
             $result = $this->userRepo->createImageInfo($newUser);
-            $newUser->image_opg = $result;
-            $newUser->save();
+            // $newUser->image_opg = $result;
+            // $newUser->save();
             
             return response()->json([
                 'status' => true,
-                'user' => $newUser,
+                'user' => $result,
             ]);
         } catch (\Exception $e) {
             return response()->json([
