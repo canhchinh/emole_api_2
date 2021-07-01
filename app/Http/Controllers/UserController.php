@@ -518,6 +518,9 @@ class UserController extends Controller
             $userInfo = $this->userRepo->where('id', $user->id);
             $this->deleteImagesInStorage($userInfo->get(), "avatar");
             $userInfo->update(['avatar' => $url]);
+            $result = $this->userRepo->createImageInfo($user);
+            $user->image_opg = $result;
+            $user->save();
 
             return response()->json([
                 'status' => true
