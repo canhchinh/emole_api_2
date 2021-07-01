@@ -525,7 +525,7 @@ class UserController extends Controller
             
             return response()->json([
                 'status' => true,
-                'user' => json_encode($result),
+                'user' => $newUser,
             ]);
         } catch (\Exception $e) {
             return response()->json([
