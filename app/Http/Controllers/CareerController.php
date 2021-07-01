@@ -181,13 +181,16 @@ class CareerController extends Controller
             // }
             // $listNew[] = $careerId;
         }
-
+        $result = $this->userRepo->createImageInfo($user);
+        $user->image_opg = $result;
+        $user->save();
         // $this->userCareerRepo->where('user_id', $user->id)
         //     ->whereNotIn('career_id', $listNew)
         //     ->delete();
 
         return response()->json([
             'status' => true,
+            'user' => $user,
         ]);
     }
 
