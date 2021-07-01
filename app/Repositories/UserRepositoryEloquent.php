@@ -240,19 +240,19 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                     $font->size(26);
                     $font->color('#050519');
                 });
-                // if (!empty($user->careers)) {
-                //     $career = $user->careers;
-                //     $img->text($career[0]->title, 350, 290, function($font) {
-                //         $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
-                //         $font->size(18);
-                //         $font->color('#050518');
-                //     });
-                //     $img->text($career[1]->title, 550, 290, function($font) {
-                //         $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
-                //         $font->size(18);
-                //         $font->color('#050518');
-                //     });
-                // }
+                if (!empty($user->careers)) {
+                    $career = $user->careers;
+                    $img->text($career[0]->title, 350, 290, function($font) {
+                        $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
+                        $font->size(18);
+                        $font->color('#050518');
+                    });
+                    $img->text($career[1]->title, 550, 290, function($font) {
+                        $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
+                        $font->size(18);
+                        $font->color('#050518');
+                    });
+                }
                 $pathSave = "storage/opg/$user->id.png";
                 $path = "public/opg/$user->id.png";
                 $img->save(storage_path($path));
