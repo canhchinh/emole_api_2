@@ -219,6 +219,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             if (!empty($user->avatar)) {
                 $img = \Image::make(public_path('images/default/background.png'));
                 $image = \Image::make(public_path($user->avatar));
+                return $image;
                 $image->encode('png');
                 $image->fit(300, 300);
                 $width = $image->getWidth();
