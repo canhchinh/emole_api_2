@@ -517,13 +517,12 @@ class UserController extends Controller
 
             $userInfo = $this->userRepo->where('id', $user->id);
             $this->deleteImagesInStorage($userInfo->get(), "avatar");
-            $userInfo->update(['avatar' => $url]);
             $result = $this->userRepo->createImageInfo($userInfo);
-            $userInfo->image_opg = $result;
-            $userInfo->save();
+            $userInfo->update(['avatar' => $url, "image_opg" => $result ]);
 
             return response()->json([
-                'status' => $result
+                'status' => true,
+                "user" => $userInfo,
             ]);
         } catch (\Exception $e) {
             return response()->json([
