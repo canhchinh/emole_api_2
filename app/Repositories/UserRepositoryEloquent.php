@@ -17,6 +17,7 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\User;
 use Illuminate\Pagination\Paginator;
 use App\Entities\Follow;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -219,6 +220,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         try {
             if (!empty($user->avatar)) {
                 $img = \Image::make(public_path('images/default/background.png'));
+                Log::info(public_path('images/default/background.png'));
                 $image = \Image::make(public_path($user->avatar));
                 $image->encode('png');
                 $image->fit(300, 300);
