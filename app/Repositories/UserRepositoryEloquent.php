@@ -241,6 +241,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                     $font->size(26);
                     $font->color('#050519');
                 });
+                return count($user->careers);
                 if (count($user->careers) > 0) {
                     $career = $user->careers;
                     $img->text($career[0]->title, 370, 300, function($font) {
