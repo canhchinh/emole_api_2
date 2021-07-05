@@ -53,5 +53,3 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::match(['get', 'post'],'/import', [HomeController::class, 'import'])->name('import');
-
-Route::get('/test-image', [HomeController::class, 'testImage']);

@@ -223,6 +223,44 @@ class UserController extends Controller
             'token_type' => 'Bearer',
         ]);
     }
+    public function loginFacebook(Request $request)
+    {
+        $request->validate([
+            'facebook_id' => 'required'
+        ]);
+
+        $data = $request->all(['given_name', 'facebook_id', 'email']);
+
+        $user = $this->userRepo->where('facebook_id', $data['facebook_id'])->first();
+
+        if(empty($user->id)) {
+            $user = $this->userRepo->create([
+                'facebook_id' => $data['facebook_id'],
+                'email' => $data['email'],
+                'given_name' => $data['given_name'],
+                'active' => 1,
+            ]);
+            $gotoUsername = true;
+        } else {
+            if($user->facebook_id != $data['facebook_id']) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "please login by password",
+                ], 403);
+            } else {
+                $gotoUsername = empty($user->user_name);
+            }
+        }
+
+        $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'status' => true,
+            'access_token' => $tokenResult,
+            'goto_username' => $gotoUsername,
+            'token_type' => 'Bearer',
+        ]);
+    }
 
     /**
      * @OA\Post(
@@ -421,9 +459,8 @@ class UserController extends Controller
         $user->gender = $data['gender'];
         $user->register_finish_step = 3;
         $user->activity_base_id = $data['activity_base_id'];
-
         $user->save();
-
+        
         return response()->json([
             'status' => true,
             'user' => $user,
@@ -478,12 +515,17 @@ class UserController extends Controller
             $fileName = $this->saveImgBase64($file, $path, $user->id);
             $url = '/storage/' . $path . $fileName;
 
-            // todo unlink image server or delete on s3
-
-            $this->userRepo->where('id', $user->id)->update(['avatar' => $url]);
+            $userInfo = $this->userRepo->where('id', $user->id);
+            $this->deleteImagesInStorage($userInfo->get(), "avatar");
+            $userInfo->update(['avatar' => $url]);
+            $result = $this->userRepo->createImageInfo($userInfo->first());
+            $newUser = auth()->user();
+            $newUser->image_opg = $result;
+            $newUser->save();
 
             return response()->json([
-                'status' => true
+                'status' => true,
+                'user' => $newUser,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -1998,8 +2040,8 @@ class UserController extends Controller
             $req = $request->all();
             $user = $request->user();
             $careerIds = $req['career_ids'];
-            if (!empty($req['remove_image_ids'])) {
-                $imageUrls = $this->userImageRepo->whereIn('id', array_unique($req['remove_image_ids']))
+            if (!empty($req['imageRemove'])) {
+                $imageUrls = $this->userImageRepo->whereIn('id', array_unique($req['imageRemove']))
                     ->where('user_id', $user->id)
                     ->get();
                 if (empty($imageUrls)) {
@@ -2009,11 +2051,13 @@ class UserController extends Controller
                     ], 500);
                 }
 
-                $this->userImageRepo->whereIn('id', $req['remove_image_ids'])
-                    ->where('user_id', $user->id)
-                    ->delete();
+                $imagesDelete =  $this->userImageRepo->whereIn('id', $req['imageRemove'])->where('user_id', $user->id);
 
-                // todo unlink image server or delete on s3
+                // delete in storage
+                $this->deleteImagesInStorage($imagesDelete->get());
+
+                //delete database
+                $imagesDelete->delete();
             }
 
             if(!empty($req['images'])) {
@@ -2077,6 +2121,22 @@ class UserController extends Controller
                 'status' => false,
                 'data' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+    /**
+     * deleteImagesInStorage
+     *
+     * @return void
+     */
+    private function deleteImagesInStorage($imagesDelete, $type = "profile") {
+        $arrayImages = [];
+        foreach($imagesDelete as $imageDelete) {
+            $path = str_replace("/storage", "public", $type === "profile" ? $imageDelete->url : $imageDelete->avatar);
+            $arrayImages[] = $path;
+        }
+        if (!empty($arrayImages)) {
+            Storage::delete($arrayImages);
         }
     }
 

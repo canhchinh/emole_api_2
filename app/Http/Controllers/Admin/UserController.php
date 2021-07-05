@@ -60,7 +60,6 @@ class UserController extends Controller
         $area = $this->activityBaseRepository->query()->select(['id', 'title'])->get();
 
         $snsFollowersCount = (new SocialServices)->getStatistics(clone $users);
-
         return view('admin.pages.user.index', [
             'users' => $users,
             'snsFollowersCount' => $snsFollowersCount,

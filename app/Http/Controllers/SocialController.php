@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Laravel\Socialite\Facades\Socialite;
 use App\Services\FacebookService;
-use Mockery\Exception;
+use App\Repositories\UserRepository;
 
 /**
  * Class SocialController
@@ -18,13 +16,16 @@ class SocialController extends Controller
      * @var \App\Services\FacebookService
      */
     private $fbService;
+    private $userRepo;
 
 
     public function __construct(
+        UserRepository $userRepo,
         FacebookService $facebookService
     )
     {
         $this->fbService = $facebookService;
+        $this->userRepo = $userRepo;
     }
 
     /**
@@ -62,14 +63,34 @@ class SocialController extends Controller
             $user_info = $this->fbService->getUserInfo('me?fields=accounts{connected_instagram_account}');
             if ($user_info && !empty($user_info['accounts'])) {
                 $connected_instagram_account_id = $user_info['accounts']['data'][0]['connected_instagram_account']['id'];
+                // $connected_instagram_account_id = $user_info['id'];
                 $user_info = $this->fbService->getUserInfo("$connected_instagram_account_id?fields=username");
-                $user_name = $user_info["username"];
+                $user_name = $user_info["username"] ?? null;
             }
-            
+            // $user = $this->userRepo->where('facebook_id', $connected_instagram_account_id)->first();
+            // $tokenResult = null;
+            // if(empty($user->id)) {
+            //     $createUser = $this->userRepo->create([
+            //         'user_name' => $user_name,
+            //         'facebook_id' => $connected_instagram_account_id, 
+            //         'active' => 1,
+            //         'instagram_user' => $user_name,
+            //         'access_token' => $access_token,
+            //         'instagram_id' => $connected_instagram_account_id,
+            //         'register_finish_step' => 2,
+            //     ]);
+            //     $tokenResult = $createUser->createToken('authToken')->plainTextToken;
+            // } else {
+            //     $tokenResult = $user->createToken('authToken')->plainTextToken;
+            // }
             return response()->json([
+                'status' => true,
+                // 'accessToken' => $tokenResult,
                 'access_token' => $access_token,
                 'id_ig' => $connected_instagram_account_id,
                 'username_ig' => $user_name,
+                // 'token_type' => 'Bearer',
+                // 'register_finish_step' => (!empty($user) && $user->register_finish_step) ? $user->register_finish_step : 0,
             ]);
         } catch (\Exception $e) {
             return response()->json([

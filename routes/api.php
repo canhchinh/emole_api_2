@@ -29,6 +29,7 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('active-account', [UserController::class, 'postActive']);
     Route::post('login', [UserController::class, 'login']);
     Route::post('login-google', [UserController::class, 'loginGoogle']);
+    Route::post('login-facebook', [UserController::class, 'loginFacebook']);
 });
 
 Route::get('/forgot-password', function () {

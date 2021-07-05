@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ImageUploadRequest;
 use App\Repositories\UserImageRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserImageController extends Controller
 {
@@ -81,9 +82,36 @@ class UserImageController extends Controller
             ], 500);
         }
     }
-
+    
+    /**
+     * isRemoveImage
+     *
+     * @param  mixed $listId
+     * @param  mixed $userId
+     * @return void
+     */
     private function isRemoveImage($listId, $userId) {
-        return $this->userImageRepo->where('user_id', $userId)->whereIn("id", array_unique($listId))->delete();
+        $imagesDelete = $this->userImageRepo->where('user_id', $userId)->whereIn("id", array_unique($listId));
+        //delete storage
+        $this->deleteImagesInStorage($imagesDelete->get());
+        //delete database
+        return $imagesDelete->delete();
+    }
+        
+    /**
+     * deleteImagesInStorage
+     *
+     * @return void
+     */
+    private function deleteImagesInStorage($imagesDelete) {
+        $arrayImages = [];
+        foreach($imagesDelete as $imageDelete) {
+            $path = str_replace("/storage", "public", $imageDelete->url);
+            $arrayImages[] = $path;
+        }
+        if (!empty($arrayImages)) {
+            Storage::delete($arrayImages);
+        }
     }
 
     /**
