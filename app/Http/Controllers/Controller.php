@@ -56,7 +56,6 @@ class Controller extends BaseController
             $storage->makeDirectory($folder);
         }
         $newFileName = $idUser . '_' . $fileName;
-        return $folder;
         if ($group) {
             $storage->put($folder . '/group/' . $newFileName, base64_decode($content), 'public');
         } else {
