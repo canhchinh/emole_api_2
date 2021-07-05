@@ -17,6 +17,8 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\User;
 use Illuminate\Pagination\Paginator;
 use App\Entities\Follow;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class UserRepositoryEloquent.
@@ -128,14 +130,14 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         }
 
     }
-    
+
     /**
      * activeAccount
      *
      * @param  mixed $token
      * @return void
      */
-    
+
     public function activeAccount($token){
         DB::beginTransaction();
         $token = str_replace(" ", "", $token);
@@ -207,7 +209,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
         return $query->get();
     }
-    
+
     /**
      * createImageInfo
      *
@@ -218,6 +220,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         try {
             if (!empty($user->avatar)) {
                 $img = \Image::make(public_path('images/default/background.png'));
+                Log::info(public_path('images/default/background.png'));
                 $image = \Image::make(public_path($user->avatar));
                 $image->encode('png');
                 $image->fit(300, 300);
@@ -234,7 +237,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                     $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
                     $font->size(38);
                     $font->color('#050518');
-                }); 
+                });
                 $img->text($user->title, 370, 250, function($font) {
                     $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
                     $font->size(26);
@@ -248,9 +251,15 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                         $font->color('#050518');
                     });
                 }
+
+                if(!Storage::exists('/public/opg')) {
+                    Storage::makeDirectory('/public/opg', 0775, true);
+                }
+
                 $pathSave = "storage/opg/$user->id.png";
-                $path = "public/opg/$user->id.png";
+                $path = "/app/public/opg/$user->id.png";
                 $img->save(storage_path($path));
+
                 return $pathSave;
             }
             return false;
