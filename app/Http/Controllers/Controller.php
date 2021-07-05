@@ -49,6 +49,7 @@ class Controller extends BaseController
         preg_match('/.([0-9]+) /', microtime(), $m);
         $fileName = sprintf('img%s%s.%s', date('YmdHis'), $m[1], $tmpExtension[1]);
         $content = explode(',', $content)[1];
+        return 'a';
         $storage = \Storage::disk('public');
 
         $checkDirectory = $storage->exists($folder);
