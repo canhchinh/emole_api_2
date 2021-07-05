@@ -247,11 +247,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                         $font->size(18);
                         $font->color('#050518');
                     });
-                    $img->text($career[1]->title, 500, 300, function($font) {
-                        $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
-                        $font->size(18);
-                        $font->color('#050518');
-                    });
                 }
                 $pathSave = "storage/opg/$user->id.png";
                 $path = "public/opg/$user->id.png";
