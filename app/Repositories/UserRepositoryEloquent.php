@@ -257,12 +257,12 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
                     });
                 }
 
-                if(!Storage::exists('/opg')) {
-                    Storage::makeDirectory('/opg', 0775, true);
+                if(!Storage::exists('/public/opg')) {
+                    Storage::makeDirectory('/public/opg', 0775, true);
                 }
 
                 $pathSave = "storage/opg/$user->id.png";
-                $path = "public/opg/$user->id.png";
+                $path = "/app/public/opg/$user->id.png";
                 $img->save(storage_path($path));
 
                 return $pathSave;
