@@ -49,14 +49,14 @@ class Controller extends BaseController
         preg_match('/.([0-9]+) /', microtime(), $m);
         $fileName = sprintf('img%s%s.%s', date('YmdHis'), $m[1], $tmpExtension[1]);
         $content = explode(',', $content)[1];
-        return $storage = \Storage::disk('public');
+        $storage = \Storage::disk('public');
 
         $checkDirectory = $storage->exists($folder);
         if (!$checkDirectory) {
             $storage->makeDirectory($folder);
         }
         $newFileName = $idUser . '_' . $fileName;
-
+        return $folder;
         if ($group) {
             $storage->put($folder . '/group/' . $newFileName, base64_decode($content), 'public');
         } else {
