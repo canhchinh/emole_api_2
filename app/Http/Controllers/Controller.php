@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @OA\Info(
@@ -44,23 +45,27 @@ class Controller extends BaseController
 
     protected function saveImgBase64($param, $folder, $idUser, $group = false)
     {
-        list($extension, $content) = explode(';', $param);
-        $tmpExtension = explode('/', $extension);
-        preg_match('/.([0-9]+) /', microtime(), $m);
-        $fileName = sprintf('img%s%s.%s', date('YmdHis'), $m[1], $tmpExtension[1]);
-        $content = explode(',', $content)[1];
-        $storage = \Storage::disk('public');
+        try {
+            list($extension, $content) = explode(';', $param);
+            $tmpExtension = explode('/', $extension);
+            preg_match('/.([0-9]+) /', microtime(), $m);
+            $fileName = sprintf('img%s%s.%s', date('YmdHis'), $m[1], $tmpExtension[1]);
+            $content = explode(',', $content)[1];
+            $storage = Storage::disk('public');
 
-        $checkDirectory = $storage->exists($folder);
-        if (!$checkDirectory) {
-            $storage->makeDirectory($folder);
+            $checkDirectory = $storage->exists($folder);
+            if (!$checkDirectory) {
+                $storage->makeDirectory($folder);
+            }
+            $newFileName = $idUser . '_' . $fileName;
+            if ($group) {
+                $storage->put($folder . '/group/' . $newFileName, base64_decode($content), 'public');
+            } else {
+                $storage->put($folder . '/' . $newFileName, base64_decode($content), 'public');
+            }
+            return $newFileName;
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
-        $newFileName = $idUser . '_' . $fileName;
-        if ($group) {
-            $storage->put($folder . '/group/' . $newFileName, base64_decode($content), 'public');
-        } else {
-            $storage->put($folder . '/' . $newFileName, base64_decode($content), 'public');
-        }
-        return $newFileName;
     }
 }
