@@ -1566,6 +1566,7 @@ class UserController extends Controller
         $record = $this->followRepo->where('user_id', $owner->id)
             ->where('target_id', $data['target_id'])
             ->first();
+        
 
         if ($data['status'] == 'UNFOLLOW' && !empty($record->id)) {
             $noti = $this->notificationRepository->where('id', $record->notification_id)
@@ -1586,11 +1587,6 @@ class UserController extends Controller
                     'url' => config('common.frontend_profile') . '/' . $owner->user_name
                 ]);
                 $this->userNotificationRepository->addNotiForUser($data['target_id'], $noti->id);
-                $this->followRepo->create([
-                    'user_id' => $owner->id,
-                    'target_id' => $data['target_id'],
-                    'notification_id' => $noti->id ?? 0
-                ]);
                 if (!empty($userTarget->email)) {
                     Mail::to($userTarget->email)->queue(new NotifyFollowMail([
                         "user_name" => $owner->user_name,
@@ -1598,6 +1594,11 @@ class UserController extends Controller
                     ]));
                 }
             }
+            $this->followRepo->create([
+                'user_id' => $owner->id,
+                'target_id' => $data['target_id'],
+                'notification_id' => $noti->id ?? 0
+            ]);
         }
 
         return response()->json([

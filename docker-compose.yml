@@ -59,6 +59,7 @@ services:
     image: phpmyadmin:5
     restart: always
     environment:
+      UPLOAD_LIMIT: 1G
       PMA_HOST: db
       PMA_USER: root
       PMA_PASSWORD: Chinh@123123
