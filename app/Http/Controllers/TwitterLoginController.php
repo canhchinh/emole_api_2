@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Repositories\UserRepository;
 use App\Services\TwitterLoginService;
 use Illuminate\Http\Request;
+
 class TwitterLoginController extends Controller
 {
     private $userRepo;
@@ -37,7 +39,8 @@ class TwitterLoginController extends Controller
         }
     }
 
-    private function replaceUrlAvatarTwitter($url) {
+    private function replaceUrlAvatarTwitter($url)
+    {
         if ($url) {
             return str_replace("_normal", "", $url);
         }
@@ -54,6 +57,9 @@ class TwitterLoginController extends Controller
                 'request_oauth_token_secret' => 'required'
             ]);
             $userTwitter = $this->twitterLoginService->getUserInfo($request);
+            return response()->json([
+                'data' => $userTwitter
+            ]);
             $user = $this->userRepo->where(['provider' => "twitter", 'provider_id' => $userTwitter->uid]);
             if (!empty($userTwitter->email)) {
                 $user = $user->orWhere('email', $userTwitter->email);
@@ -97,5 +103,4 @@ class TwitterLoginController extends Controller
             ]);
         }
     }
-
 }
