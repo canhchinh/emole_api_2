@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use Illuminate\Http\Request;
@@ -35,13 +36,14 @@ class TwitterLoginService
         }
     }
 
-    public function getUserInfo(Request $request): \League\OAuth1\Client\Server\User
+    public function getUserInfo(Request $request)
     {
-        if (! $this->hasNecessaryVerifier($request)) {
+        if (!$this->hasNecessaryVerifier($request)) {
             throw new \Exception('Invalid request. Missing OAuth verifier.');
         }
 
-        return $this->server->getUserDetails($token = $this->getToken($request));;
+        // return $this->server->getUserDetails($token = $this->getToken($request));;
+        return $this->server->urlUserDetails();
     }
 
     /**
@@ -54,7 +56,7 @@ class TwitterLoginService
      */
     private function getToken(Request $request): \League\OAuth1\Client\Credentials\TokenCredentials
     {
-        if (! $request->get('request_oauth_token') || ! $request->get('request_oauth_token_secret')) {
+        if (!$request->get('request_oauth_token') || !$request->get('request_oauth_token_secret')) {
             throw new \Exception('Missing temporary OAuth credentials.');
         }
 
@@ -65,7 +67,9 @@ class TwitterLoginService
         $temporaryCredentials->setSecret($requestOauthTokenSecret);
 
         return $this->server->getTokenCredentials(
-            $temporaryCredentials, $request->get('oauth_token'), $request->get('oauth_verifier')
+            $temporaryCredentials,
+            $request->get('oauth_token'),
+            $request->get('oauth_verifier')
         );
     }
 
