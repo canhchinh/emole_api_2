@@ -36,13 +36,13 @@ class TwitterLoginService
         }
     }
 
-    public function getUserInfo(Request $request)
+    public function getUserInfo(Request $request): \League\OAuth1\Client\Server\User
     {
         if (!$this->hasNecessaryVerifier($request)) {
             throw new \Exception('Invalid request. Missing OAuth verifier.');
         }
 
-        return $this->server->getUserDetails($this->getToken($request));
+        return $this->server->getUserDetails($token = $this->getToken($request));
     }
 
     /**
