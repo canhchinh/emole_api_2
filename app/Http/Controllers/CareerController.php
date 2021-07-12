@@ -83,7 +83,7 @@ class CareerController extends Controller
             ->where('career_id', $careerId)
             ->first();
 
-        if(empty($record->id) || empty($record->setting)) {
+        if (empty($record->id) || empty($record->setting)) {
             $list = $this->activityContentRepo->getFreshCareer($careerId);
             $tags = [];
         } else {
@@ -181,9 +181,9 @@ class CareerController extends Controller
             // }
             // $listNew[] = $careerId;
         }
-        // $result = $this->userRepo->createImageInfo($user);
-        // $user->image_opg = $result;
-        // $user->save();
+        $result = $this->userRepo->createImageInfo($user);
+        $user->image_opg = $result;
+        $user->save();
         // $this->userCareerRepo->where('user_id', $user->id)
         //     ->whereNotIn('career_id', $listNew)
         //     ->delete();
@@ -222,7 +222,7 @@ class CareerController extends Controller
         $user = auth()->user();
         $req = $request->all();
         $userId = $user->id;
-        if(!empty($req['user_id'])) {
+        if (!empty($req['user_id'])) {
             $userId = $req['user_id'];
         }
         $userInfo = $this->userRepo->where('id', $userId)
