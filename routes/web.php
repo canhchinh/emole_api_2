@@ -52,4 +52,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/detail/{id}', [HomeController::class, 'detailUser'])->name('admin.users.detailUser');
 });
 
-Route::match(['get', 'post'],'/import', [HomeController::class, 'import'])->name('import');
+Route::match(['get', 'post'], '/import', [HomeController::class, 'import'])->name('import');
+Route::get('/test-image', [HomeController::class, 'testImage'])->name('testImage');

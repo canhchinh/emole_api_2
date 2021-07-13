@@ -32,15 +32,23 @@ class HomeController extends Controller
     protected $userNotificationRepository;
 
     /**
+     * userRepository
+     *
+     * @var mixed
+     */
+    protected $userRepository;
+
+    /**
      * HomeController constructor.
      *
      * @param CareerRepository $careerRepository
      * @param NotificationRepository $notificationRepository
      * @param UserNotificationRepository $userNotificationRepository
      */
-    public function __construct(CareerRepository $careerRepository, NotificationRepository $notificationRepository, UserNotificationRepository $userNotificationRepository)
+    public function __construct(CareerRepository $careerRepository, NotificationRepository $notificationRepository, UserNotificationRepository $userNotificationRepository, UserRepository $userRepository)
     {
         $this->careerRepository = $careerRepository;
+        $this->userRepository = $userRepository;
         $this->notificationRepository = $notificationRepository;
         $this->userNotificationRepository = $userNotificationRepository;
     }
@@ -84,7 +92,6 @@ class HomeController extends Controller
      */
     public function listPortfolio()
     {
-
     }
 
     /**
@@ -111,9 +118,20 @@ class HomeController extends Controller
             return view('import');
         }
         // Excel::import(new CareerImport,request()->file('file'));
-        Excel::import(new ActivityBaseImport,request()->file('file'));
+        Excel::import(new ActivityBaseImport, request()->file('file'));
         // Excel::import(new OneImport,request()->file('file'));
         return back();
     }
 
+    /**
+     * testImage
+     *
+     * @return void
+     */
+    public function testImage()
+    {
+        $user = $this->userRepository->find(42);
+        $result = $this->userRepository->createImageInfo($user);
+        dd($result);
+    }
 }
