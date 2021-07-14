@@ -12,13 +12,15 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface UserRepository extends RepositoryInterface
 {
-    public function listUsers($userId, $filters=[], $page =1, $limit = 10, $query);
+    public function listUsers($userId, $filters = [], $page = 1, $limit = 10, $query);
 
     public function is_base64($file);
 
     public function activeAccount($token);
 
     public function createImageInfo($user);
+
+    public function storeImageSocial($user);
 
     // For admin =======================================================================================================
 

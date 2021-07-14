@@ -189,11 +189,11 @@ class UserController extends Controller
 
     public function loginGoogle(LoginGoogle $request)
     {
-        $data = $request->all(['email', 'user_name', 'google_id', 'avatar',"active"]);
+        $data = $request->all(['email', 'user_name', 'google_id', 'avatar', "active"]);
 
         $user = $this->userRepo->where('email', $data['email'])->first();
 
-        if(empty($user->id)) {
+        if (empty($user->id)) {
             $user = $this->userRepo->create([
                 'email' => $data['email'],
                 'google_id' => $data['google_id'],
@@ -203,7 +203,7 @@ class UserController extends Controller
             ]);
             $gotoUsername = true;
         } else {
-            if($user->google_id != $data['google_id']) {
+            if ($user->google_id != $data['google_id']) {
                 return response()->json([
                     'status' => false,
                     'message' => "please login by password",
@@ -233,7 +233,7 @@ class UserController extends Controller
 
         $user = $this->userRepo->where('facebook_id', $data['facebook_id'])->first();
 
-        if(empty($user->id)) {
+        if (empty($user->id)) {
             $user = $this->userRepo->create([
                 'facebook_id' => $data['facebook_id'],
                 'email' => $data['email'],
@@ -242,7 +242,7 @@ class UserController extends Controller
             ]);
             $gotoUsername = true;
         } else {
-            if($user->facebook_id != $data['facebook_id']) {
+            if ($user->facebook_id != $data['facebook_id']) {
                 return response()->json([
                     'status' => false,
                     'message' => "please login by password",
@@ -432,6 +432,10 @@ class UserController extends Controller
     {
         $data = $request->all();
         $user = auth()->user();
+        if (strpos($user->avatar, 'http') !== false) {
+            $result = $this->userRepo->storeImageSocial($user);
+            $user->avatar = $result;
+        }
         $file = $request->avatar;
         if (!empty($file)) {
             $extension = explode('/', mime_content_type($file))[1];
@@ -460,7 +464,7 @@ class UserController extends Controller
         $user->register_finish_step = 3;
         $user->activity_base_id = $data['activity_base_id'];
         $user->save();
-        
+
         return response()->json([
             'status' => true,
             'user' => $user,
@@ -497,7 +501,7 @@ class UserController extends Controller
             $user = auth()->user();
             $file = $req['avatar'];
             $isBase64  = $this->userRepo->is_base64($file);
-            if (!$isBase64){
+            if (!$isBase64) {
                 return response()->json([
                     'status' => false,
                     'data' => 'Image invalid format',
@@ -505,7 +509,7 @@ class UserController extends Controller
             }
             $extension = explode('/', mime_content_type($file))[1];
             $path = 'user/';
-            if(!in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
+            if (!in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Only support file jpg, png, jpeg, gif'
@@ -517,23 +521,23 @@ class UserController extends Controller
 
             $userInfo = $this->userRepo->where('id', $user->id);
             $this->deleteImagesInStorage($userInfo->get(), "avatar");
-            $userInfo->update(['avatar' => $url]);
-            // $result = $this->userRepo->createImageInfo($userInfo->first());
-            // $newUser = auth()->user();
-            // $newUser->image_opg = $result;
-            // $newUser->save();
-
+            $userUpdate = $userInfo->first();
+            if ($userUpdate) {
+                $userUpdate->avatar = $url;
+                $result = $this->userRepo->createImageInfo($userUpdate);
+                $userUpdate->image_opg = $result;
+                $userUpdate->save();
+            }
             return response()->json([
                 'status' => true,
-                // 'user' => $newUser,
+                'user' => $userUpdate,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => true,
+                'status' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
-
     }
 
     /**
@@ -822,7 +826,8 @@ class UserController extends Controller
         ]);
     }
 
-    private function checkValidateEndDate($isStillActive, $date) {
+    private function checkValidateEndDate($isStillActive, $date)
+    {
         if ($isStillActive) {
             return null;
         }
@@ -910,10 +915,10 @@ class UserController extends Controller
             $user = auth()->user();
             $req = $request->all();
             $members = $req['members'];
-            if(!empty($members)) {
+            if (!empty($members)) {
                 $memberIds = [];
-                foreach($members as $member) {
-                    if(isset($member['id']) && $member['id']) {
+                foreach ($members as $member) {
+                    if (isset($member['id']) && $member['id']) {
                         array_push($memberIds, $member['id']);
                     }
                 }
@@ -938,9 +943,9 @@ class UserController extends Controller
             // }
 
             $imageUrl = [];
-            if(count($req['images']) > 0) {
-                foreach($req['images'] as $img) {
-                    if(empty($img['is_old'])) {
+            if (count($req['images']) > 0) {
+                foreach ($req['images'] as $img) {
+                    if (empty($img['is_old'])) {
                         $extension = explode('/', mime_content_type($img['img']))[1];
                         $path = 'user/';
                         if (in_array($extension, ['jpg', 'png', 'jpeg', 'gif'])) {
@@ -982,7 +987,7 @@ class UserController extends Controller
                 $param['image'] = json_encode($imageUrl);
             }
 
-            if(empty($req['id'])) {
+            if (empty($req['id'])) {
                 $portfolio = $this->portfolioRepo->create($param);
             } else {
                 $portfolio = $this->portfolioRepo->where('id', $req['id'])
@@ -993,8 +998,8 @@ class UserController extends Controller
             }
 
             $this->portfolioJobRepo->where('portfolio_id', $portfolio->id)
-                    ->delete();
-            foreach($req['job_ids'] as $jobId) {
+                ->delete();
+            foreach ($req['job_ids'] as $jobId) {
                 $this->portfolioJobRepo->create([
                     'user_id' => $user->id,
                     'portfolio_id' => $portfolio->id,
@@ -1004,8 +1009,8 @@ class UserController extends Controller
 
             $this->portfolioMemberRepo->where('portfolio_id', $portfolio->id)
                 ->delete();
-            if(!empty($members)) {
-                foreach($members as $member) {
+            if (!empty($members)) {
+                foreach ($members as $member) {
                     $this->portfolioMemberRepo->create([
                         'portfolio_id' => $portfolio->id,
                         'member_id' => $member['id'],
@@ -1096,11 +1101,11 @@ class UserController extends Controller
         $user = auth()->user();
         $req = $request->all();
         $userId = $user->id;
-        if(!empty($req['user_id'])) {
+        if (!empty($req['user_id'])) {
             $userId = $req['user_id'];
         }
         $userInfo = $this->userRepo->where('id', $userId)->first();
-        if(empty($userInfo)) {
+        if (empty($userInfo)) {
             return response()->json([
                 'status' => false,
                 'message' => 'User not found',
@@ -1134,7 +1139,7 @@ class UserController extends Controller
      *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
-    */
+     */
     public function updateStatusPopup()
     {
         DB::beginTransaction();
@@ -1143,7 +1148,7 @@ class UserController extends Controller
             $user->update([
                 "status_popup" => 1,
             ]);
-             DB::commit();
+            DB::commit();
             return response()->json([
                 'status' => true,
             ]);
@@ -1182,7 +1187,7 @@ class UserController extends Controller
      *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
-    */
+     */
     public function updateSns(Request $request)
     {
         try {
@@ -1215,25 +1220,26 @@ class UserController extends Controller
         }
     }
 
-    private function getContents($str, $startDelimiter, $endDelimiter) {
+    private function getContents($str, $startDelimiter, $endDelimiter)
+    {
         $contents = array();
         $startDelimiterLength = strlen($startDelimiter);
         $endDelimiterLength = strlen($endDelimiter);
         $startFrom = $contentStart = $contentEnd = 0;
         while (false !== ($contentStart = strpos($str, $startDelimiter, $startFrom))) {
-          $contentStart += $startDelimiterLength;
-          $contentEnd = strpos($str, $endDelimiter, $contentStart);
-          if (false === $contentEnd) {
-            break;
-          }
-          $contents[] = substr($str, $contentStart, $contentEnd - $contentStart);
-          $startFrom = $contentEnd + $endDelimiterLength;
+            $contentStart += $startDelimiterLength;
+            $contentEnd = strpos($str, $endDelimiter, $contentStart);
+            if (false === $contentEnd) {
+                break;
+            }
+            $contents[] = substr($str, $contentStart, $contentEnd - $contentStart);
+            $startFrom = $contentEnd + $endDelimiterLength;
         }
 
         return $contents;
-      }
+    }
 
-     /**
+    /**
      * @OA\Get(
      *   path="/user/notify",
      *   summary="get notify user",
@@ -1247,7 +1253,7 @@ class UserController extends Controller
      *   @OA\Response(response=404, description="Resource Not Found", @OA\JsonContent()),
      *   @OA\Response(response=500, description="Internal Server Error", @OA\JsonContent()),
      * )
-    */
+     */
     public function getNotify()
     {
         try {
@@ -1258,12 +1264,12 @@ class UserController extends Controller
                 $data = json_decode($listNotifies->notification_data, true);
 
                 $listUnread = $this->notificationRepository->whereIn("id", $data['notification_id_unread'])
-                    ->orderBy('id','DESC')
-                    ->select('id','delivery_name','delivery_contents','subject','url')
+                    ->orderBy('id', 'DESC')
+                    ->select('id', 'delivery_name', 'delivery_contents', 'subject', 'url')
                     ->get();
                 $listRead = $this->notificationRepository->whereIn("id", $data['notification_id_read'])
-                    ->orderBy('id','DESC')
-                    ->select('id','delivery_name','delivery_contents','subject','url')
+                    ->orderBy('id', 'DESC')
+                    ->select('id', 'delivery_name', 'delivery_contents', 'subject', 'url')
                     ->get();
 
                 return response()->json([
@@ -1372,6 +1378,11 @@ class UserController extends Controller
             $user->gender = $req['gender'];
             $user->birthday = $birthday;
             $user->activity_base_id = $req['activity_base_id'];
+
+            $result = $this->userRepo->createImageInfo($user);
+            if ($result) {
+                $user->image_opg = $result;
+            }
 
             $user->save();
 
@@ -1566,13 +1577,13 @@ class UserController extends Controller
         $record = $this->followRepo->where('user_id', $owner->id)
             ->where('target_id', $data['target_id'])
             ->first();
-        
+
 
         if ($data['status'] == 'UNFOLLOW' && !empty($record->id)) {
             $noti = $this->notificationRepository->where('id', $record->notification_id)
                 ->first();
 
-            if(!empty($noti->id)) {
+            if (!empty($noti->id)) {
                 $this->userNotificationRepository->removeNotiForUser($data['target_id'], $noti->id);
                 $noti->delete();
             }
@@ -1626,10 +1637,10 @@ class UserController extends Controller
         $owner = auth()->user();
 
         $lists = $this->followRepo->getListFollowByUser($owner->id);
-        foreach($lists as $list) {
+        foreach ($lists as $list) {
             $listPortfolio = Portfolio::where('user_id', $list->id)->get();
             $arrayPortfolio = [];
-            foreach($listPortfolio as $image) {
+            foreach ($listPortfolio as $image) {
                 array_push($arrayPortfolio, $image->image[0]);
             }
             $list->portfolio = $arrayPortfolio;
@@ -1676,10 +1687,10 @@ class UserController extends Controller
         $owner = auth()->user();
 
         $lists = $this->followRepo->getListFollowerByUser($owner->id);
-        foreach($lists as $list) {
+        foreach ($lists as $list) {
             $listPortfolio = Portfolio::where('user_id', $list->id)->get();
             $arrayPortfolio = [];
-            foreach($listPortfolio as $image) {
+            foreach ($listPortfolio as $image) {
                 array_push($arrayPortfolio, $image->image[0]);
             }
             $list->portfolio = $arrayPortfolio;
@@ -1907,8 +1918,7 @@ class UserController extends Controller
             DB::beginTransaction();
             $user = auth()->user();
             $portfolio = $this->portfolioRepo->where("user_id", $user->id)->where("id", $id)->firstOrFail();
-            if (!is_null($portfolio))
-            {
+            if (!is_null($portfolio)) {
                 $this->portfolioJobRepo->where("portfolio_id", $portfolio->id)->delete();
                 $this->portfolioMemberRepo->where("portfolio_id", $portfolio->id)->delete();
                 $portfolio->delete();
@@ -1938,7 +1948,7 @@ class UserController extends Controller
     public function publicPortfolioDetail($portfolioId)
     {
         $portfolio = $this->portfolioRepo->where('id', $portfolioId)
-        ->firstOrFail();
+            ->firstOrFail();
 
         if (!$portfolio->is_public) {
             return response()->json([
@@ -1957,8 +1967,8 @@ class UserController extends Controller
             ->where('portfolio_id', $portfolio->id)
             ->with(['member'])
             ->get();
-        if(!empty($portfolioMembers)) {
-            foreach($portfolioMembers as $portfolioMember) {
+        if (!empty($portfolioMembers)) {
+            foreach ($portfolioMembers as $portfolioMember) {
                 $active = $this->userRepo->where("id", $portfolioMember->member_id)->first();
                 $member = $portfolioMember['member'];
                 $member['role'] = $portfolioMember['role'];
@@ -1971,7 +1981,7 @@ class UserController extends Controller
         $jobIds = $this->portfolioJobRepo
             ->where('portfolio_id', $portfolio->id)
             ->pluck('job_id');
-        if(!empty($jobIds)) {
+        if (!empty($jobIds)) {
             $jobIds = $jobIds->toArray();
         }
         if (!empty($jobIds)) {
@@ -2061,10 +2071,10 @@ class UserController extends Controller
                 $imagesDelete->delete();
             }
 
-            if(!empty($req['images'])) {
+            if (!empty($req['images'])) {
                 foreach ($req['images'] as $file) {
                     $isBase64  = $this->is_base64($file);
-                    if (!$isBase64){
+                    if (!$isBase64) {
                         return response()->json([
                             'status' => false,
                             'data' => 'Image invalid format',
@@ -2090,14 +2100,14 @@ class UserController extends Controller
 
             $existCareerIds = $this->userCareerRepo->where('user_id', $user->id)->pluck('career_id');
 
-            if(!empty($existCareerIds)) {
+            if (!empty($existCareerIds)) {
                 $existCareerIds = $existCareerIds->toArray();
             } else {
                 $existCareerIds = [];
             }
             $addCareerIds = array_diff($careerIds, $existCareerIds);
-            if(!empty($addCareerIds)) {
-                foreach($addCareerIds as $addCareerId) {
+            if (!empty($addCareerIds)) {
+                foreach ($addCareerIds as $addCareerId) {
                     $param = [
                         'user_id' => $user->id,
                         'career_id' => $addCareerId
@@ -2107,12 +2117,18 @@ class UserController extends Controller
             }
             $removeCareerIds = array_diff($existCareerIds, $careerIds);
 
-            if(!empty($removeCareerIds)) {
+            if (!empty($removeCareerIds)) {
                 $this->userCareerRepo->where('user_id', $user->id)
-                ->whereIn('career_id', $removeCareerIds)->delete();
+                    ->whereIn('career_id', $removeCareerIds)->delete();
             }
 
             $user->update(['self_introduction' => $req['self_introduction']]);
+
+            $result = $this->userRepo->createImageInfo($user);
+            if ($result) {
+                $user->image_opg = $result;
+                $user->save();
+            }
 
             return response()->json([
                 'status' => true,
@@ -2130,9 +2146,10 @@ class UserController extends Controller
      *
      * @return void
      */
-    private function deleteImagesInStorage($imagesDelete, $type = "profile") {
+    private function deleteImagesInStorage($imagesDelete, $type = "profile")
+    {
         $arrayImages = [];
-        foreach($imagesDelete as $imageDelete) {
+        foreach ($imagesDelete as $imageDelete) {
             $path = str_replace("/storage", "public", $type === "profile" ? $imageDelete->url : $imageDelete->avatar);
             $arrayImages[] = $path;
         }
@@ -2141,14 +2158,14 @@ class UserController extends Controller
         }
     }
 
-    private function is_base64($file){
+    private function is_base64($file)
+    {
         try {
             $extension = explode('/', mime_content_type($file))[1];
             return true;
         } catch (\Exception $e) {
             return false;
         }
-
     }
 
     /**
@@ -2180,8 +2197,8 @@ class UserController extends Controller
             ->select(DB::raw('group_concat(portfolio_id) as portfolio_ids'), 'job_id')
             ->groupBy('job_id')
             ->get();
-        if(!empty($portfolioJobs)) {
-            foreach($portfolioJobs as $k=>$portfolioJob) {
+        if (!empty($portfolioJobs)) {
+            foreach ($portfolioJobs as $k => $portfolioJob) {
                 $job = $this->activityContentRepo->where('key', 'job')
                     ->where('id', $portfolioJob->job_id)
                     ->select(['id', 'title'])
@@ -2241,7 +2258,7 @@ class UserController extends Controller
             ])
             ->firstOrFail();
 
-        if($owner->id !== $userSearch->id) {
+        if ($owner->id !== $userSearch->id) {
             $count = $this->followRepo->where('user_id', $owner->id)
                 ->where('target_id', $userSearch->id)
                 ->count();

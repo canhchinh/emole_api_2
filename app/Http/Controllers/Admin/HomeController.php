@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -143,9 +144,19 @@ class HomeController extends Controller
      */
     public function updateOpg()
     {
-        $users = $this->userRepository->all();
-        foreach ($users as $user) {
-            dd($user);
+        try {
+            $users = $this->userRepository->all();
+            foreach ($users as $user) {
+                $result = $this->userRepository->createImageInfo($user);
+                if ($result) {
+                    $user->image_opg = $result;
+                    $user->save();
+                }
+            }
+
+            echo "success";
+        } catch (\Exception $e) {
+            echo $e->getMessage();
         }
     }
 
@@ -156,25 +167,18 @@ class HomeController extends Controller
      */
     public function updateImg()
     {
-        $users = $this->userRepository->all();
-        foreach ($users as $user) {
-            if (strpos($user->avatar, 'http') !== false) {
-                $url = $user->avatar;
-                $path = "/app/public/users/$user->id.png";
-                if (!Storage::exists('/public/users')) {
-                    Storage::makeDirectory('/public/users', 0775, true);
+        try {
+            $users = $this->userRepository->all();
+            foreach ($users as $user) {
+                if (strpos($user->avatar, 'http') !== false) {
+                    $result = $this->userRepository->storeImageSocial($user);
+                    $user->avatar = $result;
+                    $user->save();
                 }
-                file_put_contents(storage_path($path), file_get_contents($url));
             }
+            echo "success";
+        } catch (\Exception $e) {
+            echo $e->getMessage();
         }
-    }
-
-    /**
-     * updateCareer
-     *
-     * @return void
-     */
-    public function updateCareer()
-    {
     }
 }

@@ -19,6 +19,7 @@ use Illuminate\Pagination\Paginator;
 use App\Entities\Follow;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * Class UserRepositoryEloquent.
@@ -211,6 +212,19 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         return $query->get();
     }
 
+    public function storeImageSocial($user)
+    {
+        $url = $user->avatar;
+        $fileName = $user->id . '_' . Str::random(10);
+        $path = "/app/public/user/$fileName.png";
+        $pathName = "/storage/user/$fileName.png";
+        if (!Storage::exists('/public/user')) {
+            Storage::makeDirectory('/public/user', 0775, true);
+        }
+        file_put_contents(storage_path($path), file_get_contents($url));
+        return $pathName;
+    }
+
     /**
      * createImageInfo
      *
@@ -219,53 +233,57 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function createImageInfo($user)
     {
         try {
-            if (!empty($user->avatar)) {
+            $avatar = $user->avatar;
+            $checkAvatar = str_replace("/storage/", "", $avatar);
+            if (!empty($avatar) && Storage::disk('public')->exists($checkAvatar)) {
                 $img = \Image::make(public_path('images/default/background.png'));
-                $image = \Image::make(public_path($user->avatar));
-                $image->encode('png');
-                $image->fit(300, 300);
-                $width = $image->getWidth();
-                $height = $image->getHeight();
-                $mask = \Image::canvas($width, $height);
-                // draw a white circle
-                $mask->circle($width, $width / 2, $height / 2, function ($draw) {
-                    $draw->background('#fff');
-                });
-                $image->mask($mask, false);
-                $img->insert($image, "top-left", 15, 90);
-                $img->text($user->given_name, 370, 190, function ($font) {
-                    $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
-                    $font->size(38);
-                    $font->color('#050518');
-                });
-                $img->text($user->title, 370, 250, function ($font) {
-                    $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
-                    $font->size(26);
-                    $font->color('#050519');
-                });
-                if (isset($user->careers) && count($user->careers) > 0) {
-                    $careers = $user->careers;
-                    $string = '';
-                    foreach ($careers as $key => $career) {
-                        if ($key <= 2) {
-                            $string = $string . "          " . $career->title;
-                        }
-                    }
-                    $img->text(trim($string), 370, 310, function ($font) {
-                        $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
-                        $font->size(18);
+                $image = \Image::make(public_path($avatar));
+                if ($image) {
+                    $image->encode('png');
+                    $image->fit(300, 300);
+                    $width = $image->getWidth();
+                    $height = $image->getHeight();
+                    $mask = \Image::canvas($width, $height);
+                    // draw a white circle
+                    $mask->circle($width, $width / 2, $height / 2, function ($draw) {
+                        $draw->background('#fff');
+                    });
+                    $image->mask($mask, false);
+                    $img->insert($image, "top-left", 15, 90);
+                    $img->text($user->given_name, 370, 190, function ($font) {
+                        $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
+                        $font->size(38);
                         $font->color('#050518');
                     });
-                }
+                    $img->text($user->title, 370, 250, function ($font) {
+                        $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
+                        $font->size(26);
+                        $font->color('#050519');
+                    });
+                    if (isset($user->careers) && count($user->careers) > 0) {
+                        $careers = $user->careers;
+                        $string = '';
+                        foreach ($careers as $key => $career) {
+                            if ($key <= 2) {
+                                $string = $string . "          " . $career->title;
+                            }
+                        }
+                        $img->text(trim($string), 370, 310, function ($font) {
+                            $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
+                            $font->size(18);
+                            $font->color('#050518');
+                        });
+                    }
 
-                if (!Storage::exists('/public/opg')) {
-                    Storage::makeDirectory('/public/opg', 0775, true);
-                }
+                    if (!Storage::exists('/public/opg')) {
+                        Storage::makeDirectory('/public/opg', 0775, true);
+                    }
 
-                $pathSave = "storage/opg/$user->id.png";
-                $path = "/app/public/opg/$user->id.png";
-                $img->save(storage_path($path));
-                return $pathSave;
+                    $pathSave = "storage/opg/$user->id.png";
+                    $path = "/app/public/opg/$user->id.png";
+                    $img->save(storage_path($path));
+                    return $pathSave;
+                }
             }
             return false;
         } catch (\Exception $e) {
