@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -133,5 +134,47 @@ class HomeController extends Controller
         $user = $this->userRepository->find(42);
         $result = $this->userRepository->createImageInfo($user);
         dd($result);
+    }
+
+    /**
+     * updateOpg
+     *
+     * @return void
+     */
+    public function updateOpg()
+    {
+        $users = $this->userRepository->all();
+        foreach ($users as $user) {
+            dd($user);
+        }
+    }
+
+    /**
+     * updateImg
+     *
+     * @return void
+     */
+    public function updateImg()
+    {
+        $users = $this->userRepository->all();
+        foreach ($users as $user) {
+            if (strpos($user->avatar, 'http') !== false) {
+                $url = $user->avatar;
+                $path = "/app/public/users/$user->id.png";
+                if (!Storage::exists('/public/users')) {
+                    Storage::makeDirectory('/public/users', 0775, true);
+                }
+                file_put_contents(storage_path($path), file_get_contents($url));
+            }
+        }
+    }
+
+    /**
+     * updateCareer
+     *
+     * @return void
+     */
+    public function updateCareer()
+    {
     }
 }
