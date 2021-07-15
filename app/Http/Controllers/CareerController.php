@@ -87,7 +87,7 @@ class CareerController extends Controller
             $lists = $this->activityContentRepo->getFreshCareer($careerId);
             $tags = [];
         } else {
-            $list = $record->setting;
+            $lists = $record->setting;
             $tags = $record->tags;
         }
 
