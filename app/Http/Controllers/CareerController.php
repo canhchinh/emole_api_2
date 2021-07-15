@@ -79,17 +79,17 @@ class CareerController extends Controller
     public function detailForUser($careerId)
     {
         $user = auth()->user();
-        // $record = $this->userCareerRepo->where('user_id', $user->id)
-        //     ->where('career_id', $careerId)
-        //     ->first();
+        $record = $this->userCareerRepo->where('user_id', $user->id)
+            ->where('career_id', $careerId)
+            ->first();
 
-        // if (empty($record->id) || empty($record->setting)) {
-        $lists = $this->activityContentRepo->getFreshCareer($careerId);
-        $tags = [];
-        // } else {
-        //     $list = $record->setting;
-        //     $tags = $record->tags;
-        // }
+        if (empty($record->id) || empty($record->setting)) {
+            $lists = $this->activityContentRepo->getFreshCareer($careerId);
+            $tags = [];
+        } else {
+            $list = $record->setting;
+            $tags = $record->tags;
+        }
 
         return response()->json([
             'status' => true,
