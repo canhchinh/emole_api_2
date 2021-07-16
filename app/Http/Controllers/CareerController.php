@@ -84,10 +84,11 @@ class CareerController extends Controller
             ->first();
 
         if (empty($record->id) || empty($record->setting)) {
-            return response()->json([
-                'status' => "a",
-            ]);
+
             $lists = $this->activityContentRepo->getFreshCareer($careerId);
+            return response()->json([
+                'status' => $lists,
+            ]);
             $tags = [];
         } else {
             return response()->json([
