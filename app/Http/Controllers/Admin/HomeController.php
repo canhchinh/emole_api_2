@@ -198,6 +198,7 @@ class HomeController extends Controller
         foreach ($records as $record) {
             $idCareer = $record->career_id;
             if (!empty($record->setting) && $record->setting) {
+                $listRecord = [];
                 foreach ($record->setting as $item) {
                     $lists = ActivityContent::where('career_id', $idCareer)->where('key', $item['key'])->get();
                     $currentList = array_filter($item['list'], function ($detail) {
@@ -222,8 +223,10 @@ class HomeController extends Controller
                     }
 
                     $newArray = array_merge($currentList, $array);
-                    $item['list'] = $newArray;
+                    $item["list"] = $newArray;
+                    $listRecord[] = $item;
                 }
+                $record->setting = json_encode($listRecord);
             }
             $record->save();
         }
