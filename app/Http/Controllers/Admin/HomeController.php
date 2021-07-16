@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entities\ActivityContent;
 use App\Entities\Career;
 use App\Entities\Notification;
 use App\Entities\User;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Repositories\UserCareerRepository;
 
 class HomeController extends Controller
 {
@@ -32,6 +34,7 @@ class HomeController extends Controller
     protected $notificationRepository;
     /** @var UserNotificationRepository */
     protected $userNotificationRepository;
+    protected $userCareerRepo;
 
     /**
      * userRepository
@@ -47,12 +50,14 @@ class HomeController extends Controller
      * @param NotificationRepository $notificationRepository
      * @param UserNotificationRepository $userNotificationRepository
      */
-    public function __construct(CareerRepository $careerRepository, NotificationRepository $notificationRepository, UserNotificationRepository $userNotificationRepository, UserRepository $userRepository)
+    public function __construct(UserCareerRepository $userCareerRepo, CareerRepository $careerRepository, NotificationRepository $notificationRepository, UserNotificationRepository $userNotificationRepository, UserRepository $userRepository)
     {
+
         $this->careerRepository = $careerRepository;
         $this->userRepository = $userRepository;
         $this->notificationRepository = $notificationRepository;
         $this->userNotificationRepository = $userNotificationRepository;
+        $this->userCareerRepo = $userCareerRepo;
     }
 
     /**
@@ -179,6 +184,48 @@ class HomeController extends Controller
             echo "success";
         } catch (\Exception $e) {
             echo $e->getMessage();
+        }
+    }
+
+    /**
+     * updateCareer
+     *
+     * @return void
+     */
+    public function updateCareer()
+    {
+        $records = $this->userCareerRepo->get();
+        foreach ($records as $record) {
+            $idCareer = $record->career_id;
+            if (!empty($record->setting) && $record->setting) {
+                foreach ($record->setting as $item) {
+                    $lists = ActivityContent::where('career_id', $idCareer)->where('key', $item['key'])->get();
+                    $currentList = array_filter($item['list'], function ($detail) {
+                        return $detail['is_checked'] === true;
+                    });
+                    $array = [];
+                    foreach ($lists as $list) {
+                        $listItem = [
+                            'id' => $list->id,
+                            'is_checked' => false,
+                            'title' => trim($list->title) == "その他（自由入力）" ? "" : $list->title,
+                            'free_text' => trim($list->title) == "その他（自由入力）"
+                        ];
+                        $array[] = $listItem;
+                    }
+                    foreach ($currentList as $current) {
+                        foreach ($array as $k => $a) {
+                            if ($current['id'] === $a['id']) {
+                                unset($array[$k]);
+                            }
+                        }
+                    }
+
+                    $newArray = array_merge($currentList, $array);
+                    $item['list'] = $newArray;
+                }
+            }
+            $record->save();
         }
     }
 }
