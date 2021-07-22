@@ -42,7 +42,7 @@ class TwitterLoginService
             throw new \Exception('Invalid request. Missing OAuth verifier.');
         }
 
-        return $this->server->getUserEmail($token = $this->getToken($request));
+        return $this->server->getUserDetails($token = $this->getToken($request));
     }
 
     /**
