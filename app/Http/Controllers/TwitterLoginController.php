@@ -58,7 +58,7 @@ class TwitterLoginController extends Controller
             ]);
             return response()->json([
                 'status' => true,
-                'data' => $request,
+                'data' => $request->all(),
             ]);
             $userTwitter = $this->twitterLoginService->getUserInfo($request);
             $user = $this->userRepo->where(['provider' => "twitter", 'provider_id' => $userTwitter->uid]);
