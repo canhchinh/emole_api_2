@@ -56,10 +56,6 @@ class TwitterLoginController extends Controller
                 'request_oauth_token' => 'required',
                 'request_oauth_token_secret' => 'required'
             ]);
-            return response()->json([
-                'status' => true,
-                'data' => $request->all(),
-            ]);
             $userTwitter = $this->twitterLoginService->getUserInfo($request);
             $user = $this->userRepo->where(['provider' => "twitter", 'provider_id' => $userTwitter->uid]);
             if (!empty($userTwitter->email)) {
