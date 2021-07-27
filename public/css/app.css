@@ -11159,7 +11159,7 @@ form label.error {
 
 .contain-form {
   width: 671px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 8px;
   margin: auto;
   margin-top: 36px;
@@ -11185,9 +11185,39 @@ form label.error {
   box-shadow: none;
   padding: 12.5px 0;
   height: auto;
-  border-bottom: 1px solid #E7E7E7;
+  border-bottom: 1px solid #e7e7e7;
   font-size: 15px;
   line-height: 21.72px;
+}
+
+.footer-notify {
+  margin-top: 52px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.footer-notify a {
+  font-family: Noto Sans JP;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 23px;
+  letter-spacing: 0px;
+  text-align: center;
+  padding: 16px 60px;
+  border-radius: 45px;
+}
+.footer-notify a:hover {
+  text-decoration: none;
+}
+.footer-notify .btn-edit {
+  color: #5332a5;
+  border: 1px solid #5332a5;
+  margin-right: 12px;
+}
+.footer-notify .btn-delete {
+  color: #050519;
+  background: #e7e7e7;
 }
 
 html, body, input, button, select, optgroup, textarea {

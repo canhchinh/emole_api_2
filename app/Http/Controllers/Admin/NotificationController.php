@@ -133,6 +133,68 @@ class NotificationController extends Controller
     }
 
     /**
+     * updateNotify
+     *
+     * @param  mixed $request
+     * @param  mixed $notify
+     * @return void
+     */
+    public function updateNotify(Request $request, Notification $notify)
+    {
+        // dd($notify);
+        $career = $this->careerRepository->select()->get();
+        if ($request->isMethod('POST')) {
+            $storingState = ($request->get('storingType', 'draft') ==  Notification::STATUS_PUBLIC) ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
+
+            $messages = [
+                'career_ids.required' => 'キャリアIDフィールドは必須です。',
+                'delivery_name.required' => '配達名フィールドが必要です。',
+                'delivery_contents.required' => 'コンテンツフィールドは必須です。',
+                'subject.required' => '件名フィールドは必須です。',
+                'subject.min' => '件名の最小値は2文字です。',
+                'subject.max' => '件名はできませんovers255文字。',
+                // 'url.required' => '転送先URLが必要です。',
+                'url.url' => '転送先のURLが正しい形式ではありません。',
+            ];
+
+            $rules = [
+                'delivery_name' => 'required',
+            ];
+
+            if ($storingState == Notification::STATUS_PUBLIC) {
+                $rules = array_merge($rules, [
+                    'career_ids' => 'required',
+                    'delivery_contents' => 'required|max:160|min:2',
+                    'subject' => 'required|max:255|min:2',
+                    'url' => 'nullable|url',
+                ]);
+            }
+
+            $validator = Validator::make($request->all(), $rules, $messages);
+
+            if ($validator->validated()) {
+                $notify = new Notification();
+                $notify->populate($request->all());
+                $notify->setCareerIds($request->get('career_ids'));
+                $notify->status = ($request->get('storingType', 'draft') ==  Notification::STATUS_PUBLIC) ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
+
+                DB::beginTransaction();
+                try {
+                    if ($notify->save() && $notify->status == Notification::STATUS_PUBLIC) {
+                        $this->userNotificationRepository->addNotification($notify);
+                    }
+                    DB::commit();
+                    return redirect()->route('admin.notify.list');
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    abort(500, 'Some thing error, please try again or contact admin. Thank very much!');
+                }
+            }
+        }
+        return view('admin.pages.notify.update', ['delivery_target' => $career, 'notify' => $notify])->withInput($request->all());
+    }
+
+    /**
      * @param Request $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse

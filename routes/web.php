@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'post'], '/create', [AdminNotificationController::class, 'createNotify'])->name('admin.notify.create');
         Route::match(['get', 'post'], '/view/{id}', [AdminNotificationController::class, 'viewNotify'])->name('admin.notify.view');
         Route::match(['delete'], '/delete/{id}', [AdminNotificationController::class, 'deleteNotify'])->name('admin.notify.delete');
+        Route::match(['get', 'post'], '/update/{notify}', [AdminNotificationController::class, 'updateNotify'])->name('admin.notify.update');
         Route::match(['put'], '/change/status/{id}', [AdminNotificationController::class, 'updateNotifyStatus'])->name('admin.notify.update.status');
     });
     Route::get('/detail/{id}', [HomeController::class, 'detailUser'])->name('admin.users.detailUser');
