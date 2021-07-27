@@ -34,7 +34,8 @@ class TwitterLoginController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => false
+                'status' => false,
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -42,7 +43,7 @@ class TwitterLoginController extends Controller
     private function replaceUrlAvatarTwitter($url)
     {
         if ($url) {
-            return str_replace("_normal", "", $url);
+            return str_replace(["_normal", "http"], ["", "https"], $url);
         }
         return "";
     }

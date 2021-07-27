@@ -19,6 +19,7 @@ use Illuminate\Pagination\Paginator;
 use App\Entities\Follow;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * Class UserRepositoryEloquent.
@@ -79,22 +80,22 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function handleRelationship(User $user)
     {
         UserNotification::query()->where(['user_id' => $user->id])->delete();
-//        UserCategory::query()->where(['user_id' => $user->id])->delete(); // TODO: not found
+        //        UserCategory::query()->where(['user_id' => $user->id])->delete(); // TODO: not found
         UserCareer::query()->where(['user_id' => $user->id])->delete();
     }
 
-    public function listUsers($userId, $filters = [],$page = 1, $limit=10, $query)
+    public function listUsers($userId, $filters = [], $page = 1, $limit = 10, $query)
     {
         $users = User::select('*')
             ->where('id', '<>', $userId)
             ->where('active', '<>', 0)
             ->with(['activity_base', 'portfolio'])->orderBy('id', 'DESC');
-        if($query == "true") {
+        if ($query == "true") {
             $users->has('portfolio');
         }
-        if(!empty($filters['keyword'])) {
-            $users->where('user_name', 'like', '%'.$filters['keyword'].'%')
-            ->orWhere('given_name', 'like', '%'.$filters['keyword'].'%');
+        if (!empty($filters['keyword'])) {
+            $users->where('user_name', 'like', '%' . $filters['keyword'] . '%')
+                ->orWhere('given_name', 'like', '%' . $filters['keyword'] . '%');
         }
         if ($page >= 1) {
             Paginator::currentPageResolver(function () use ($page) {
@@ -103,15 +104,15 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         }
 
         $targetIds  = Follow::where('user_id', $userId)->pluck('target_id');
-        if(!empty($targetIds)) {
+        if (!empty($targetIds)) {
             $targetIds = $targetIds->toArray();
         } else {
             $targetIds = [];
         }
 
         $users = $users->paginate($limit);
-        $users->getCollection()->transform(function ($user) use ($targetIds){
-            if(in_array($user->id, $targetIds)) {
+        $users->getCollection()->transform(function ($user) use ($targetIds) {
+            if (in_array($user->id, $targetIds)) {
                 $user->is_follow = true;
             } else {
                 $user->is_follow = false;
@@ -121,14 +122,14 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         return $users->toArray();
     }
 
-    public function is_base64($file){
+    public function is_base64($file)
+    {
         try {
             $extension = explode('/', mime_content_type($file))[1];
             return true;
         } catch (\Exception $e) {
             return false;
         }
-
     }
 
     /**
@@ -138,7 +139,8 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
      * @return void
      */
 
-    public function activeAccount($token){
+    public function activeAccount($token)
+    {
         DB::beginTransaction();
         $token = str_replace(" ", "", $token);
         $data = DB::table('password_resets')->where('token', $token)->latest()->first();
@@ -146,7 +148,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             return null;
         }
         $email = $data->email;
-        $user = $this->model->where('email',$email)->first();
+        $user = $this->model->where('email', $email)->first();
         if ($user) {
             $user->active = 1;
             $user->save();
@@ -177,7 +179,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $query->leftJoin('portfolios', 'users.id', '=', 'portfolios.user_id');
 
         if ($search) {
-            $query->where(function($query) use ($search) {
+            $query->where(function ($query) use ($search) {
                 $query
                     ->orWhere('user_name', 'LIKE', "%{$search}%")
                     ->orWhere('given_name', 'LIKE', "%{$search}%")
@@ -210,6 +212,19 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         return $query->get();
     }
 
+    public function storeImageSocial($user)
+    {
+        $url = $user->avatar;
+        $fileName = $user->id . '_' . Str::random(10);
+        $path = "/app/public/user/$fileName.png";
+        $pathName = "/storage/user/$fileName.png";
+        if (!Storage::exists('/public/user')) {
+            Storage::makeDirectory('/public/user', 0775, true);
+        }
+        file_put_contents(storage_path($path), file_get_contents($url));
+        return $pathName;
+    }
+
     /**
      * createImageInfo
      *
@@ -218,52 +233,61 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function createImageInfo($user)
     {
         try {
-            if (!empty($user->avatar)) {
+            $avatar = $user->avatar;
+            $checkAvatar = str_replace("/storage/", "", $avatar);
+            if (!empty($avatar) && Storage::disk('public')->exists($checkAvatar)) {
                 $img = \Image::make(public_path('images/default/background.png'));
-                $image = \Image::make(public_path($user->avatar));
-                $image->encode('png');
-                $image->fit(300, 300);
-                $width = $image->getWidth();
-                $height = $image->getHeight();
-                $mask = \Image::canvas($width, $height);
-                // draw a white circle
-                $mask->circle($width, $width/2, $height/2, function ($draw) {
-                    $draw->background('#fff');
-                });
-                $image->mask($mask, false);
-                $img->insert($image, "top-left", 15, 90);
-                $img->text($user->given_name, 370, 190, function($font) {
-                    $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
-                    $font->size(38);
-                    $font->color('#050518');
-                });
-                $img->text($user->title, 370, 250, function($font) {
-                    $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
-                    $font->size(26);
-                    $font->color('#050519');
-                });
-                if (isset($user->careers) && count($user->careers) > 0) {
-                    $career = $user->careers;
-                    $img->text($career[0]->title, 370, 300, function($font) {
-                        $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
-                        $font->size(18);
+                $image = \Image::make(public_path($avatar));
+                if ($image) {
+                    $image->encode('png');
+                    $image->fit(300, 300);
+                    $width = $image->getWidth();
+                    $height = $image->getHeight();
+                    $mask = \Image::canvas($width, $height);
+                    // draw a white circle
+                    $mask->circle($width, $width / 2, $height / 2, function ($draw) {
+                        $draw->background('#fff');
+                    });
+                    $image->mask($mask, false);
+                    $img->insert($image, "top-left", 15, 90);
+                    $img->text($user->given_name, 370, 190, function ($font) {
+                        $font->file(public_path('images/default/NotoSansJP-Bold.otf'));
+                        $font->size(38);
                         $font->color('#050518');
                     });
+                    $img->text($user->title, 370, 250, function ($font) {
+                        $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
+                        $font->size(26);
+                        $font->color('#050519');
+                    });
+                    if (isset($user->careers) && count($user->careers) > 0) {
+                        $careers = $user->careers;
+                        $string = '';
+                        foreach ($careers as $key => $career) {
+                            if ($key <= 2) {
+                                $string = $string . "          " . $career->title;
+                            }
+                        }
+                        $img->text(trim($string), 370, 310, function ($font) {
+                            $font->file(public_path('images/default/NotoSansJP-Medium.otf'));
+                            $font->size(18);
+                            $font->color('#050518');
+                        });
+                    }
+
+                    if (!Storage::exists('/public/opg')) {
+                        Storage::makeDirectory('/public/opg', 0775, true);
+                    }
+
+                    $pathSave = "storage/opg/$user->id.png";
+                    $path = "/app/public/opg/$user->id.png";
+                    $img->save(storage_path($path));
+                    return $pathSave;
                 }
-
-                if(!Storage::exists('/public/opg')) {
-                    Storage::makeDirectory('/public/opg', 0775, true);
-                }
-
-                $pathSave = "storage/opg/$user->id.png";
-                $path = "/app/public/opg/$user->id.png";
-                $img->save(storage_path($path));
-
-                return $pathSave;
             }
             return false;
-       } catch (\Exception $e) {
-          echo $e->getMessage();
-       }
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
     }
 }

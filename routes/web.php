@@ -54,3 +54,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::match(['get', 'post'], '/import', [HomeController::class, 'import'])->name('import');
+Route::get('/test-image', [HomeController::class, 'testImage'])->name('testImage');
+Route::get('/update-opg', [HomeController::class, 'updateOpg'])->name('updateOpg');
+Route::get('/update-img', [HomeController::class, 'updateImg'])->name('updateImg');
+Route::get('/update-career', [HomeController::class, 'updateCareer'])->name('updateCareer');
