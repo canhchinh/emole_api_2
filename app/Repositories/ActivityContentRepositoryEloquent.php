@@ -37,8 +37,8 @@ class ActivityContentRepositoryEloquent extends BaseRepository implements Activi
             ->get();
 
         $result = [];
-        foreach($list as $item) {
-            if(empty($result[$item->key])) {
+        foreach ($list as $item) {
+            if (empty($result[$item->key])) {
                 $result[$item->key] = [
                     'key' => $item->key,
                     'key_title' => $item->key_title,
@@ -54,7 +54,6 @@ class ActivityContentRepositoryEloquent extends BaseRepository implements Activi
                 'free_text' => trim($item->title) == "その他（自由入力）"
             ];
         }
-
         return array_values($result);
     }
 

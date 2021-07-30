@@ -89,7 +89,7 @@ class ActivityController extends Controller
         $user = auth()->user();
         $userId = $user->id;
         $req = $request->all();
-        if(!empty($req['user_id'])) {
+        if (!empty($req['user_id'])) {
             $userId = $req['user_id'];
         }
         $userCareer = $this->userCareerRepo->where([
