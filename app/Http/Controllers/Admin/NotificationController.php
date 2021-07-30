@@ -173,7 +173,6 @@ class NotificationController extends Controller
             $validator = Validator::make($request->all(), $rules, $messages);
 
             if ($validator->validated()) {
-                $notify = new Notification();
                 $notify->populate($request->all());
                 $notify->setCareerIds($request->get('career_ids'));
                 $notify->status = ($request->get('storingType', 'draft') ==  Notification::STATUS_PUBLIC) ? Notification::STATUS_PUBLIC : Notification::STATUS_DRAFT;
