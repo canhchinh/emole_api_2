@@ -458,6 +458,7 @@ class UserController extends Controller
         $user->title = $data['title'];
         $user->birthday = $birthday;
         $user->gender = $data['gender'];
+        $user->height = $data['height'];
         $user->register_finish_step = 3;
         $user->activity_base_id = $data['activity_base_id'];
         $user->save();
@@ -1372,6 +1373,7 @@ class UserController extends Controller
             $user->given_name = $req['given_name'];
             $user->title = $req['title'];
             $user->gender = $req['gender'];
+            $user->height = $req['height'];
             $user->birthday = $birthday;
             $user->activity_base_id = $req['activity_base_id'];
 

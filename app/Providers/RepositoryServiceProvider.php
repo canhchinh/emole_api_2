@@ -51,6 +51,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\WorkRepository::class, \App\Repositories\WorkRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\ContestRepository::class, \App\Repositories\ContestRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\CampaignRepository::class, \App\Repositories\CampaignRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\UserWorkRepository::class, \App\Repositories\UserWorkRepositoryEloquent::class);
         //:end-bindings:
     }
 }

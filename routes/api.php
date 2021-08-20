@@ -133,6 +133,7 @@ Route::group(['prefix' => 'work', 'middleware' => 'auth:sanctum'], function () {
     Route::get('list-contest', [WorkController::class, 'listContest']);
     Route::get('list-campaign', [WorkController::class, 'listCampaign']);
     Route::get('{id}', [WorkController::class, 'detailWork']);
+    Route::get('check-apply/{id}', [WorkController::class, 'checkApply']);
     Route::post('apply', [WorkController::class, 'apply']);
 });
 
