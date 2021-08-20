@@ -67,4 +67,15 @@ class WorkController extends Controller
             'data' => $data
         ], 200);
     }
+
+    /**
+     * detailWork
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function detailWork($id)
+    {
+        return $id;
+    }
 }
