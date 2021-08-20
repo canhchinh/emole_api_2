@@ -266,4 +266,26 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
           echo $e->getMessage();
        }
     }
+
+    public function getListUserWithOrders($idUser)
+    {
+        $users = $this->model->with('portfolio')->whereNotNull('order')->whereNotNull('user_name')->orderBy('order', 'ASC')->get();
+
+        $targetIds  = Follow::where('user_id', $idUser)->pluck('target_id');
+        if (!empty($targetIds)) {
+            $targetIds = $targetIds->toArray();
+        } else {
+            $targetIds = [];
+        }
+
+        foreach ($users as $user) {
+            if (in_array($user->id, $targetIds)) {
+                $user->is_follow = true;
+            } else {
+                $user->is_follow = false;
+            }
+        }
+
+        return $users->toArray();
+    }
 }
