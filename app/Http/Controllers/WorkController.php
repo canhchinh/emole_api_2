@@ -76,6 +76,17 @@ class WorkController extends Controller
      */
     public function detailWork($id)
     {
-        return $id;
+        try {
+            $detail = $this->workRepo->findOrFail($id);
+            return response()->json([
+                'status' => 'success',
+                'data' => $detail
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 404);
+        }
     }
 }
