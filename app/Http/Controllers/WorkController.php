@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\Magazine;
 use App\Mail\SendMailApplyJob;
 use App\Repositories\WorkRepository;
 use App\Repositories\ContestRepository;
@@ -10,6 +11,7 @@ use App\Repositories\UserWorkRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 
 class WorkController extends Controller
 {
@@ -155,6 +157,34 @@ class WorkController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => false
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'fail',
+                'data' => $e->getMessage()
+            ], 404);
+        }
+    }
+
+    /**
+     * getMagazine
+     *
+     * @return void
+     */
+    public function getMagazine()
+    {
+        try {
+            $response = Http::get('http://magazine.emole.jp/wp-json/wp/v2/posts');
+            $array = [];
+            foreach ($response->json() as $key => $item) {
+                $array[$key]['id'] = $item['id'];
+                $array[$key]['date'] = $item['date'];
+                $array[$key]['jetpack_featured_media_url'] = $item['jetpack_featured_media_url'];
+                $array[$key]['title'] = $item['title']['rendered'];
+            }
+            return response()->json([
+                'status' => 'success',
+                'data' => $array
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

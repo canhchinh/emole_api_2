@@ -137,6 +137,8 @@ Route::group(['prefix' => 'work', 'middleware' => 'auth:sanctum'], function () {
     Route::post('apply', [WorkController::class, 'apply']);
 });
 
+Route::get('magazine', [WorkController::class, 'getMagazine']);
+
 Route::get('public/portfolio/{id}', [UserController::class, 'publicPortfolioDetail'])->name('portfolio.publicDetail');
 
 Route::group(['prefix' => 'activity-base', 'middleware' => 'auth:sanctum'], function () {
