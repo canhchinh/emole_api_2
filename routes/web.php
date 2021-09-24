@@ -47,9 +47,14 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'post'], '/create', [AdminNotificationController::class, 'createNotify'])->name('admin.notify.create');
         Route::match(['get', 'post'], '/view/{id}', [AdminNotificationController::class, 'viewNotify'])->name('admin.notify.view');
         Route::match(['delete'], '/delete/{id}', [AdminNotificationController::class, 'deleteNotify'])->name('admin.notify.delete');
+        Route::match(['get', 'post'], '/update/{notify}', [AdminNotificationController::class, 'updateNotify'])->name('admin.notify.update');
         Route::match(['put'], '/change/status/{id}', [AdminNotificationController::class, 'updateNotifyStatus'])->name('admin.notify.update.status');
     });
     Route::get('/detail/{id}', [HomeController::class, 'detailUser'])->name('admin.users.detailUser');
 });
 
-Route::match(['get', 'post'],'/import', [HomeController::class, 'import'])->name('import');
+Route::match(['get', 'post'], '/import', [HomeController::class, 'import'])->name('import');
+Route::get('/test-image', [HomeController::class, 'testImage'])->name('testImage');
+Route::get('/update-opg', [HomeController::class, 'updateOpg'])->name('updateOpg');
+Route::get('/update-img', [HomeController::class, 'updateImg'])->name('updateImg');
+Route::get('/update-career', [HomeController::class, 'updateCareer'])->name('updateCareer');

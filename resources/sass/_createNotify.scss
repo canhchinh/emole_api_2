@@ -1,16 +1,16 @@
 .contain-form {
     width: 671px;
-    background: #FFFFFF;
+    background: #ffffff;
     border-radius: 8px;
     margin: auto;
-    @include my(36,0);
+    @include my(36, 0);
     padding: 40px;
     &_title {
-        @include fontBase(25,36);
+        @include fontBase(25, 36);
         font-weight: 700;
         letter-spacing: 0px;
         text-align: left;
-        @include my(0,35);
+        @include my(0, 35);
     }
     .form {
         .contain {
@@ -21,16 +21,46 @@
 
 .form {
     .contain {
-        select{
+        select {
             width: 100%;
             border: none;
             box-shadow: none;
             padding: 12.5px 0;
             height: auto;
-            border-bottom: 1px solid #E7E7E7;
+            border-bottom: 1px solid #e7e7e7;
             font-size: 15px;
             line-height: 21.72px;
         }
     }
 }
 
+.footer-notify {
+    margin-top: 52px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    a {
+        font-family: Noto Sans JP;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 23px;
+        letter-spacing: 0px;
+        text-align: center;
+        padding: 16px 60px;
+        border-radius: 45px;
+        &:hover {
+            text-decoration: none;
+        }
+    }
+    .btn-edit {
+        color: #5332a5;
+        border: 1px solid #5332a5;
+        margin-right: 12px;
+    }
+
+    .btn-delete {
+        color: #050519;
+        background: #e7e7e7;
+    }
+}
