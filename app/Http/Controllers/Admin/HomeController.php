@@ -155,8 +155,6 @@ class HomeController extends Controller
                 $result = $this->userRepository->createImageInfo($user);
                 if ($result) {
                     $user->image_opg = $result;
-                } else {
-                    $user->image_opg = "";
                 }
                 $user->save();
             }
