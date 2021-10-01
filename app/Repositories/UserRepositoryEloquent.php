@@ -235,7 +235,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         try {
             $avatar = $user->avatar;
             $checkAvatar = str_replace("/storage/", "", $avatar);
-            if (!empty($avatar) && Storage::disk('public')->exists($checkAvatar)) {
+            if (!empty($avatar) && Storage::disk('public')->exists($checkAvatar) || $user->image_opg) {
                 $img = \Image::make(public_path('images/default/background.png'));
                 $image = \Image::make(public_path($avatar));
                 if ($image) {
