@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\Follow;
 use App\Entities\PasswordReset;
 use App\Entities\Portfolio;
 use App\Http\Requests\FollowRequest;
@@ -461,6 +462,7 @@ class UserController extends Controller
         $user->title = $data['title'];
         $user->birthday = $birthday;
         $user->gender = $data['gender'];
+        $user->height = $data['height'];
         $user->register_finish_step = 3;
         $user->activity_base_id = $data['activity_base_id'];
         $user->save();
@@ -1376,6 +1378,7 @@ class UserController extends Controller
             $user->given_name = $req['given_name'];
             $user->title = $req['title'];
             $user->gender = $req['gender'];
+            $user->height = $req['height'];
             $user->birthday = $birthday;
             $user->activity_base_id = $req['activity_base_id'];
 
@@ -2393,5 +2396,29 @@ class UserController extends Controller
             'status' => true,
             'data' => $result
         ]);
+    }
+
+    public function listUserOrders()
+    {
+        $user = auth()->user();
+        $result = $this->userRepo->getListUserWithOrders($user->id);
+        return response()->json([
+            'status' => true,
+            'data' => $result
+        ], 200);
+    }
+
+    public function listPortfolioOrder()
+    {
+        $portfolios = $this->portfolioRepo->with('user')->whereNotNull('order')->orderBy('order', 'ASC')->get();
+        foreach ($portfolios as $portfolio) {
+            $idPortfolioJobs = $this->portfolioJobRepo->where('portfolio_id', $portfolio->id)->pluck('job_id');
+            $job = $this->activityContentRepo->whereIn('id', $idPortfolioJobs)->select('title', 'id')->get();
+            $portfolio->jobs = $job;
+        }
+        return response()->json([
+            'status' => true,
+            'data' => $portfolios
+        ], 200);
     }
 }

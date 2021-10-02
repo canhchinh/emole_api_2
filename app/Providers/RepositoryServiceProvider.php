@@ -43,10 +43,15 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\PostRepository::class, \App\Repositories\PostRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\AdminRepository::class, \App\Repositories\AdminRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\PortfolioJobRepository::class, \App\Repositories\PortfolioJobRepositoryEloquent::class);
-	    $this->app->bind(\App\Repositories\LineNotifyAccessTokenRepository::class, \App\Repositories\LineNotifyAccessTokenRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\LineNotifyAccessTokenRepository::class, \App\Repositories\LineNotifyAccessTokenRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\PortfolioMemberRepository::class, \App\Repositories\PortfolioMemberRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\NotificationRepository::class, \App\Repositories\NotificationRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\UserNotificationRepository::class, \App\Repositories\UserNotificationRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\WorkRepository::class, \App\Repositories\WorkRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\WorkRepository::class, \App\Repositories\WorkRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\ContestRepository::class, \App\Repositories\ContestRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\CampaignRepository::class, \App\Repositories\CampaignRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\UserWorkRepository::class, \App\Repositories\UserWorkRepositoryEloquent::class);
         //:end-bindings:
     }
 }

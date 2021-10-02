@@ -22,6 +22,8 @@ interface UserRepository extends RepositoryInterface
 
     public function storeImageSocial($user);
 
+    public function getListUserWithOrders($idUser);
+
     // For admin =======================================================================================================
 
     public function paginateQuery(Request $request, $status, $search);

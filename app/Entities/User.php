@@ -111,6 +111,11 @@ class User extends Authenticatable implements Transformable
         return $this->hasMany(Portfolio::class, 'user_id', 'id');
     }
 
+    public function follow()
+    {
+        return $this->hasMany(Follow::class, 'user_id', 'id');
+    }
+
     public function search($username)
     {
         return $this->where('user_name', $username)
@@ -118,7 +123,8 @@ class User extends Authenticatable implements Transformable
             ->first();
     }
 
-    public function activeAccount($token){
+    public function activeAccount($token)
+    {
         $password_resets = [
             'email'        => $this->email,
             'token'        => $token,

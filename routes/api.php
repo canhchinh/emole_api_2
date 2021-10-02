@@ -12,6 +12,8 @@ use App\Http\Controllers\SnsController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\LineNotifyController;
 use App\Http\Controllers\SocialController;
+use App\Http\Controllers\WorkController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -72,6 +74,7 @@ Route::get('public/search/{username}', [UserController::class, 'searchUserPublic
 
 Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum'], function () {
     Route::get('list', [UserController::class, 'listUsers']);
+    Route::get('list-order', [UserController::class, 'listUserOrders']);
 });
 
 
@@ -102,7 +105,7 @@ Route::get('/career/user/{id}', [CareerController::class, 'listForUser'])->where
 
 Route::group(['prefix' => 'education'], function () {
     Route::get('/user/{id}', [UserController::class, 'listWorkEducation']);
-    Route::group(['middleware' => 'auth:sanctum'], function() {
+    Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/', [UserController::class, 'myEducation']);
         Route::post('', [UserController::class, 'education']);
     });
@@ -116,13 +119,25 @@ Route::group(['prefix' => 'sns', 'middleware' => 'auth:sanctum'], function () {
 
 Route::group(['prefix' => 'portfolio'], function () {
     Route::get('user/{id}', [UserController::class, 'ListPortfolio']);
-    Route::group(['middleware' => 'auth:sanctum'], function() {
+    Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('', [UserController::class, 'portfolio']);
         Route::get('detail/{portfolio_id}', [UserController::class, 'portfolioDetail'])->name('portfolio.detail');
         Route::post('image', [UserController::class, 'portfolioImage']);
         Route::delete('/delete/{id}', [UserController::class, 'deletePortfolio']);
+        Route::get('list-portfolio-order', [UserController::class, 'listPortfolioOrder']);
     });
 });
+
+Route::group(['prefix' => 'work', 'middleware' => 'auth:sanctum'], function () {
+    Route::get('list', [WorkController::class, 'list']);
+    Route::get('list-contest', [WorkController::class, 'listContest']);
+    Route::get('list-campaign', [WorkController::class, 'listCampaign']);
+    Route::get('{id}', [WorkController::class, 'detailWork']);
+    Route::get('check-apply/{id}', [WorkController::class, 'checkApply']);
+    Route::post('apply', [WorkController::class, 'apply']);
+});
+
+Route::get('magazines', [WorkController::class, 'getMagazine']);
 
 Route::get('public/portfolio/{id}', [UserController::class, 'publicPortfolioDetail'])->name('portfolio.publicDetail');
 
@@ -138,13 +153,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 });
 
 // /**************** Line Notify ****************/
-Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
+Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function () {
     Route::get('get-auth-link', [LineNotifyController::class, 'getAuthLink']);
 });
-Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
+Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function () {
     Route::get('get-access-token', [LineNotifyController::class, 'getAccessToken']);
 });
-Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function() {
+Route::group(['prefix' => 'line-notify', 'middleware' => 'auth:sanctum'], function () {
     Route::post('send-notify', [LineNotifyController::class, 'sendNotify']);
 });
 
